@@ -1,109 +1,116 @@
-import Image from "next/image";
-import Link from "next/link";
+'use client';
 
-export default function SportaLanding() {
+import { AppBar, Toolbar, Typography, Button, Container, Box, TextField, Card, CardMedia, CardContent, CardActions, Rating } from "@mui/material";
+import Grid from '@mui/material/Grid2';
+import SearchIcon from "@mui/icons-material/Search";
+import SportsSoccerIcon from '@mui/icons-material/SportsSoccer';
+import { sizing } from '@mui/system';
+
+const stadiums = [
+  { name: "Sân ABC", image: "/image/image_12.png", location: "Quận 10", price: "250.000 VND/h", rating: 4.5 },
+  { name: "Sân XYZ", image: "/image/image_12.png", location: "Quận 9", price: "220.000 VND/h", rating: 4.0 },
+];
+
+const style = {
+  button: {
+    // width: 127,
+    height: '100%',
+    textTransform: 'none',
+    fontSize: 14,
+    fontWeight: 700,
+    radius: '4px',
+    padding: '6px 10px 6px 10px',
+    gap: '6px',
+    lineHeight: '24px',
+    align: 'center',
+    // backgroundColor: '#2962FF',
+  },
+  listItemText: { color: "white", }
+} as const;
+
+
+export default function HomePage() {
   return (
-    <div className="bg-white min-h-screen">
-      <header className="container mx-auto px-4 py-6 flex justify-between items-center">
-        <Image
-          src="/placeholder.svg"
-          alt="On The Pitch Logo"
-          width={100}
-          height={40}
-        />
-        <nav className="hidden md:flex space-x-6">
-          <Link href="#" className="text-gray-600 hover:text-gray-900">
-            Trang chủ
-          </Link>
-          <Link href="#" className="text-gray-600 hover:text-gray-900">
-            Thuê sân
-          </Link>
-          <Link href="#" className="text-gray-600 hover:text-gray-900">
-            Khóa học
-          </Link>
-          <Link href="#" className="text-gray-600 hover:text-gray-900">
-            Shop thể thao
-          </Link>
-          {/* <Link href="#" className="text-gray-600 hover:text-gray-900">
-            When have time Blog
-          </Link> */}
-          <Link href="#" className="text-gray-600 hover:text-gray-900">
-            Đơn hàng của tôi
-          </Link>
-        </nav>
-        <button className="bg-orange-500 text-white px-4 py-2 rounded-full">
-          Đăng nhập
-        </button>
-      </header>
+    <>
+      <Box sx={{ bgcolor: 'white', minHeight: '100vh' }}>
+        {/* Thanh điều hướng */}
+        <AppBar position="static" color="primary">
+          <Toolbar>
+            <Typography variant="h6" sx={{ flexGrow: 1 }}>On the Pitch</Typography>
+            <Button color="inherit">Đăng nhập</Button>
+          </Toolbar>
+        </AppBar>
 
-      <main>
-        <section className="container mx-auto px-4 py-12 md:py-24 flex flex-col md:flex-row items-center">
-          <div className="md:w-1/2 mb-8 md:mb-0">
-            <h1 className="text-4xl md:text-5xl font-bold mb-4">
-              Cho thuê sân thi đấu, cung cấp khóa học bóng đá
-            </h1>
-            <p className="text-gray-600 mb-6">
-              Thuê sân dễ dàng, đặt lịch nhanh chóng, thanh toán tiện lợi
-            </p>
-          </div>
-          <div className="md:w-1/2">
-            <Image
-              src="/placeholder.svg"
-              alt="Mô tả web"
-              width={300}
-              height={600}
-              className="mx-auto"
-            />
-          </div>
-        </section>
+        {/* Banner */}
+        <Box sx={{ textAlign: 'center', my: 4 }}>
+          <Typography variant="h4" gutterBottom>
+            Tìm sân dễ dàng - Đặt sân nhanh chóng!
+          </Typography>
+          <Button variant="contained" color="primary" size="large">
+            Đặt sân ngay
+          </Button>
+        </Box>
 
-        <section className="bg-gray-100 py-12 md:py-24">
-          <div className="container mx-auto px-4">
-            <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-              Chất lượng sân thi đấu cao
-            </h2>
-            <div className="flex flex-col md:flex-row items-center justify-between">
-              <Image
-                src="/placeholder.svg"
-                alt="List ảnh sân"
-                width={250}
-                height={500}
-                className="mb-8 md:mb-0"
-              />
-            </div>
-          </div>
-        </section>
+        {/* Form tìm kiếm */}
+        <Container sx={{ height: '100%' }}>
+          <Grid container spacing={2} alignItems="center" justifyContent="center">
+            <Grid size={{ xs: 12, md: 3 }}>
+              <TextField fullWidth label="Loại sân" variant="outlined" />
+            </Grid>
+            <Grid size={{ xs: 12, md: 4 }}>
+              <TextField fullWidth label="Nhập địa điểm" variant="outlined" />
+            </Grid>
+            <Grid size={{ xs: 12, md: 3 }}>
+              <TextField fullWidth label="Chọn ngày" type="date" slotProps={{ inputLabel: { shrink: true } }} />
+            </Grid>
+            <Grid size={{ xs: 12, md: 2 }}>
+              <Button variant="contained" color="primary" startIcon={<SearchIcon />} fullWidth size="large" sx={{ ...style.button }}>
+                Tìm kiếm
+              </Button>
+            </Grid>
+          </Grid>
+        </Container>
 
-        <section className="container mx-auto px-4 py-12 md:py-24 text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-12">
-            Đội ngũ giảng viên chuyên nghiệp
-          </h2>
-          <div className="flex flex-col md:flex-row items-center justify-between">
-            <Image
-              src="/placeholder.svg"
-              alt="List ảnh khi giảng dạy"
-              width={250}
-              height={500}
-              className="mb-8 md:mb-0"
-            />
-          </div>
-        </section>
-      </main>
+        {/* Danh sách sân */}
+        <Container sx={{ my: 5 }}>
+          <Grid container
+            direction={'row'}
+            sx={{
+              alignItems: "center",
+              gap: 1,
+              mb: 2
+            }}
+          >
+            <SportsSoccerIcon />
+            <Typography variant="h5" >
+              Sân đá banh
+            </Typography>
+          </Grid>
+          <Grid container spacing={3}>
+            {stadiums.map((stadium, index) => (
+              <Grid sx={{ xs: 12, sm: 6, md: 4 }} key={index}>
+                <Card>
+                  <CardMedia component="img" height="180" image={stadium.image} alt={stadium.name} />
+                  <CardContent>
+                    <Typography variant="h6">{stadium.name}</Typography>
+                    <Typography variant="body2" color="text.secondary">{stadium.location}</Typography>
+                    {/* <Typography variant="body1" color="primary">{stadium.price}</Typography> */}
+                    <Rating value={stadium.rating} readOnly />
+                  </CardContent>
+                  <CardActions>
+                    <Button size="small" variant="contained" color="primary">Đặt sân</Button>
+                  </CardActions>
+                </Card>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
 
-      <footer className="bg-gray-100 py-8">
-        <div className="container mx-auto px-4 text-center text-gray-600">
-          <p>&copy; 2024 On The Pitch. All rights reserved.</p>
-          <div className="mt-4 space-x-4">
-            <Link href="#" className="hover:text-gray-900">
-              Điều khoản
-            </Link>
-            <Link href="#" className="hover:text-gray-900">
-              Chính sách bảo mật
-            </Link>
-          </div>
-        </div>
-      </footer>
-    </div>
+        {/* Footer */}
+        <Box sx={{ textAlign: 'center', p: 2, bgcolor: 'grey.200', mt: 5 }}>
+          <Typography variant="body2">© 2025 On the Pitch. All rights reserved.</Typography>
+        </Box>
+      </Box>
+    </>
   );
 }
-
