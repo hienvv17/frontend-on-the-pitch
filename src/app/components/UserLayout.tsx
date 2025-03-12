@@ -1,6 +1,7 @@
 "use client"
 import { Box, createTheme, ThemeProvider, Typography } from "@mui/material";
 import ResponsiveAppBar from "./ResponsiveAppBar";
+import Footer from "./Footer";
 
 const theme = createTheme({
     // typography: {
@@ -34,10 +35,8 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
             <ThemeProvider theme={theme}>
                 <ResponsiveAppBar />
                 {children}
+                <Footer />
             </ThemeProvider>
-            <Box sx={{ textAlign: 'center', p: 2, bgcolor: 'grey.200', mt: 5 }}>
-                <Typography variant="body2">© 2025 On the Pitch. All rights reserved.</Typography>
-            </Box>
         </Box>
     );
 };

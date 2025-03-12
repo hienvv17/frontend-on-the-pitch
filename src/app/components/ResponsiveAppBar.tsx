@@ -69,7 +69,8 @@ const settings = [
 function ResponsiveAppBar() {
     const router = useRouter();
     const pathname = usePathname();
-
+    const isHome = pathname === "/";
+    // console.log('pathname', pathname);
 
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -106,8 +107,8 @@ function ResponsiveAppBar() {
     // }, [isChange]);
 
     return (
-        <AppBar position="static" color='white'>
-            <Container maxWidth="xl">
+        <AppBar position="static" sx={{ mt: 0, backgroundColor: "transparent", backdropFilter: "blur(20px)", boxShadow: "1px" }}>
+            <Container maxWidth="xl" sx={{ background: "rgba(255, 255, 255, 0.9)" }}>
                 <Toolbar disableGutters>
                     {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
                     <Box
@@ -133,10 +134,10 @@ function ResponsiveAppBar() {
                             mr: 2,
                             display: { xs: 'none', md: 'flex' },
                             fontWeight: 700,
-                            color: '#4F9CF9',
+                            // color: '#4F9CF9',
+                            color: "var(--Primary-500)",
                             textDecoration: 'none',
                         }}
-
                     >
                         On The Pitch
                     </Typography>
@@ -199,7 +200,7 @@ function ResponsiveAppBar() {
                             display: { xs: 'flex', md: 'none' },
                             flexGrow: 1,
                             fontWeight: 700,
-                            color: '#4F9CF9',
+                            color: "var(--Primary-500)",
                             textDecoration: 'none',
                         }}
                     >
@@ -211,7 +212,7 @@ function ResponsiveAppBar() {
                                 key={page.title}
                                 onClick={() => router.push(`${page.url}`)}
                                 sx={{
-                                    my: 2, color: 'white', display: 'block', textTransform: 'none',
+                                    my: 2, color: "var(--Primary-500)", display: 'block', textTransform: 'none',
                                     position: 'relative', // Để Divider có thể hiển thị đúng vị trí
                                     '&:hover .hover-divider': {
                                         borderBottomWidth: page.url == pathname ? '3px' : '1px', // Hiện Divider khi hover
@@ -223,10 +224,11 @@ function ResponsiveAppBar() {
                                 <Typography fontWeight={page.url == pathname ? 'fontWeightBold' : "0"}>{page.title}</Typography>
                                 <Divider orientation="horizontal" flexItem className="hover-divider"
                                     sx={{
-                                        bgcolor: '#4F9CF9', borderBottomWidth: page.url == pathname ? '3px' : '0px',
+                                        bgcolor: "var(--Primary-500)", borderBottomWidth: page.url == pathname ? '3px' : '0px',
                                         width: page.url == pathname ? '100%' : '0%',
                                         transition: 'width 0.3s ease-in-out, border-bottom-width 0.3s ease-in-out', // Hiệu ứng mượt mà
-                                    }}></Divider>
+                                    }}>
+                                </Divider>
                             </Button>
                         ))}
                     </Box>
