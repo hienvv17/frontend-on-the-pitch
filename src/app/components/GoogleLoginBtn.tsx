@@ -55,7 +55,7 @@ export default function GoogleLoginBtn() {
             <Button
                 variant="contained"
                 startIcon={svgIcon}
-                onClick={() => login()} // Bấm nút sẽ mở popup đăng nhập Google
+                onClick={() => alert("login")} // Bấm nút sẽ mở popup đăng nhập Google
                 sx={{
                     textTransform: "none",
                     background: "#4F9CF9",
