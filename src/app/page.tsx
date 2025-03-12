@@ -1,13 +1,14 @@
 'use client';
 
-import { Typography, Box, ThemeProvider, createTheme, Divider, Chip, Stack, Grid2 } from "@mui/material";
+import { Typography, Box, ThemeProvider, createTheme, Divider, Chip, Stack, Grid2, Paper } from "@mui/material";
 import UserLayout from "./components/UserLayout";
 import Footer from "./components/Footer";
 import ResponsiveAppBar from "./components/ResponsiveAppBar";
-import { grey, red } from "@mui/material/colors";
+import { blue, grey, red } from "@mui/material/colors";
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import CommentIcon from '@mui/icons-material/Comment';
+import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import React, { use, useEffect } from "react";
 
 // Augment the palette to include an ochre color
@@ -109,136 +110,191 @@ export default function HomePage() {
           backgroundRepeat: "no-repeat", // Không lặp lại ảnh
           backgroundPosition: "center", // Căn giữa ảnh
           // width: "100vw",
-          height: "100vh"
+          height: "fit-content",
         }}
       >
+
         <ResponsiveAppBar />
-        <Box
+
+        <Grid2 container direction="column"
           sx={{
-            display: "flex",
-            flexDirection: "column",
+            // display: "flex",
+            // flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
             height: "100vh",
             textAlign: "center",
-            gap: 4
+            // gap: 4,
+            // mt: "-10vh"
           }}
         >
-          <Box>
-            <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">Đặt sân nhanh chóng, thanh toán thuận tiện</Typography>
-            <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">Sẵn sàng ra sân mọi lúc</Typography>
-          </Box>
-          <Divider orientation="horizontal" flexItem className="hover-divider"
+          <Grid2 container direction="column" size={12} sx={{
+            flex: 1, justifyContent: "center",
+            alignItems: "center", gap: 4
+          }} >
+            <Grid2>
+
+              <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">Đặt sân nhanh chóng, thanh toán thuận tiện</Typography>
+              <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">Sẵn sàng ra sân mọi lúc</Typography>
+            </Grid2>
+            <Grid2 size={12}>
+              <Divider orientation="horizontal" flexItem className="hover-divider"
+                sx={{
+                  bgcolor: grey[500],
+                  borderBottomWidth: '3px',
+                  width: '20%',
+                  mx: "auto"
+                }}
+              >
+              </Divider>
+            </Grid2>
+            <Grid2 size={12}>
+              <Typography color="var(--Primary-50)" sx={{ fontStyle: "italic" }} >"Không gì là không thể, chỉ cần bạn bắt đầu!"</Typography>
+            </Grid2>
+          </Grid2>
+
+
+
+          <Grid2 container direction="column"
             sx={{
-              bgcolor: grey[500],
-              borderBottomWidth: '3px',
-              width: '20%',
-              mx: "auto"
+              height: "30%", justifyContent: "center",
+              alignItems: "center",
             }}
           >
-          </Divider>
-          <Typography color="var(--Primary-50)" sx={{ fontStyle: "italic" }} >"Không gì là không thể, chỉ cần bạn bắt đầu!"</Typography>
+            <Grid2>
+              <ArrowDownwardIcon sx={{ color: grey[500], fontSize: 40, }} />
+            </Grid2>
+          </Grid2>
+        </Grid2>
+      </Box>
 
-          <Box sx={{ width: "60vw", textAlign: "center", mt: 10 }}>
-            <Grid2 container columnSpacing={{ xs: 1, sm: 2, md: 6 }} direction="row">
-              <Grid2 size={4} sx={{
-                justifyContent: "center",
-                alignItems: "center",
-                // background: "transparent", backdropFilter: "blur(10px)"
+      <Box
+        sx={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "center",
+          height: " fit-content",
+          textAlign: "center",
+          gap: 4,
+          my: 10
+        }}
+      >
+        <Box>
+          <Typography variant="h4" color="var(--Primary-500)" fontWeight="bold">Đa dạng sân với</Typography>
+          {/* <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">Sẵn sàng ra sân mọi lúc</Typography> */}
+        </Box>
+        <Divider orientation="horizontal" flexItem className="hover-divider"
+          sx={{
+            bgcolor: grey[500],
+            borderBottomWidth: '3px',
+            width: '20%',
+            mx: "auto"
+          }}
+        >
+        </Divider>
+        {/* <Typography color="var(--Primary-50)" sx={{ fontStyle: "italic" }} >"Không gì là không thể, chỉ cần bạn bắt đầu!"</Typography> */}
+        <Box sx={{ width: "90vw", textAlign: "center", }}>
+          <Grid2 container columnSpacing={{ xs: 1, sm: 2, md: 6 }} direction="row" sx={{ alignItems: "center", mx: "5vw" }}>
+            <Grid2 size={4} sx={{
+              justifyContent: "center",
+              alignItems: "center",
+              height: "100%"
+              // background: "transparent", backdropFilter: "blur(10px)"
+            }}>
+              <Box sx={{
+                backgroundColor: "var(--Primary-50)",
+                borderRadius: 8,
+                height: "fit-content",
+                // width: "100%",
+                display: "flex",
+                flexDirection: "column", // Sắp xếp nội dung theo cột
+                alignItems: "center", // Căn giữa theo chiều ngang
+                justifyContent: "center", // Căn giữa theo chiều dọc
+                // background: "rgba(255, 255, 255, 0.75)",
+                background: "var(--Primary-500)",
+                py: 3
               }}>
-                <Box sx={{
-                  backgroundColor: "var(--Primary-50)",
-                  borderRadius: 8,
-                  height: "fit-content",
-                  // width: "100%",
-                  display: "flex",
-                  flexDirection: "column", // Sắp xếp nội dung theo cột
-                  alignItems: "center", // Căn giữa theo chiều ngang
-                  justifyContent: "center", // Căn giữa theo chiều dọc
-                  // background: "rgba(255, 255, 255, 0.75)",
-                  background: "var(--Primary-500)",
-                  py: 3
+                <Grid2 container direction="row" sx={{
+                  justifyContent: "center",
+                  alignItems: "flex-end",
                 }}>
-                  <Grid2 container direction="row" sx={{
-                    justifyContent: "center",
-                    alignItems: "flex-end",
-                  }}>
-                    <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">20</Typography>
-                    <Typography variant="h6" color="var(--Primary-50)" fontWeight="bold">+</Typography>
-                  </Grid2>
-                  <Typography color="var(--Primary-50)" fontWeight="bold">Sân</Typography>
-                </Box>
-              </Grid2>
-
-              <Grid2 size={4} sx={{
-                justifyContent: "center",
-                alignItems: "center",
-              }}>
-                <Box sx={{
-                  backgroundColor: "var(--Primary-50)",
-                  borderRadius: 8,
-                  height: "fit-content",
-                  // width: "100%",
-                  display: "flex",
-                  flexDirection: "column", // Sắp xếp nội dung theo cột
-                  alignItems: "center", // Căn giữa theo chiều ngang
-                  justifyContent: "center", // Căn giữa theo chiều dọc
-                  background: "var(--Primary-500)",
-                  py: 3
-                }}>
-                  <Grid2 container direction="row" sx={{
-                    justifyContent: "center",
-                    alignItems: "flex-end",
-                  }}>
-                    <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">3</Typography>
-                    <Typography variant="h6" color="var(--Primary-50)" fontWeight="bold">+</Typography>
-                  </Grid2>
-                  <Typography color="var(--Primary-50)" fontWeight="bold">Cụm sân</Typography>
-                </Box>
-              </Grid2>
-
-              <Grid2 size={4} sx={{
-                justifyContent: "center",
-                alignItems: "center",
-              }}>
-                <Box sx={{
-                  backgroundColor: "var(--Primary-50)",
-                  borderRadius: 8,
-                  height: "fit-content",
-                  // width: "100%",
-                  display: "flex",
-                  flexDirection: "column", // Sắp xếp nội dung theo cột
-                  alignItems: "center", // Căn giữa theo chiều ngang
-                  justifyContent: "center", // Căn giữa theo chiều dọc
-                  background: "var(--Primary-500)",
-                  py: 3
-                }}>
-                  <Grid2 container direction="row" sx={{
-                    justifyContent: "center",
-                    alignItems: "flex-end",
-                  }}>
-                    <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">3</Typography>
-                    <Typography variant="h6" color="var(--Primary-50)" fontWeight="bold">+</Typography>
-                  </Grid2>
-                  <Typography color="var(--Primary-50)" fontWeight="bold">Môn thể thao</Typography>
-                </Box>
-              </Grid2>
+                  <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">20</Typography>
+                  <Typography variant="h6" color="var(--Primary-50)" fontWeight="bold">+</Typography>
+                </Grid2>
+                <Typography color="var(--Primary-50)" fontWeight="bold">Sân</Typography>
+              </Box>
             </Grid2>
 
-          </Box>
+            <Grid2 size={4} sx={{
+              justifyContent: "center",
+              alignItems: "center",
+            }}>
+              <Box sx={{
+                backgroundColor: "var(--Primary-50)",
+                borderRadius: 8,
+                height: "fit-content",
+                // width: "100%",
+                display: "flex",
+                flexDirection: "column", // Sắp xếp nội dung theo cột
+                alignItems: "center", // Căn giữa theo chiều ngang
+                justifyContent: "center", // Căn giữa theo chiều dọc
+                background: "var(--Primary-500)",
+                py: 3
+              }}>
+                <Grid2 container direction="row" sx={{
+                  justifyContent: "center",
+                  alignItems: "flex-end",
+                }}>
+                  <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">3</Typography>
+                  <Typography variant="h6" color="var(--Primary-50)" fontWeight="bold">+</Typography>
+                </Grid2>
+                <Typography color="var(--Primary-50)" fontWeight="bold">Cụm sân</Typography>
+              </Box>
+            </Grid2>
+
+            <Grid2 size={4} sx={{
+              justifyContent: "center",
+              alignItems: "center",
+            }}>
+              <Box sx={{
+                backgroundColor: "var(--Primary-50)",
+                borderRadius: 8,
+                height: "fit-content",
+                // width: "100%",
+                display: "flex",
+                flexDirection: "column", // Sắp xếp nội dung theo cột
+                alignItems: "center", // Căn giữa theo chiều ngang
+                justifyContent: "center", // Căn giữa theo chiều dọc
+                background: "var(--Primary-500)",
+                py: 3
+              }}>
+                <Grid2 container direction="row" sx={{
+                  justifyContent: "center",
+                  alignItems: "flex-end",
+                }}>
+                  <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">3</Typography>
+                  <Typography variant="h6" color="var(--Primary-50)" fontWeight="bold">+</Typography>
+                </Grid2>
+                <Typography color="var(--Primary-50)" fontWeight="bold">Môn thể thao</Typography>
+              </Box>
+            </Grid2>
+          </Grid2>
         </Box>
       </Box>
+
+
 
       {/* SÂN ĐÁ BANH */}
       <Box
         sx={{
           position: "relative",
-          backgroundImage: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.87)),url('/image/image_01.png')", // Đường dẫn ảnh
+          backgroundImage: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.87)),url('/image/green-soccer-field.png')", // Đường dẫn ảnh
           backgroundSize: "cover", // Tỷ lệ ảnh
           backgroundRepeat: "no-repeat", // Không lặp lại ảnh
           backgroundPosition: "center", // Căn giữa ảnh
           // width: "100vw",
-          height: "100vh",
+          height: "fit-content",
           // borderRadius: 8
         }}
       >
@@ -338,22 +394,293 @@ export default function HomePage() {
                 onClick={() => handleChipClick("soccer", "chip3")}
               />
             </Stack>
-
           </Box>
-          <Box sx={{
+
+          <Paper sx={{
+            // elevation: 24,
             width: "80vw",
             height: "20vw",
-            border: 2,              // Độ dày viền
-            borderColor: red[500], // Màu viền
-            borderStyle: "solid",   // Đảm bảo hiển thị viền
-            mb: 4
+            // border: 2,              // Độ dày viền
+            // borderColor: blue[900], // Màu viền
+            // borderStyle: "solid",   // Đảm bảo hiển thị viền
+            borderRadius: "8px",
+            mb: 4,
+            backgroundColor: "transparent",
+            backdropFilter: "blur(10px)",
+
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              inset: 0,
+              padding: "1px",
+              background: "linear-gradient(to right, transparent, var(--Primary-500), transparent)", // Gradient viền
+              WebkitMask: "linear-gradient(white, white) content-box, linear-gradient(white, white)", // Giữ nội dung không bị ảnh hưởng
+              WebkitMaskComposite: "destination-out",
+              maskComposite: "exclude",
+            },
           }}>
-            {/* <Typography>aa</Typography>
             <Typography>aa</Typography>
-            <Typography>aa</Typography> */}
+            <Typography>aa</Typography>
+            <Typography>aa</Typography>
+          </Paper>
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "start",
+            height: "100%", // Căn giữa theo chiều dọc toàn bộ viewport
+            textAlign: "center",
+            gap: 4,
+          }}
+        >
+          <Box sx={{ mt: 6 }}>
+            <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">Sân bóng đá</Typography>
           </Box>
+          <Divider orientation="horizontal" flexItem className="hover-divider"
+            sx={{
+              bgcolor: grey[500],
+              borderBottomWidth: '3px',
+              width: '20%',
+              mx: "auto"
+            }}
+          >
+          </Divider>
+          <Box sx={{ maxWidth: "60vw", textAlign: "center" }}>
+            <Typography color="var(--Primary-50)" sx={{ fontStyle: "italic" }} >Nơi diễn ra các trận đấu bóng đá, từ những trận giao hữu cho đến các giải đấu chuyên nghiệp.
+              Một trận bóng hấp dẫn không thể thiếu sân bóng đá đạt chuẩn, tạo điều kiện tốt nhất để cầu thủ thể hiện kỹ năng, chiến thuật và tinh thần đồng đội.
+            </Typography>
+          </Box>
+          <Divider orientation="horizontal" flexItem className="hover-divider"
+            sx={{
+              bgcolor: grey[500],
+              borderBottomWidth: '3px',
+              width: '20%',
+              mx: "auto"
+            }}
+          >
+          </Divider>
+          <Box sx={{ maxWidth: "fit-content", textAlign: "center" }}>
+            <Stack direction="row" spacing={4} sx={{ width: "60vw" }}>
+              {/* Chip 1 */}
+              <Chip
+                label="Hình ảnh thực tế"
+                color={chipSelected.soccer.chip1 ? "primary" : "default"}
+                variant={chipSelected.soccer.chip1 ? "filled" : "outlined"}
+                icon={
+                  <PhotoLibraryIcon
+                    sx={{ color: chipSelected.soccer.chip1 ? "white" : grey[400] }}
+                  />
+                }
+                sx={{
+                  width: "100%",
+                  "& .MuiChip-label": {
+                    color: chipSelected.soccer.chip1 ? "white" : grey[400],
+                  },
+                }}
+                onClick={() => handleChipClick("soccer", "chip1")}
+              />
+
+              {/* Chip 2 */}
+              <Chip
+                label="Sân hàng đầu"
+                color={chipSelected.soccer.chip2 ? "primary" : "default"}
+                variant={chipSelected.soccer.chip2 ? "filled" : "outlined"}
+                icon={
+                  <WhatshotIcon
+                    sx={{ color: chipSelected.soccer.chip2 ? "white" : grey[400] }}
+                  />
+                }
+                sx={{
+                  width: "100%",
+                  "& .MuiChip-label": {
+                    color: chipSelected.soccer.chip2 ? "white" : grey[400],
+                  },
+                }}
+                onClick={() => handleChipClick("soccer", "chip2")}
+              />
+
+              {/* Chip 3 */}
+              <Chip
+                label="Đánh giá của khách hàng"
+                color={chipSelected.soccer.chip3 ? "primary" : "default"}
+                variant={chipSelected.soccer.chip3 ? "filled" : "outlined"}
+                icon={
+                  <CommentIcon
+                    sx={{ color: chipSelected.soccer.chip3 ? "white" : grey[400] }}
+                  />
+                }
+                sx={{
+                  width: "100%",
+                  "& .MuiChip-label": {
+                    color: chipSelected.soccer.chip3 ? "white" : grey[400],
+                  },
+                }}
+                onClick={() => handleChipClick("soccer", "chip3")}
+              />
+            </Stack>
+          </Box>
+
+          <Paper sx={{
+            // elevation: 24,
+            width: "80vw",
+            height: "20vw",
+            // border: 2,              // Độ dày viền
+            // borderColor: blue[900], // Màu viền
+            // borderStyle: "solid",   // Đảm bảo hiển thị viền
+            borderRadius: "8px",
+            mb: 4,
+            backgroundColor: "transparent",
+            backdropFilter: "blur(10px)",
+
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              inset: 0,
+              padding: "1px",
+              background: "linear-gradient(to right, transparent, var(--Primary-500), transparent)", // Gradient viền
+              WebkitMask: "linear-gradient(white, white) content-box, linear-gradient(white, white)", // Giữ nội dung không bị ảnh hưởng
+              WebkitMaskComposite: "destination-out",
+              maskComposite: "exclude",
+            },
+          }}>
+            <Typography>aa</Typography>
+            <Typography>aa</Typography>
+            <Typography>aa</Typography>
+          </Paper>
+        </Box>
+
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "start",
+            height: "100%", // Căn giữa theo chiều dọc toàn bộ viewport
+            textAlign: "center",
+            gap: 4,
+          }}
+        >
+          <Box sx={{ mt: 6 }}>
+            <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">Sân bóng đá</Typography>
+          </Box>
+          <Divider orientation="horizontal" flexItem className="hover-divider"
+            sx={{
+              bgcolor: grey[500],
+              borderBottomWidth: '3px',
+              width: '20%',
+              mx: "auto"
+            }}
+          >
+          </Divider>
+          <Box sx={{ maxWidth: "60vw", textAlign: "center" }}>
+            <Typography color="var(--Primary-50)" sx={{ fontStyle: "italic" }} >Nơi diễn ra các trận đấu bóng đá, từ những trận giao hữu cho đến các giải đấu chuyên nghiệp.
+              Một trận bóng hấp dẫn không thể thiếu sân bóng đá đạt chuẩn, tạo điều kiện tốt nhất để cầu thủ thể hiện kỹ năng, chiến thuật và tinh thần đồng đội.
+            </Typography>
+          </Box>
+          <Divider orientation="horizontal" flexItem className="hover-divider"
+            sx={{
+              bgcolor: grey[500],
+              borderBottomWidth: '3px',
+              width: '20%',
+              mx: "auto"
+            }}
+          >
+          </Divider>
+          <Box sx={{ maxWidth: "fit-content", textAlign: "center" }}>
+            <Stack direction="row" spacing={4} sx={{ width: "60vw" }}>
+              {/* Chip 1 */}
+              <Chip
+                label="Hình ảnh thực tế"
+                color={chipSelected.soccer.chip1 ? "primary" : "default"}
+                variant={chipSelected.soccer.chip1 ? "filled" : "outlined"}
+                icon={
+                  <PhotoLibraryIcon
+                    sx={{ color: chipSelected.soccer.chip1 ? "white" : grey[400] }}
+                  />
+                }
+                sx={{
+                  width: "100%",
+                  "& .MuiChip-label": {
+                    color: chipSelected.soccer.chip1 ? "white" : grey[400],
+                  },
+                }}
+                onClick={() => handleChipClick("soccer", "chip1")}
+              />
+
+              {/* Chip 2 */}
+              <Chip
+                label="Sân hàng đầu"
+                color={chipSelected.soccer.chip2 ? "primary" : "default"}
+                variant={chipSelected.soccer.chip2 ? "filled" : "outlined"}
+                icon={
+                  <WhatshotIcon
+                    sx={{ color: chipSelected.soccer.chip2 ? "white" : grey[400] }}
+                  />
+                }
+                sx={{
+                  width: "100%",
+                  "& .MuiChip-label": {
+                    color: chipSelected.soccer.chip2 ? "white" : grey[400],
+                  },
+                }}
+                onClick={() => handleChipClick("soccer", "chip2")}
+              />
+
+              {/* Chip 3 */}
+              <Chip
+                label="Đánh giá của khách hàng"
+                color={chipSelected.soccer.chip3 ? "primary" : "default"}
+                variant={chipSelected.soccer.chip3 ? "filled" : "outlined"}
+                icon={
+                  <CommentIcon
+                    sx={{ color: chipSelected.soccer.chip3 ? "white" : grey[400] }}
+                  />
+                }
+                sx={{
+                  width: "100%",
+                  "& .MuiChip-label": {
+                    color: chipSelected.soccer.chip3 ? "white" : grey[400],
+                  },
+                }}
+                onClick={() => handleChipClick("soccer", "chip3")}
+              />
+            </Stack>
+          </Box>
+
+          <Paper sx={{
+            // elevation: 24,
+            width: "80vw",
+            height: "20vw",
+            // border: 2,              // Độ dày viền
+            // borderColor: blue[900], // Màu viền
+            // borderStyle: "solid",   // Đảm bảo hiển thị viền
+            borderRadius: "8px",
+            mb: 4,
+            backgroundColor: "transparent",
+            backdropFilter: "blur(10px)",
+
+            "&::before": {
+              content: '""',
+              position: "absolute",
+              inset: 0,
+              padding: "1px",
+              background: "linear-gradient(to right, transparent, var(--Primary-500), transparent)", // Gradient viền
+              WebkitMask: "linear-gradient(white, white) content-box, linear-gradient(white, white)", // Giữ nội dung không bị ảnh hưởng
+              WebkitMaskComposite: "destination-out",
+              maskComposite: "exclude",
+            },
+          }}>
+            <Typography>aa</Typography>
+            <Typography>aa</Typography>
+            <Typography>aa</Typography>
+          </Paper>
         </Box>
       </Box>
+
+
       <Footer />
     </ThemeProvider>
   );
