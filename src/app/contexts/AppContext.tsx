@@ -48,12 +48,12 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         console.log('logout');
     };
 
-    useEffect(() => {
-        fetch("/api/auth/me",)
-            .then((res) => res.json())
-            .then((data) => setUser(data))
-            .catch(() => setUser(null));
-    }, []);
+    // useEffect(() => {
+    //     fetch("/api/auth/me",)
+    //         .then((res) => res.json())
+    //         .then((data) => setUser(data))
+    //         .catch(() => setUser(null));
+    // }, []);
 
     return (
         <AppContext.Provider value={{ isChange, setIsChange, user, setUser, handleLogout }}>

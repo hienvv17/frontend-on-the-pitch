@@ -11,6 +11,13 @@ import CommentIcon from '@mui/icons-material/Comment';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import React, { use, useEffect } from "react";
 
+import Carousel from 'react-multi-carousel';
+import 'react-multi-carousel/lib/styles.css';
+import styles from "./components/Carousel.module.css";
+
+
+import { CardNews2 } from "./components/CardNews2";
+
 // Augment the palette to include an ochre color
 declare module '@mui/material/styles' {
   interface Palette {
@@ -48,7 +55,8 @@ const style = {
     align: 'center',
     // backgroundColor: '#2962FF',
   },
-  listItemText: { color: "white", }
+  listItemText: { color: "white", },
+
 } as const;
 
 const theme = createTheme({
@@ -64,6 +72,8 @@ const theme = createTheme({
 
 type SportType = "soccer" | "badminton" | "tennis";
 type ChipType = "chip1" | "chip2" | "chip3";
+
+
 
 export default function HomePage() {
   const [chipSelected, setChipSelected] = React.useState({
@@ -83,6 +93,24 @@ export default function HomePage() {
       chip3: false,
     }
   });
+
+  const responsive = {
+    desktop: {
+      breakpoint: { max: 3000, min: 1024 },
+      items: 2,
+      slidesToSlide: 1 // optional, default to 1.
+    },
+    tablet: {
+      breakpoint: { max: 650, min: 464 },
+      items: 1,
+      slidesToSlide: 1 // optional, default to 1.
+    },
+    mobile: {
+      breakpoint: { max: 464, min: 0 },
+      items: 1,
+      slidesToSlide: 1 // optional, default to 1.
+    }
+  };
 
   const handleChipClick = (sport: SportType, chipKey: ChipType) => {
     setChipSelected((prevState) => ({
@@ -399,7 +427,7 @@ export default function HomePage() {
           <Paper sx={{
             // elevation: 24,
             width: "80vw",
-            height: "20vw",
+            height: "200px",
             // border: 2,              // Độ dày viền
             // borderColor: blue[900], // Màu viền
             // borderStyle: "solid",   // Đảm bảo hiển thị viền
@@ -419,265 +447,34 @@ export default function HomePage() {
               maskComposite: "exclude",
             },
           }}>
-            <Typography>aa</Typography>
-            <Typography>aa</Typography>
-            <Typography>aa</Typography>
+            <Grid2 container direction="column" spacing={2} sx={{ justifyContent: "center", alignItems: "center", height: "inherit" }} >
+              <Grid2 size={12} sx={{ height: "100%", width: "80%" }}>
+                <Carousel
+                  responsive={responsive}
+
+                  slidesToSlide={1}
+                  swipeable={true}
+                  showDots={true}
+                  centerMode={true}
+                  ssr={true} // means to render carousel on server-side.
+                  containerClass={styles.customCarousel}
+                  // itemClass="height-100-px"
+                  dotListClass={styles.customDotList}
+                  renderDotsOutside={false}
+                  focusOnSelect={true}
+                  infinite={true}
+                >
+                  <CardNews2 image="/image/green-soccer-field.png" />
+                  <CardNews2 image="/image/image_01.png" />
+                  <CardNews2 image="/image/image_11.png" />
+                  <CardNews2 image="/image/image_12.png" />
+                </Carousel>
+              </Grid2>
+            </Grid2>
           </Paper>
         </Box>
 
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "start",
-            height: "100%", // Căn giữa theo chiều dọc toàn bộ viewport
-            textAlign: "center",
-            gap: 4,
-          }}
-        >
-          <Box sx={{ mt: 6 }}>
-            <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">Sân bóng đá</Typography>
-          </Box>
-          <Divider orientation="horizontal" flexItem className="hover-divider"
-            sx={{
-              bgcolor: grey[500],
-              borderBottomWidth: '3px',
-              width: '20%',
-              mx: "auto"
-            }}
-          >
-          </Divider>
-          <Box sx={{ maxWidth: "60vw", textAlign: "center" }}>
-            <Typography color="var(--Primary-50)" sx={{ fontStyle: "italic" }} >Nơi diễn ra các trận đấu bóng đá, từ những trận giao hữu cho đến các giải đấu chuyên nghiệp.
-              Một trận bóng hấp dẫn không thể thiếu sân bóng đá đạt chuẩn, tạo điều kiện tốt nhất để cầu thủ thể hiện kỹ năng, chiến thuật và tinh thần đồng đội.
-            </Typography>
-          </Box>
-          <Divider orientation="horizontal" flexItem className="hover-divider"
-            sx={{
-              bgcolor: grey[500],
-              borderBottomWidth: '3px',
-              width: '20%',
-              mx: "auto"
-            }}
-          >
-          </Divider>
-          <Box sx={{ maxWidth: "fit-content", textAlign: "center" }}>
-            <Stack direction="row" spacing={4} sx={{ width: "60vw" }}>
-              {/* Chip 1 */}
-              <Chip
-                label="Hình ảnh thực tế"
-                color={chipSelected.soccer.chip1 ? "primary" : "default"}
-                variant={chipSelected.soccer.chip1 ? "filled" : "outlined"}
-                icon={
-                  <PhotoLibraryIcon
-                    sx={{ color: chipSelected.soccer.chip1 ? "white" : grey[400] }}
-                  />
-                }
-                sx={{
-                  width: "100%",
-                  "& .MuiChip-label": {
-                    color: chipSelected.soccer.chip1 ? "white" : grey[400],
-                  },
-                }}
-                onClick={() => handleChipClick("soccer", "chip1")}
-              />
 
-              {/* Chip 2 */}
-              <Chip
-                label="Sân hàng đầu"
-                color={chipSelected.soccer.chip2 ? "primary" : "default"}
-                variant={chipSelected.soccer.chip2 ? "filled" : "outlined"}
-                icon={
-                  <WhatshotIcon
-                    sx={{ color: chipSelected.soccer.chip2 ? "white" : grey[400] }}
-                  />
-                }
-                sx={{
-                  width: "100%",
-                  "& .MuiChip-label": {
-                    color: chipSelected.soccer.chip2 ? "white" : grey[400],
-                  },
-                }}
-                onClick={() => handleChipClick("soccer", "chip2")}
-              />
-
-              {/* Chip 3 */}
-              <Chip
-                label="Đánh giá của khách hàng"
-                color={chipSelected.soccer.chip3 ? "primary" : "default"}
-                variant={chipSelected.soccer.chip3 ? "filled" : "outlined"}
-                icon={
-                  <CommentIcon
-                    sx={{ color: chipSelected.soccer.chip3 ? "white" : grey[400] }}
-                  />
-                }
-                sx={{
-                  width: "100%",
-                  "& .MuiChip-label": {
-                    color: chipSelected.soccer.chip3 ? "white" : grey[400],
-                  },
-                }}
-                onClick={() => handleChipClick("soccer", "chip3")}
-              />
-            </Stack>
-          </Box>
-
-          <Paper sx={{
-            // elevation: 24,
-            width: "80vw",
-            height: "20vw",
-            // border: 2,              // Độ dày viền
-            // borderColor: blue[900], // Màu viền
-            // borderStyle: "solid",   // Đảm bảo hiển thị viền
-            borderRadius: "8px",
-            mb: 4,
-            backgroundColor: "transparent",
-            backdropFilter: "blur(10px)",
-
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              inset: 0,
-              padding: "1px",
-              background: "linear-gradient(to right, transparent, var(--Primary-500), transparent)", // Gradient viền
-              WebkitMask: "linear-gradient(white, white) content-box, linear-gradient(white, white)", // Giữ nội dung không bị ảnh hưởng
-              WebkitMaskComposite: "destination-out",
-              maskComposite: "exclude",
-            },
-          }}>
-            <Typography>aa</Typography>
-            <Typography>aa</Typography>
-            <Typography>aa</Typography>
-          </Paper>
-        </Box>
-
-        <Box
-          sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "start",
-            height: "100%", // Căn giữa theo chiều dọc toàn bộ viewport
-            textAlign: "center",
-            gap: 4,
-          }}
-        >
-          <Box sx={{ mt: 6 }}>
-            <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">Sân bóng đá</Typography>
-          </Box>
-          <Divider orientation="horizontal" flexItem className="hover-divider"
-            sx={{
-              bgcolor: grey[500],
-              borderBottomWidth: '3px',
-              width: '20%',
-              mx: "auto"
-            }}
-          >
-          </Divider>
-          <Box sx={{ maxWidth: "60vw", textAlign: "center" }}>
-            <Typography color="var(--Primary-50)" sx={{ fontStyle: "italic" }} >Nơi diễn ra các trận đấu bóng đá, từ những trận giao hữu cho đến các giải đấu chuyên nghiệp.
-              Một trận bóng hấp dẫn không thể thiếu sân bóng đá đạt chuẩn, tạo điều kiện tốt nhất để cầu thủ thể hiện kỹ năng, chiến thuật và tinh thần đồng đội.
-            </Typography>
-          </Box>
-          <Divider orientation="horizontal" flexItem className="hover-divider"
-            sx={{
-              bgcolor: grey[500],
-              borderBottomWidth: '3px',
-              width: '20%',
-              mx: "auto"
-            }}
-          >
-          </Divider>
-          <Box sx={{ maxWidth: "fit-content", textAlign: "center" }}>
-            <Stack direction="row" spacing={4} sx={{ width: "60vw" }}>
-              {/* Chip 1 */}
-              <Chip
-                label="Hình ảnh thực tế"
-                color={chipSelected.soccer.chip1 ? "primary" : "default"}
-                variant={chipSelected.soccer.chip1 ? "filled" : "outlined"}
-                icon={
-                  <PhotoLibraryIcon
-                    sx={{ color: chipSelected.soccer.chip1 ? "white" : grey[400] }}
-                  />
-                }
-                sx={{
-                  width: "100%",
-                  "& .MuiChip-label": {
-                    color: chipSelected.soccer.chip1 ? "white" : grey[400],
-                  },
-                }}
-                onClick={() => handleChipClick("soccer", "chip1")}
-              />
-
-              {/* Chip 2 */}
-              <Chip
-                label="Sân hàng đầu"
-                color={chipSelected.soccer.chip2 ? "primary" : "default"}
-                variant={chipSelected.soccer.chip2 ? "filled" : "outlined"}
-                icon={
-                  <WhatshotIcon
-                    sx={{ color: chipSelected.soccer.chip2 ? "white" : grey[400] }}
-                  />
-                }
-                sx={{
-                  width: "100%",
-                  "& .MuiChip-label": {
-                    color: chipSelected.soccer.chip2 ? "white" : grey[400],
-                  },
-                }}
-                onClick={() => handleChipClick("soccer", "chip2")}
-              />
-
-              {/* Chip 3 */}
-              <Chip
-                label="Đánh giá của khách hàng"
-                color={chipSelected.soccer.chip3 ? "primary" : "default"}
-                variant={chipSelected.soccer.chip3 ? "filled" : "outlined"}
-                icon={
-                  <CommentIcon
-                    sx={{ color: chipSelected.soccer.chip3 ? "white" : grey[400] }}
-                  />
-                }
-                sx={{
-                  width: "100%",
-                  "& .MuiChip-label": {
-                    color: chipSelected.soccer.chip3 ? "white" : grey[400],
-                  },
-                }}
-                onClick={() => handleChipClick("soccer", "chip3")}
-              />
-            </Stack>
-          </Box>
-
-          <Paper sx={{
-            // elevation: 24,
-            width: "80vw",
-            height: "20vw",
-            // border: 2,              // Độ dày viền
-            // borderColor: blue[900], // Màu viền
-            // borderStyle: "solid",   // Đảm bảo hiển thị viền
-            borderRadius: "8px",
-            mb: 4,
-            backgroundColor: "transparent",
-            backdropFilter: "blur(10px)",
-
-            "&::before": {
-              content: '""',
-              position: "absolute",
-              inset: 0,
-              padding: "1px",
-              background: "linear-gradient(to right, transparent, var(--Primary-500), transparent)", // Gradient viền
-              WebkitMask: "linear-gradient(white, white) content-box, linear-gradient(white, white)", // Giữ nội dung không bị ảnh hưởng
-              WebkitMaskComposite: "destination-out",
-              maskComposite: "exclude",
-            },
-          }}>
-            <Typography>aa</Typography>
-            <Typography>aa</Typography>
-            <Typography>aa</Typography>
-          </Paper>
-        </Box>
       </Box>
 
 

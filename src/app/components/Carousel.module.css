@@ -1,0 +1,9 @@
+.customCarousel {
+  /* display: flex;
+  align-items: center;
+  overflow: hidden; */
+  position: static !important;
+}
+.customDotList {
+  bottom: 15px;
+}

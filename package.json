@@ -32,7 +32,10 @@
     "next-auth": "^4.24.11",
     "npm": "^11.1.0",
     "react": "^19.0.0",
-    "react-dom": "^19.0.0"
+    "react-dom": "^19.0.0",
+    "react-material-ui-carousel": "^3.4.2",
+    "react-multi-carousel": "^2.8.5",
+    "styled-components": "^6.1.15"
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.9",
