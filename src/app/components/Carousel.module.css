@@ -7,3 +7,10 @@
 .customDotList {
   bottom: 15px;
 }
+.customItemV1 {
+  padding-left: 10px;
+  padding-right: 10px;
+}
+.customItemV2 {
+  width: fit-content !important;
+}
