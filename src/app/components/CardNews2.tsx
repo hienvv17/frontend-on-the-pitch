@@ -10,8 +10,8 @@ export function CardNews2(props) {
   return (
     <Card
       sx={{
-        maxWidth: 500,
-        maxHeight: 500,
+        maxWidth: '50vh',
+        maxHeight: 300,
         margin: 2,
         borderRadius: 0,
         position: "relative",
@@ -19,7 +19,7 @@ export function CardNews2(props) {
     >
       <CardMedia
         image={props.image}
-        // src="/image/imane_01.png"
+        // src="/image/image_12.png"
         sx={{
           position: "absolute",
           width: "100%",

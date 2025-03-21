@@ -1,24 +1,23 @@
 'use client';
 
 import { Typography, Box, ThemeProvider, createTheme, Divider, Chip, Stack, Grid2, Paper } from "@mui/material";
-import UserLayout from "./components/UserLayout";
 import Footer from "./components/Footer";
 import ResponsiveAppBar from "./components/ResponsiveAppBar";
-import { blue, grey, red } from "@mui/material/colors";
+import { grey } from "@mui/material/colors";
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
-import CommentIcon from '@mui/icons-material/Comment';
+// import CommentIcon from '@mui/icons-material/Comment';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
-import React, { use, useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 
 import Carousel from 'react-multi-carousel';
 import 'react-multi-carousel/lib/styles.css';
 import styles from "./components/Carousel.module.css";
 
-
 import { CardNews2 } from "./components/CardNews2";
 import CardV1 from "./components/CardV1";
-import { title } from "process";
+
+
 
 // Augment the palette to include an ochre color
 declare module '@mui/material/styles' {
@@ -37,6 +36,17 @@ declare module '@mui/material/Chip' {
     white: true;
   }
 }
+
+const theme = createTheme({
+  palette: {
+    white: {
+      main: '#fff',
+      light: '#fff',
+      dark: '#272727',
+      contrastText: '#041426',
+    },
+  },
+});
 
 //demo data
 const stadiumList = {
@@ -72,39 +82,6 @@ const stadiumList = {
   },
 };
 
-const style = {
-  button: {
-    // width: 127,
-    // height: '100%',
-    textTransform: 'none',
-    fontSize: 14,
-    fontWeight: 700,
-    radius: '4px',
-    padding: '6px 10px 6px 10px',
-    gap: '6px',
-    lineHeight: '24px',
-    align: 'center',
-    // backgroundColor: '#2962FF',
-  },
-  listItemText: { color: "white", },
-
-} as const;
-
-const theme = createTheme({
-  palette: {
-    white: {
-      main: '#fff',
-      light: '#fff',
-      dark: '#272727',
-      contrastText: '#041426',
-    },
-  },
-});
-
-type SportType = "soccer" | "badminton" | "tennis";
-type ChipType = "chip1" | "chip2" | "chip3";
-
-
 
 export default function HomePage() {
   const [chipSelected, setChipSelected] = React.useState({
@@ -131,7 +108,7 @@ export default function HomePage() {
   const responsive = {
     desktop: {
       breakpoint: { max: 3000, min: 1024 },
-      items: 2,
+      items: 1,
       slidesToSlide: 1 // optional, default to 1.
     },
     tablet: {
@@ -147,10 +124,10 @@ export default function HomePage() {
   };
 
 
-  useEffect(() => {
-    console.log("chipSelected", chipSelected);
-  }
-    , [chipSelected]);
+  // useEffect(() => {
+  //   console.log("chipSelected", chipSelected);
+  // }
+  //   , [chipSelected]);
 
   const [chipNum, setChipNum] = useState(1); // Trạng thái num
   const [selectedCarouselIndex, setSelectedCarouselIndex] = useState(0); // Xác định Carousel nào được chọn
@@ -159,13 +136,14 @@ export default function HomePage() {
   // Khi num thay đổi, chỉ reset Carousel tương ứng
   useEffect(() => {
     const ref = carouselRefs.current[selectedCarouselIndex];
-    if (ref) ref.goToSlide(0); // Chỉ reset Carousel tương ứng
+    // console.log("Current ref:", ref); // Kiểm tra ref
+    if (ref) ref.goToSlide(2); // Chỉ reset Carousel tương ứng
   }, [chipSelected.soccer.chipNum, chipSelected.badminton.chipNum, chipSelected.tennis.chipNum, selectedCarouselIndex]);
 
-  const handleChipNum = (chipNum: number, carouselIndex: number) => {
-    setChipNum(chipNum);
-    setSelectedCarouselIndex(carouselIndex);
-  };
+  // const handleChipNum = (chipNum: number, carouselIndex: number) => {
+  //   setChipNum(chipNum);
+  //   setSelectedCarouselIndex(carouselIndex);
+  // };
 
   const handleChipClick = (sport: string, chipKey: string, chipNum: number, index: number) => {
     setSelectedCarouselIndex(index);
@@ -180,6 +158,14 @@ export default function HomePage() {
     }));
   };
 
+  const scrollDown = useRef<HTMLDivElement | null>(null);
+
+  const handleScroll = () => {
+    if (scrollDown.current) {
+      scrollDown.current.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Box
@@ -191,6 +177,8 @@ export default function HomePage() {
           backgroundPosition: "center", // Căn giữa ảnh
           // width: "100vw",
           height: "fit-content",
+          WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 4%)",
+          maskImage: "linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 4%)",
         }}
       >
 
@@ -205,7 +193,8 @@ export default function HomePage() {
             height: "100vh",
             textAlign: "center",
             // gap: 4,
-            // mt: "-10vh"
+            // mt: "-10vh",
+
           }}
         >
           <Grid2 container direction="column" size={12} sx={{
@@ -237,13 +226,48 @@ export default function HomePage() {
 
           <Grid2 container direction="column"
             sx={{
-              height: "30%", justifyContent: "center",
+              height: "30%", justifyContent: "start",
               alignItems: "center",
             }}
           >
             <Grid2>
-              <ArrowDownwardIcon sx={{ color: grey[500], fontSize: 40, }} />
+              <Box
+                sx={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: 50,
+                  height: 50,
+                  background: "transparent",
+                  backdropFilter: "blur(10px)",
+                  borderRadius: "50%",
+                  border: "1px solid grey",
+                  cursor: "pointer",
+                  transition: "background 0.4s linear, border 0.3s ease-in-out, transform 0.3s ease-in-out",
+                  color: "grey",
+
+
+                  "&:hover": {
+                    border: "4px solid var(--Primary-500)", // Tăng độ dày viền khi hover
+                    color: "var(--Primary-500)", // Đổi màu icon
+                    background: "var(--Primary-50)", // Đổi màu nền
+                    transform: "scale(1.2)", // Giữ nguyên padding, phóng to toàn bộ thay vì co giãn
+                    boxShadow: "0 0 15px 5px var(--Primary-500)", // Thêm hiệu ứng phát quang
+                  },
+                }}
+                onClick={handleScroll}
+              >
+                <ArrowDownwardIcon
+                  sx={{
+                    fontSize: 30,
+                    color: "inherit",
+                    transition: "color 0.4s ease-in-out, transform 0.3s ease-in-out"
+                  }}
+                />
+              </Box>
             </Grid2>
+
+
           </Grid2>
         </Grid2>
       </Box>
@@ -260,7 +284,7 @@ export default function HomePage() {
           my: 10
         }}
       >
-        <Box>
+        <Box ref={scrollDown}>
           <Typography variant="h4" color="var(--Primary-500)" fontWeight="bold">Đa dạng sân với</Typography>
           {/* <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">Sẵn sàng ra sân mọi lúc</Typography> */}
         </Box>
@@ -368,13 +392,16 @@ export default function HomePage() {
       <Box
         sx={{
           position: "relative",
-          backgroundImage: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.87)),url('/image/green-soccer-field.png')", // Đường dẫn ảnh
+          backgroundImage: "linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url('/image/green-soccer-field.png')", // Đường dẫn ảnh
           backgroundSize: "cover", // Tỷ lệ ảnh
           backgroundRepeat: "no-repeat", // Không lặp lại ảnh
           backgroundPosition: "center", // Căn giữa ảnh
           // width: "100vw",
           height: "fit-content",
-          // borderRadius: 8
+          // borderRadius: 8,
+          WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 2%)",
+          maskImage: "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 2%)",
+          pb: 15,
         }}
       >
         {Object.entries(stadiumList).map(([sportType, fields], index) => (
@@ -436,14 +463,10 @@ export default function HomePage() {
 
                 {/* Chip 2 */}
                 <Chip
-                  label="Sân hàng đầu"
+                  label="Sân hot"
                   color={chipSelected[sportType as keyof typeof chipSelected].chipNum === 2 ? "primary" : "default"}
                   variant={chipSelected[sportType as keyof typeof chipSelected].chipNum === 2 ? "filled" : "outlined"}
-                  icon={
-                    <WhatshotIcon
-                      sx={{ color: chipSelected[sportType as keyof typeof chipSelected].chipNum === 2 ? "white" : grey[400] }}
-                    />
-                  }
+                  icon={<WhatshotIcon sx={{ "&&": { color: "orange" } }} />}
                   sx={{
                     width: "100%",
                     "& .MuiChip-label": {
@@ -475,15 +498,19 @@ export default function HomePage() {
               </Stack>
             </Box>
 
+
             <Paper sx={{
               // elevation: 24,
               width: "80vw",
-              height: "200px",
+              height: "fit-content",
+              // border: 2,              // Độ dày viền
+              // borderColor: blue[900], // Màu viền
+              // borderStyle: "solid",   // Đảm bảo hiển thị viền
               borderRadius: "8px",
-              mb: 4,
+              pb: 2,
               backgroundColor: "transparent",
               backdropFilter: "blur(10px)",
-
+              justifyContent: "center", alignItems: "center",
               "&::before": {
                 content: '""',
                 position: "absolute",
@@ -495,40 +522,41 @@ export default function HomePage() {
                 maskComposite: "exclude",
               },
             }}>
-              <Grid2 container direction="column" spacing={2} sx={{ justifyContent: "center", alignItems: "center", height: "inherit" }} >
-                <Grid2 size={12} sx={{ height: "100%", width: "80%" }}>
-                  <Carousel
-                    key={index}
-                    ref={(el) => (carouselRefs.current[index] = el)} // Gán ref cho từng Carousel
-                    responsive={responsive}
-                    // slidesToSlide={1}
-                    swipeable={true}
-                    showDots={true}
-                    centerMode={true}
-                    ssr={false} // means to render carousel on server-side.
-                    containerClass={styles.customCarousel}
-                    itemClass={`${styles.customItemV1} ${chipSelected[sportType as keyof typeof chipSelected].chipNum != 1 ? styles.customItemV2 : ""}`.trim()}
-                    dotListClass={styles.customDotList}
-                    renderDotsOutside={false}
-                    focusOnSelect={true}
-                    infinite={true}
-                  >
-                    {
-                      fields.fields.map((e) =>
-                        chipSelected[sportType as keyof typeof chipSelected].chipNum === 1 ?
-                          <CardNews2 image={e.image} />
-                          : <CardV1 data={e} title={fields.title} />
-                      )
-                    }
-                  </Carousel>
+              <Grid2 container spacing={2} direction="column" sx={{ height: 200, width: "80vw", justifyContent: "center", alignItems: "center" }}>
+                <Grid2 size={12} sx={{ height: "100%", width: "85%", justifyContent: "center", alignItems: "center" }}>
+                  <Grid2 sx={{ height: "100%", width: "100%", justifyContent: "center", alignItems: "center" }}>
+                    <Carousel
+                      key={index}
+                      ref={(el) => (carouselRefs.current[index] = el)} // Gán ref cho từng Carousel
+
+                      responsive={responsive}
+                      slidesToSlide={1}
+                      swipeable={true}
+                      showDots={true}
+                      centerMode={true}
+                      ssr={false} // means to render carousel on server-side.
+                      containerClass={styles.customCarousel}
+                      // itemClass="carousel-item-padding-40-px"
+                      dotListClass={styles.customDotList}
+                      renderDotsOutside={true}
+                      focusOnSelect={true}
+                      infinite={true}
+                    >
+                      {
+                        fields.fields.map((e) =>
+                          chipSelected[sportType as keyof typeof chipSelected].chipNum === 1 ?
+                            <CardNews2 image={e.image} />
+                            : <CardV1 data={e} title={fields.title} />
+                        )
+                      }
+                    </Carousel>
+                  </Grid2>
                 </Grid2>
               </Grid2>
             </Paper>
-
           </Box>
         ))}
       </Box>
-
       <Footer />
     </ThemeProvider>
   );

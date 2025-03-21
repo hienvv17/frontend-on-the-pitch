@@ -6,11 +6,11 @@ import { grey } from "@mui/material/colors";
 export default function CardV1(props) {
     return (
         <Box sx={{ display: "block" }}>
-            <Card sx={{ display: "flex", borderRadius: 4, border: 1, borderColor: grey[400], overflow: "clip", width: 450, maxHeight: 150, mx: 1, my: 1 }}>
+            <Card sx={{ display: "flex", borderRadius: 4, border: 1, borderColor: grey[400], overflow: "clip", maxWidth: "25vw", maxHeight: 150, mx: 1, my: 1 }}>
                 {/* Hình ảnh bên trái */}
                 <CardMedia
                     component="img"
-                    sx={{ width: 120, height: "auto", objectFit: "cover" }}
+                    sx={{ maxWidth: 120, height: "auto", objectFit: "cover" }}
                     image={props.data.image} //Link hình
                     alt="Sân bóng đá"
                 />

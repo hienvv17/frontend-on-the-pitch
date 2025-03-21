@@ -2,10 +2,14 @@
   /* display: flex;
   align-items: center;
   overflow: hidden; */
-  position: static !important;
+  /* position: static !important; */
+  /* height: 100%; */
+  /* gap: 50px; */
+  margin: 10px 10px 0px 10px;
 }
 .customDotList {
-  bottom: 15px;
+  position: relative !important;
+  /* margin-top: 30px; */
 }
 .customItemV1 {
   padding-left: 10px;
