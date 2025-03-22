@@ -1,9 +1,8 @@
-"use client"
+"use client";
 
 import { googleLogout } from "@react-oauth/google";
 import { useRouter } from "next/navigation";
-import { createContext, useState, ReactNode, SetStateAction, Dispatch, useEffect } from "react";
-
+import { createContext, useState, ReactNode, useEffect } from "react";
 
 type User = {
     id: string;
@@ -13,52 +12,31 @@ type User = {
     error?: string;
 };
 
-type UserOrNull = User | null;
-
 interface AppContextType {
     isChange: boolean;
-    setIsChange: Dispatch<SetStateAction<boolean>>;
-    user: UserOrNull;
-    setUser: Dispatch<SetStateAction<UserOrNull>>;
-    handleLogout: () => void
+    setIsChange: (value: boolean) => void;
+    user: any;
+    setUser: (value: any) => void;
+    handleLogout: () => void;
 }
 
-const blankUser: User = {
-    id: "",
-    name: "",
-    email: "",
-    picture: "",
-    error: ""
-}
 export const AppContext = createContext<AppContextType>({
     isChange: false,
     setIsChange: () => { },
-    user: blankUser,
+    user: null,
     setUser: () => { },
-    handleLogout: () => { }
+    handleLogout: () => { },
 });
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
     const [isChange, setIsChange] = useState(false);
-    const [user, setUser] = useState<UserOrNull>(null);
+    const [user, setUser] = useState(null);
+    const [isClient, setIsClient] = useState(false);
 
     const router = useRouter();
 
-    const handleLogout = async () => {
-        await fetch("/api/auth/logout", { method: "POST" }); // Xóa JWT trong cookie
-        googleLogout(); // Đăng xuất khỏi Google
-        setUser(null); // Cập nhật state user để re-render UI
-        console.log('logout');
-        router.push("/");
-    };
-
-    // useEffect(() => {
-    //     fetch("/api/auth/me",)
-    //         .then((res) => res.json())
-    //         .then((data) => setUser(data))
-    //         .catch(() => setUser(null));
-    // }, []);
     useEffect(() => {
+        setIsClient(true);
         const storedUser = localStorage.getItem("user");
         if (storedUser) {
             setUser(JSON.parse(storedUser));
@@ -66,12 +44,23 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     }, []);
 
     useEffect(() => {
-        if (user) {
-            localStorage.setItem("user", JSON.stringify(user));
-        } else {
-            localStorage.removeItem("user");
+        if (isClient) {
+            if (user) {
+                localStorage.setItem("user", JSON.stringify(user));
+            } else {
+                localStorage.removeItem("user");
+            }
         }
-    }, [user]);
+    }, [user, isClient]);
+
+    const handleLogout = async () => {
+        // Xóa cookie bằng cách đặt thời gian hết hạn về 0
+        document.cookie = "accessToken=; Path=/; Max-Age=0";
+        setUser(null);
+        router.refresh();
+    };
+
+    if (!isClient) return null; // Chỉ render sau khi client đã mount
 
     return (
         <AppContext.Provider value={{ isChange, setIsChange, user, setUser, handleLogout }}>

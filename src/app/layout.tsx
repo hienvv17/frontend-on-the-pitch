@@ -3,7 +3,7 @@ import localFont from "next/font/local";
 import "./globals.css";
 import QueryProvider from "@/Provider/QueryProvider";
 import { AppProvider } from "./contexts/AppContext";
-import { GoogleOAuthProvider } from '@react-oauth/google';
+
 
 
 const geistSans = localFont({
@@ -28,17 +28,17 @@ export default function RootLayout({
 }>) {
   return (
     <QueryProvider>
-      <AppProvider>
-        <GoogleOAuthProvider clientId={process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID!}>
-          <html lang="en">
-            <body
-              className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-            >
-              {children}
-            </body>
-          </html>
-        </GoogleOAuthProvider>
-      </AppProvider>
+      <html lang="en">
+        <body
+          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+        >
+          <AppProvider>
+
+            {children}
+
+          </AppProvider>
+        </body>
+      </html>
     </QueryProvider>
   );
 }

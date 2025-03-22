@@ -6,9 +6,15 @@
   --background: #ffffff;
   /* --foreground: #171717; */
   --Primary-1000: #000000;
+  --Primary-900: #1a3453;
+  --Primary-800: #284e7d;
   --Primary-700: #3568a6;
   --Primary-600: #4282cf;
   --Primary-500: #4f9cf9;
+  --Primary-400: #6cacfa;
+  --Primary-300: #8abdfb;
+  --Primary-200: #a7cdfc;
+  --Primary-100: #c4defd;
   --Primary-50: #ffffff;
 }
 

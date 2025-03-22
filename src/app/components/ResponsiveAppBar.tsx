@@ -236,13 +236,41 @@ function ResponsiveAppBar() {
                         {
                             !!user?.id ?
                                 <>
-                                    <Tooltip title="Tài khoản">
-                                        <Grid2 direction="column" >
-                                            <Button onClick={handleOpenUserMenu} sx={{ p: 0, textTransform: "none" }} >
+                                    <Tooltip title={user.email}>
+                                        <Grid2 direction="column" sx={{ width: 150 }}>
+                                            <Button
+                                                onClick={handleOpenUserMenu}
+                                                sx={{
+                                                    textTransform: "none",
+                                                    width: "100%",
+                                                    height: "46px",
+                                                    gap: "10px",
+                                                    borderRadius: "8px",
+                                                    position: "relative", // Đảm bảo hiệu ứng hiển thị đúng
+                                                    boxShadow: "0 0 0px 1px var(--Primary-400)",
+                                                    ":hover": {
+                                                        boxShadow: "0 0 8px 2px var(--Primary-500)", // Hiệu ứng viền mở rộng ra ngoài,
+                                                        transform: "scale(1.05)",
+                                                        background: "white"
+                                                    },
+                                                    ":active": { background: "var(--Primary-50)" },
+                                                    transition: "box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out", // Hiệu ứng mượt
+                                                }}
+                                            >
                                                 <AccountCircleIcon fontSize="large" color="primary" />
-                                                <Typography sx={{ display: { xs: 'none', md: 'flex' } }}>{user.name}</Typography>
+                                                <Typography
+                                                    sx={{
+                                                        display: { xs: 'none', md: 'flex' },
+                                                        width: "inherit",
+                                                        textAlign: "center",
+                                                        ml: 1 // Tạo khoảng cách nhỏ giữa icon và chữ
+                                                    }}
+                                                >
+                                                    {user.fullName}
+                                                </Typography>
                                             </Button>
                                         </Grid2>
+
                                     </Tooltip>
                                     <Menu
                                         sx={{ mt: '45px' }}
