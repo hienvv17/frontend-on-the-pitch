@@ -9,11 +9,7 @@ export async function POST() {
         httpOnly: true,
         secure: true,
         expires: new Date(0), // Xóa cookie ngay lập tức
-        path: "/",
     });
-
-    // Logout khỏi Google
-    // googleLogout();
 
     return NextResponse.json({ message: "Logged out" }, { status: 200 });
 }

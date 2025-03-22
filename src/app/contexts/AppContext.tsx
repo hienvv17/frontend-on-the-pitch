@@ -1,6 +1,7 @@
 "use client"
 
 import { googleLogout } from "@react-oauth/google";
+import { useRouter } from "next/navigation";
 import { createContext, useState, ReactNode, SetStateAction, Dispatch, useEffect } from "react";
 
 
@@ -41,11 +42,14 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const [isChange, setIsChange] = useState(false);
     const [user, setUser] = useState<UserOrNull>(null);
 
+    const router = useRouter();
+
     const handleLogout = async () => {
         await fetch("/api/auth/logout", { method: "POST" }); // Xóa JWT trong cookie
         googleLogout(); // Đăng xuất khỏi Google
         setUser(null); // Cập nhật state user để re-render UI
         console.log('logout');
+        router.push("/");
     };
 
     // useEffect(() => {
@@ -54,6 +58,20 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     //         .then((data) => setUser(data))
     //         .catch(() => setUser(null));
     // }, []);
+    useEffect(() => {
+        const storedUser = localStorage.getItem("user");
+        if (storedUser) {
+            setUser(JSON.parse(storedUser));
+        }
+    }, []);
+
+    useEffect(() => {
+        if (user) {
+            localStorage.setItem("user", JSON.stringify(user));
+        } else {
+            localStorage.removeItem("user");
+        }
+    }, [user]);
 
     return (
         <AppContext.Provider value={{ isChange, setIsChange, user, setUser, handleLogout }}>

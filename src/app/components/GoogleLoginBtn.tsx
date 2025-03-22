@@ -30,38 +30,41 @@ export default function GoogleLoginBtn() {
     );
 
     // Hàm kích hoạt đăng nhập Google
-    // const login = useGoogleLogin({
-    //     onSuccess: async (response) => {
-    //         const res = await fetch("/api/auth/google", {
-    //             method: "POST",
-    //             headers: { "Content-Type": "application/json" },
-    //             body: JSON.stringify({ credential: response.access_token }),
-    //         });
+    const login = useGoogleLogin({
+        onSuccess: async (response) => {
+            const res = await fetch("/api/auth/google", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ credential: response.access_token }),
+            });
 
-    //         const data = await res.json();
-    //         if (res.ok) {
-    //             window.location.reload();
-    //             console.log("Login successful", data);
-    //         } else {
-    //             console.error("Login failed", data);
-    //         }
-    //     },
-    //     onError: () => console.log("Login failed"),
-    //     scope: "openid email profile",
-    // });
+            const data = await res.json();
+            if (res.ok) {
+                // window.location.reload();
+                setUser(data.user);
+                console.log("Login successful", data);
+            } else {
+                console.error("Login failed", data);
+            }
+        },
+        onError: () => console.log("Login failed"),
+        scope: "openid email profile",
+    });
 
     return (
         <Stack direction="row" spacing={2}>
             <Button
                 variant="contained"
                 startIcon={svgIcon}
-                onClick={() => alert("loginBtn clicked!")}  // Bấm nút sẽ mở popup đăng nhập Google
+                onClick={() => login()} // Bấm nút sẽ mở popup đăng nhập Google
                 sx={{
                     textTransform: "none",
                     background: "#4F9CF9",
                     height: "46px",
                     gap: "10px",
                     borderRadius: "8px",
+                    ":hover": { background: "#3b82f6" },
+                    ":active": { background: "#1e40af" },
                 }}
             >
                 Đăng nhập với Google
