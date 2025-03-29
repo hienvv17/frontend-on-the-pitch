@@ -1,21 +1,23 @@
 'use client';
 
-import { Typography, Box, ThemeProvider, createTheme, Divider, Chip, Stack, Grid2, Paper } from "@mui/material";
+import { Typography, Box, ThemeProvider, createTheme, Divider, Chip, Stack, Grid2, Paper, useMediaQuery } from "@mui/material";
 import Footer from "./components/Footer";
 import ResponsiveAppBar from "./components/ResponsiveAppBar";
 import { grey } from "@mui/material/colors";
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
-// import CommentIcon from '@mui/icons-material/Comment';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import React, { useEffect, useRef, useState } from "react";
-
-import Carousel from 'react-multi-carousel';
-import 'react-multi-carousel/lib/styles.css';
-import styles from "./components/Carousel.module.css";
-
+import { Carousel } from 'react-responsive-carousel';
+import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { CardNews2 } from "./components/CardNews2";
-import CardV1 from "./components/CardV1";
+import * as demoData from "@/utility/demoData";
+import SportCard from "./components/SportCard";
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
+
+
 
 
 
@@ -49,38 +51,7 @@ const theme = createTheme({
 });
 
 //demo data
-const stadiumList = {
-  soccer: {
-    title: "Sân bóng đá",
-    intro: "Nơi diễn ra các trận đấu bóng đá, từ những trận giao hữu cho đến các giải đấu chuyên nghiệp. Một trận bóng hấp dẫn không thể thiếu sân bóng đá đạt chuẩn, tạo điều kiện tốt nhất để cầu thủ thể hiện kỹ năng, chiến thuật và tinh thần đồng đội.",
-    fields: [
-      { name: "Sân ABC", image: "/image/image_12.png", location: "Quận 10", price: "250.000 VND/h", rating: 4.5 },
-      { name: "Sân XYZ", image: "/image/image_01.png", location: "Quận 7", price: "220.000 VND/h", rating: 4.0 },
-      { name: "Sân XYZ", image: "/image/green-soccer-field.png", location: "Quận 9", price: "220.000 VND/h", rating: 4.6 },
-      { name: "Sân XYZ", image: "/image/image_11.png", location: "Quận 2", price: "220.000 VND/h", rating: 5.0 },
-    ],
-  },
-  badminton: {
-    title: "Sân cầu lông",
-    intro: "Mặt sân chất lượng giúp người chơi di chuyển linh hoạt, giảm chấn thương và tối ưu hóa khả năng thi đấu. Cầu lông là môn thể thao phổ biến, hấp dẫn với nhịp độ nhanh, giúp rèn luyện sức khỏe, sự nhanh nhẹn và phản xạ, phù hợp với mọi lứa tuổi.",
-    fields: [
-      { name: "Sân ABC", image: "/image/badminton_01.png", location: "Quận 10", price: "250.000 VND/h", rating: 4.5 },
-      { name: "Sân XYZ", image: "/image/badminton_02.png", location: "Quận 7", price: "220.000 VND/h", rating: 4.0 },
-      { name: "Sân XYZ", image: "/image/badminton_03.png", location: "Quận 9", price: "220.000 VND/h", rating: 4.6 },
-      { name: "Sân XYZ", image: "/image/badminton_04.png", location: "Quận 2", price: "220.000 VND/h", rating: 5.0 },
-    ],
-  },
-  tennis: {
-    title: " Sân tennis",
-    intro: "Nơi lý tưởng để rèn luyện sức khỏe, cải thiện thể lực và nâng cao kỹ thuật cho người chơi ở mọi trình độ. Với kích thước tiêu chuẩn, sân được thiết kế để tối ưu hóa trải nghiệm thi đấu, đi kèm hệ thống lưới, vạch kẻ rõ ràng.",
-    fields: [
-      { name: "Sân ABC", image: "/image/tennis_01.png", location: "Quận 10", price: "250.000 VND/h", rating: 4.5 },
-      { name: "Sân XYZ", image: "/image/tennis_02.png", location: "Quận 7", price: "220.000 VND/h", rating: 4.0 },
-      { name: "Sân XYZ", image: "/image/tennis_03.png", location: "Quận 9", price: "220.000 VND/h", rating: 4.6 },
-      { name: "Sân XYZ", image: "/image/tennis_04.png", location: "Quận 2", price: "220.000 VND/h", rating: 5.0 },
-    ],
-  },
-};
+const stadiumList = demoData.stadiumList;
 
 
 export default function HomePage() {
@@ -105,45 +76,14 @@ export default function HomePage() {
     }
   });
 
-  const responsive = {
-    desktop: {
-      breakpoint: { max: 3000, min: 1024 },
-      items: 1,
-      slidesToSlide: 1 // optional, default to 1.
-    },
-    tablet: {
-      breakpoint: { max: 650, min: 464 },
-      items: 1,
-      slidesToSlide: 1 // optional, default to 1.
-    },
-    mobile: {
-      breakpoint: { max: 464, min: 0 },
-      items: 1,
-      slidesToSlide: 1 // optional, default to 1.
-    }
-  };
-
-
-  // useEffect(() => {
-  //   console.log("chipSelected", chipSelected);
-  // }
-  //   , [chipSelected]);
-
-  const [chipNum, setChipNum] = useState(1); // Trạng thái num
   const [selectedCarouselIndex, setSelectedCarouselIndex] = useState(0); // Xác định Carousel nào được chọn
   const carouselRefs = useRef<(Carousel | null)[]>(Array.from({ length: 3 }, () => null)); // Mảng ref chứa 3 Carousel
 
   // Khi num thay đổi, chỉ reset Carousel tương ứng
   useEffect(() => {
     const ref = carouselRefs.current[selectedCarouselIndex];
-    // console.log("Current ref:", ref); // Kiểm tra ref
     if (ref) ref.goToSlide(2); // Chỉ reset Carousel tương ứng
   }, [chipSelected.soccer.chipNum, chipSelected.badminton.chipNum, chipSelected.tennis.chipNum, selectedCarouselIndex]);
-
-  // const handleChipNum = (chipNum: number, carouselIndex: number) => {
-  //   setChipNum(chipNum);
-  //   setSelectedCarouselIndex(carouselIndex);
-  // };
 
   const handleChipClick = (sport: string, chipKey: string, chipNum: number, index: number) => {
     setSelectedCarouselIndex(index);
@@ -166,16 +106,50 @@ export default function HomePage() {
     }
   };
 
+  const isSmallScreen = useMediaQuery("(max-width:425px)");
+
+  const settings = {
+    dots: true,
+    speed: 800,
+    initialSlide: 0,
+    infinite: true,
+    centerMode: !isSmallScreen,
+    slidesToShow: 5,
+    slidesToScroll: 1,
+    responsive: [
+      {
+        breakpoint: 1441,
+        settings: {
+          slidesToShow: 3,
+          slidesToScroll: 1,
+        }
+      },
+      {
+        breakpoint: 1024,
+        settings: {
+          slidesToShow: 2,
+          slidesToScroll: 1,
+        }
+      },
+      {
+        breakpoint: 600,
+        settings: {
+          slidesToShow: 1,
+          slidesToScroll: 1
+        }
+      },
+    ]
+  };
+
   return (
     <ThemeProvider theme={theme}>
       <Box
         sx={{
           position: "relative",
-          backgroundImage: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.87)),url('/image/image_01.png')", // Đường dẫn ảnh
+          backgroundImage: "linear-gradient(rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.87)),url('https://res.cloudinary.com/dv8qmimg8/image/upload/v1743151485/gwltrhxdykgamkak2vwx.png')", // Đường dẫn ảnh
           backgroundSize: "cover", // Tỷ lệ ảnh
           backgroundRepeat: "no-repeat", // Không lặp lại ảnh
           backgroundPosition: "center", // Căn giữa ảnh
-          // width: "100vw",
           height: "fit-content",
           WebkitMaskImage: "linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 4%)",
           maskImage: "linear-gradient(to top, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 4%)",
@@ -186,15 +160,10 @@ export default function HomePage() {
 
         <Grid2 container direction="column"
           sx={{
-            // display: "flex",
-            // flexDirection: "column",
             alignItems: "center",
             justifyContent: "center",
             height: "100vh",
             textAlign: "center",
-            // gap: 4,
-            // mt: "-10vh",
-
           }}
         >
           <Grid2 container direction="column" size={12} sx={{
@@ -286,7 +255,6 @@ export default function HomePage() {
       >
         <Box ref={scrollDown}>
           <Typography variant="h4" color="var(--Primary-500)" fontWeight="bold">Đa dạng sân với</Typography>
-          {/* <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">Sẵn sàng ra sân mọi lúc</Typography> */}
         </Box>
         <Divider orientation="horizontal" flexItem className="hover-divider"
           sx={{
@@ -297,25 +265,21 @@ export default function HomePage() {
           }}
         >
         </Divider>
-        {/* <Typography color="var(--Primary-50)" sx={{ fontStyle: "italic" }} >"Không gì là không thể, chỉ cần bạn bắt đầu!"</Typography> */}
         <Box sx={{ width: "90vw", textAlign: "center", }}>
           <Grid2 container columnSpacing={{ xs: 1, sm: 2, md: 6 }} direction="row" sx={{ alignItems: "center", mx: "5vw" }}>
             <Grid2 size={4} sx={{
               justifyContent: "center",
               alignItems: "center",
               height: "100%"
-              // background: "transparent", backdropFilter: "blur(10px)"
             }}>
               <Box sx={{
                 backgroundColor: "var(--Primary-50)",
                 borderRadius: 8,
                 height: "fit-content",
-                // width: "100%",
                 display: "flex",
                 flexDirection: "column", // Sắp xếp nội dung theo cột
                 alignItems: "center", // Căn giữa theo chiều ngang
                 justifyContent: "center", // Căn giữa theo chiều dọc
-                // background: "rgba(255, 255, 255, 0.75)",
                 background: "var(--Primary-500)",
                 py: 3
               }}>
@@ -338,7 +302,6 @@ export default function HomePage() {
                 backgroundColor: "var(--Primary-50)",
                 borderRadius: 8,
                 height: "fit-content",
-                // width: "100%",
                 display: "flex",
                 flexDirection: "column", // Sắp xếp nội dung theo cột
                 alignItems: "center", // Căn giữa theo chiều ngang
@@ -365,7 +328,6 @@ export default function HomePage() {
                 backgroundColor: "var(--Primary-50)",
                 borderRadius: 8,
                 height: "fit-content",
-                // width: "100%",
                 display: "flex",
                 flexDirection: "column", // Sắp xếp nội dung theo cột
                 alignItems: "center", // Căn giữa theo chiều ngang
@@ -392,13 +354,11 @@ export default function HomePage() {
       <Box
         sx={{
           position: "relative",
-          backgroundImage: "linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url('/image/green-soccer-field.png')", // Đường dẫn ảnh
+          backgroundImage: "linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url('https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png')", // Đường dẫn ảnh
           backgroundSize: "cover", // Tỷ lệ ảnh
           backgroundRepeat: "no-repeat", // Không lặp lại ảnh
           backgroundPosition: "center", // Căn giữa ảnh
-          // width: "100vw",
           height: "fit-content",
-          // borderRadius: 8,
           WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 2%)",
           maskImage: "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 2%)",
           pb: 15,
@@ -441,7 +401,7 @@ export default function HomePage() {
             >
             </Divider>
             <Box sx={{ maxWidth: "fit-content", textAlign: "center" }}>
-              <Stack direction="row" spacing={4} sx={{ width: "60vw" }}>
+              <Stack direction="row" spacing={4} sx={{ width: "fit-content" }}>
                 {/* Chip 1 */}
                 <Chip
                   label="Hình ảnh thực tế"
@@ -500,12 +460,8 @@ export default function HomePage() {
 
 
             <Paper sx={{
-              // elevation: 24,
               width: "80vw",
               height: "fit-content",
-              // border: 2,              // Độ dày viền
-              // borderColor: blue[900], // Màu viền
-              // borderStyle: "solid",   // Đảm bảo hiển thị viền
               borderRadius: "8px",
               pb: 2,
               backgroundColor: "transparent",
@@ -522,34 +478,22 @@ export default function HomePage() {
                 maskComposite: "exclude",
               },
             }}>
-              <Grid2 container spacing={2} direction="column" sx={{ height: 200, width: "80vw", justifyContent: "center", alignItems: "center" }}>
-                <Grid2 size={12} sx={{ height: "100%", width: "85%", justifyContent: "center", alignItems: "center" }}>
-                  <Grid2 sx={{ height: "100%", width: "100%", justifyContent: "center", alignItems: "center" }}>
-                    <Carousel
-                      key={index}
-                      ref={(el) => (carouselRefs.current[index] = el)} // Gán ref cho từng Carousel
-
-                      responsive={responsive}
-                      slidesToSlide={1}
-                      swipeable={true}
-                      showDots={true}
-                      centerMode={true}
-                      ssr={false} // means to render carousel on server-side.
-                      containerClass={styles.customCarousel}
-                      // itemClass="carousel-item-padding-40-px"
-                      dotListClass={styles.customDotList}
-                      renderDotsOutside={true}
-                      focusOnSelect={true}
-                      infinite={true}
-                    >
-                      {
-                        fields.fields.map((e) =>
-                          chipSelected[sportType as keyof typeof chipSelected].chipNum === 1 ?
-                            <CardNews2 image={e.image} />
-                            : <CardV1 data={e} title={fields.title} />
-                        )
-                      }
-                    </Carousel>
+              <Grid2 container spacing={2} direction="column" sx={{ height: "fit-content", width: "80vw", justifyContent: "center", alignItems: "center", }}>
+                <Grid2 size={12} sx={{ height: "100%", width: "75vw", justifyContent: "center", alignItems: "center", my: 1 }}>
+                  <Grid2 container sx={{ width: "100%", justifyContent: "center", }}>
+                    <Grid2 sx={{ width: "100%", height: "300px", }}>
+                      <Slider {...settings}>
+                        {
+                          fields.fields.map((e) =>
+                            chipSelected[sportType as keyof typeof chipSelected].chipNum === 1 ?
+                              <CardNews2 image={e.image} />
+                              : <Stack justifyItems={"center"}>
+                                <SportCard data={e} />
+                              </Stack>
+                          )
+                        }
+                      </Slider>
+                    </Grid2>
                   </Grid2>
                 </Grid2>
               </Grid2>

@@ -99,7 +99,7 @@ export default function GoogleLoginBtn() {
                 disabled={isLoading}
                 sx={{
                     textTransform: "none",
-                    background: "#4F9CF9",
+                    background: "var(--Primary-500)",
                     height: "46px",
                     gap: "10px",
                     borderRadius: "8px",

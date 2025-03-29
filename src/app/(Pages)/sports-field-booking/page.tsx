@@ -1,119 +1,210 @@
 'use client';
 
-import { AppBar, Toolbar, Typography, Button, Container, Box, TextField, Card, CardMedia, CardContent, CardActions, Rating } from "@mui/material";
+import { Typography, Button, Container, Box, TextField, Divider, Stack } from "@mui/material";
 import Grid from '@mui/material/Grid2';
 import SearchIcon from "@mui/icons-material/Search";
-import SportsSoccerIcon from '@mui/icons-material/SportsSoccer';
-// import ResponsiveAppBar from "@/app/components/AppBar";
 import UserLayout from "@/app/components/UserLayout";
-import { useContext, useEffect } from "react";
-import { AppContext } from "@/app/contexts/AppContext";
-// import { sizing } from '@mui/system';
-import { SvgIconProps } from "@mui/material";
+import { useState } from "react";
+import DatePickerValue from "@/app/components/DatePicker";
+import SportCard from "@/app/components/SportCard";
+import * as demoData from "@/utility/demoData";
+import SelectBox from "@/app/components/SelectBox";
+import dayjs from 'dayjs';
 
-
-const stadiums = [
-    { name: "Sân ABC", image: "/image/image_12.png", location: "Quận 10", price: "250.000 VND/h", rating: 4.5 },
-    { name: "Sân XYZ", image: "/image/image_12.png", location: "Quận 9", price: "220.000 VND/h", rating: 4.0 },
-];
-
-const style = {
-    button: {
-        // width: 127,
-        // height: '100%',
-        // textTransform: 'none',
-        // fontSize: 14,
-        // fontWeight: 700,
-        radius: '4px',
-        padding: '6px 10px 6px 10px',
-        gap: '6px',
-        lineHeight: '24px',
-        align: 'center',
-        // backgroundColor: '#2962FF',
-    },
-    listItemText: { color: "white", }
-} as const;
 
 
 export default function SportsFieldBooking() {
-    const { isChange, setIsChange } = useContext(AppContext);
+    const data = demoData;                          //gọi API => data từ backend trả về
 
-    const toggleColor = () => {
-        setIsChange(!isChange);
-        // console.log(isChange);
+    const [searchData, setSearchData] = useState({
+        sportName: '',
+        sportBranch: '',
+        dayPicked: dayjs().format('DD/MM/YYYY'),
+        startTime: '',
+        endTime: '',
+    });
+
+    const handleSearchChange = (e: any) => {
+        setSearchData((prev) => ({
+            ...prev,
+            [e.target.name]: e.target.value,
+        }));
     };
 
-    useEffect(() => {
-        console.log(isChange);
-    }, [isChange]);
+    const handleSelectChange = (e: any, name: string) => {
+        setSearchData((prev) => ({
+            ...prev,
+            [name]: e?.value || "",
+        }));
+    };
+
+    const handleDateChange = (e: any) => {
+        setSearchData((prev) => ({
+            ...prev,
+            dayPicked: e?.format('DD/MM/YYYY'),
+        }));
+    }
+
+    const searchSubmit = () => {
+        console.log("searchData", searchData);
+        //TODO: gọi API để gửi dữ liệu tới back-end
+
+    }
+
 
     return (
         <>
             <UserLayout>
                 {/* Banner */}
-                <Box sx={{ textAlign: 'center', my: 4 }}>
-                    <Typography variant="h4" gutterBottom>
-                        Tìm sân dễ dàng - Đặt sân nhanh chóng!
-                    </Typography>
-                    <Button variant="contained" color="primary" size="large"
-                        onClick={toggleColor}>
-                        Đặt sân ngay
-                    </Button>
+                <Box sx={{
+                    position: "relative",
+                    p: "1em",
+                    flexDirection: "column",
+                    alignItems: "flex-start",
+                    gap: 10,
+                    backgroundImage: "url('/image/image_11.png')", // Đường dẫn ảnh
+                    backgroundSize: "cover", // Tỷ lệ ảnh
+                    backgroundRepeat: "no-repeat", // Không lặp lại ảnh
+                    backgroundPosition: "center", // Căn giữa ảnh
+                    aspectRatio: 1920 / 500,
+                }}>
                 </Box>
 
                 {/* Form tìm kiếm */}
-                <Container sx={{ height: '100%' }}>
-                    <Grid container spacing={2} alignItems="center" justifyContent="center">
-                        <Grid size={{ xs: 12, md: 3 }}>
-                            <TextField fullWidth label="Loại sân" variant="outlined" />
+                <Container sx={{
+                    width: "95vw",
+                    mt: "-10%",
+                    mb: "30px",
+                    border: "2px solid var(--Primary-200)",
+                    position: "relative",
+                    zIndex: 99,
+                    backgroundColor: "var(--Primary-50)",
+                    borderRadius: "20px",
+                    boxShadow: "0px 5px 5.8px 0px rgba(0, 0, 0, 0.10)",
+                    py: { xs: "16px", sm: "24px" },
+                    gap: "60px"
+                }}>
+                    <Grid container direction="row" spacing={4} alignItems="center" justifyContent="center">
+                        <Grid container direction="column" spacing={2} sx={{ width: "100%" }}>
+                            <Grid >
+                                <Typography variant="h5" sx={{
+                                    fontWeight: 700,
+                                    lineHeight: "normal",
+                                    color: "var(--Primary-500)",
+                                }}>
+                                    Đặt sân thể thao ngay
+                                </Typography>
+                            </Grid>
+                            <Typography sx={{
+                                lineHeight: "normal",
+                                width: "inherit"
+                            }}>
+                                Tìm kiếm sân dễ dàng, đặt lịch nhanh chóng
+                            </Typography>
                         </Grid>
-                        <Grid size={{ xs: 12, md: 4 }}>
-                            <TextField fullWidth label="Nhập địa điểm" variant="outlined" />
-                        </Grid>
-                        <Grid size={{ xs: 12, md: 3 }}>
-                            <TextField fullWidth label="Chọn ngày" type="date" slotProps={{ inputLabel: { shrink: true } }} />
-                        </Grid>
-                        <Grid size={{ xs: 12, md: 2 }} sx={{ height: "100%" }}>
-                            <Button variant="contained" color="primary" startIcon={<SearchIcon />} fullWidth size="large" sx={{ ...style.button }}>
-                                Tìm kiếm
-                            </Button>
+
+                        <Grid container direction="row" sx={{ justifyContent: "center", width: "100%" }}>
+                            <Grid container direction="row" columns={24} sx={{ justifyContent: "space-evenly", width: "100%" }}>
+                                <Grid size={{ xs: 24, md: 7 }}>
+                                    <SelectBox
+                                        icon="SportsSoccer"
+                                        title="Chọn môn thể thao"
+                                        name="sportName"
+                                        options={data.sportName}
+                                        onChange={(e: any) => handleSelectChange(e, "sportName")}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 24, md: 6 }} sx={{ width: "100%" }}>
+                                    <SelectBox
+                                        icon="Room"
+                                        title="Chọn cụm sân"
+                                        name="sportBranch"
+                                        options={data.sportBranch}
+                                        onChange={(e: any) => handleSelectChange(e, "sportBranch")}
+                                    />
+                                </Grid>
+                                <Grid size={{ xs: 24, md: 4 }}>
+                                    <DatePickerValue
+                                        label="Chọn ngày"
+                                        name="dayPicked"
+                                        onChange={handleDateChange}
+                                        value={searchData.dayPicked}
+                                    />
+                                </Grid>
+                                <Grid container direction="row" size={{ xs: 24, md: 7 }}>
+                                    <Grid size={{ xs: 12, md: 12 }}>
+                                        <TextField fullWidth
+                                            label="Bắt đầu"
+                                            type="time"
+                                            name="startTime"
+                                            slotProps={{ inputLabel: { shrink: true } }}
+                                            onChange={handleSearchChange}
+                                        />
+                                    </Grid>
+                                    <Grid size={{ xs: 12, md: 12 }}>
+                                        <TextField
+                                            fullWidth
+                                            label="Trả sân"
+                                            type="time"
+                                            name="endTime"
+                                            slotProps={{ inputLabel: { shrink: true } }}
+                                            onChange={handleSearchChange}
+                                        />
+                                    </Grid>
+                                </Grid>
+                            </Grid>
+                            <Grid container size={{ xs: 24, sm: 6, md: 4 }} sx={{ display: "flex", justifyContent: "center" }}>
+                                <Button variant="contained"
+                                    startIcon={<SearchIcon />}
+                                    fullWidth
+                                    size="large"
+                                    sx={{ background: "var(--Primary-500)", height: "46px", }}
+                                    onClick={searchSubmit}
+                                >
+                                    Tìm kiếm
+                                </Button>
+                            </Grid>
                         </Grid>
                     </Grid>
                 </Container>
 
-                {/* Danh sách sân */}
-                <Container sx={{ my: 5 }}>
+                {/* render danh sách sân từ data */}
+                <Container sx={{ px: "1px", boxSizing: "border-box", mb: 10 }}>
                     <Grid container
                         direction={'row'}
+                        justifyContent={"center"}
                         sx={{
                             alignItems: "center",
                             gap: 1,
-                            mb: 2
+                            mb: 2,
                         }}
                     >
-                        <SportsSoccerIcon />
-                        <Typography variant="h5" >
-                            Sân đá banh
-                        </Typography>
+                        <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%", mx: 3 }}>
+                            <Divider sx={{ flexGrow: 1 }} />
+                            {
+                                data.stadiumList.soccer.fields.length > 0
+                                    ? <Typography variant="body1"> Có <b>{data.stadiumList.soccer.fields.length.toString().padStart(2, '0')}</b> sân thỏa tìm kiếm</Typography>
+                                    : <Typography variant="body1">Không có sân trống</Typography>
+                            }
+                            <Divider sx={{ flexGrow: 1 }} />
+                        </Stack>
                     </Grid>
-                    <Grid container spacing={3}>
-                        {stadiums.map((stadium, index) => (
-                            <Grid sx={{ xs: 12, sm: 6, md: 4 }} key={index}>
-                                <Card>
-                                    <CardMedia component="img" height="180" image={stadium.image} alt={stadium.name} />
-                                    <CardContent>
-                                        <Typography variant="h6">{stadium.name}</Typography>
-                                        <Typography variant="body2" color="text.secondary">{stadium.location}</Typography>
-                                        {/* <Typography variant="body1" color="primary">{stadium.price}</Typography> */}
-                                        <Rating value={stadium.rating} readOnly />
-                                    </CardContent>
-                                    <CardActions>
-                                        <Button size="small" variant="contained" color="primary">Đặt sân</Button>
-                                    </CardActions>
-                                </Card>
-                            </Grid>
-                        ))}
-                    </Grid>
+                    {
+                        data.stadiumList.soccer.fields.length > 0 &&
+                        <Grid
+                            container
+                            direction="row"
+                            rowSpacing={{ xs: 3, sm: 5, md: 5 }}
+                            columnSpacing={{ xs: 1, sm: 2, md: 3 }}
+                            justifyContent="start"
+                        >
+                            {data.stadiumList.soccer.fields.map((stadium, index) => (
+                                <Grid size={{ xs: 12 / 2, sm: 12 / 3, md: 12 / 4, lg: 12 / 5 }} key={index} sx={{ display: "flex", justifyContent: "center" }}>
+                                    <SportCard data={stadium} />
+                                </Grid>
+                            ))}
+                        </Grid>
+                    }
                 </Container>
             </UserLayout >
         </>

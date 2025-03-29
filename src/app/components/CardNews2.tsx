@@ -11,7 +11,7 @@ export function CardNews2(props) {
     <Card
       sx={{
         maxWidth: '50vh',
-        maxHeight: 300,
+        height: 262,
         margin: 2,
         borderRadius: 0,
         position: "relative",
