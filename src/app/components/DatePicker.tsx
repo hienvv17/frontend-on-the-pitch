@@ -28,6 +28,7 @@ export default function DatePickerValue(props: any) {
                 value={value}
                 name={props.name}
                 onChange={props.onChange}
+                minDate={moment()} // Chặn các ngày nhỏ hơn hôm nay
                 format="DD/MM/YYYY"
                 dayOfWeekFormatter={(day) => {
                     const customWeekDays = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];

@@ -16,6 +16,7 @@ function GoogleLogin() {
       }
       const expriresIn = new Date(new Date().getTime() + 5 * 60 * 1000);
       Cookies.set('accessToken', token, { expires: expriresIn }); // token expires in 1 minute
+
       return { user, token };
       // You can now send the user information to your backend to create or authenticate the user
     } catch (error) {

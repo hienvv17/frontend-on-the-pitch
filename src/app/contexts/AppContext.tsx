@@ -49,6 +49,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
                 localStorage.setItem("user", JSON.stringify(user));
             } else {
                 localStorage.removeItem("user");
+                localStorage.removeItem("userAvatar");
             }
         }
     }, [user, isClient]);
@@ -57,7 +58,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         // Xóa cookie bằng cách đặt thời gian hết hạn về 0
         document.cookie = "accessToken=; Path=/; Max-Age=0";
         setUser(null);
-        router.refresh();
+        window.location.reload();
     };
 
     if (!isClient) return null; // Chỉ render sau khi client đã mount

@@ -36,7 +36,7 @@ export default function SportCard(props) {
                             />
                         </AspectRatio>
                     </CardOverflow>
-                    <CardContent>
+                    <CardContent sx={{ textAlign: "center" }}>
                         <Typography level="body-xs">Mở cửa: 06:00 - 21:00</Typography>
                         <Box
                             fontSize="h5.fontSize"

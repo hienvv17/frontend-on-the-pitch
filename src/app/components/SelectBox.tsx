@@ -18,12 +18,18 @@ interface SelectBoxProps {
 
 const icons: Record<IconType, React.ElementType> = { Favorite, Room, SportsSoccer };
 
+interface Option {
+    value: string | number | null;
+    label: string | null;
+}
+
 export default function SelectBox({ icon, title, options, ...rest }: SelectBoxProps) {
     const IconComponent = icons[icon];
 
     return (
-        <Select
+        <Select<Option>
             options={options}
+            value={rest.value}
             isClearable={true}
             isSearchable={false}
             onChange={rest.onChange}

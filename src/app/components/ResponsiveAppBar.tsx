@@ -9,20 +9,17 @@ import Typography from '@mui/material/Typography';
 import Menu from '@mui/material/Menu';
 import MenuIcon from '@mui/icons-material/Menu';
 import Container from '@mui/material/Container';
-import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
-import AdbIcon from '@mui/icons-material/Adb';
-import { createTheme, Divider, Grid2, ThemeProvider } from '@mui/material';
+import { Divider, Grid2, Stack } from '@mui/material';
 import Link from 'next/link';
-import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { usePathname, useRouter } from 'next/navigation';
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AppContext } from "@/app/contexts/AppContext";
-import { GoogleLogin } from '@react-oauth/google';
 import GoogleLoginBtn from "./GoogleLoginBtn";
-
+import Image from 'next/image';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 
 //định nghĩa white là loại color mới
 // Augment the palette to include an ochre color
@@ -68,14 +65,24 @@ const settings = [
 
 function ResponsiveAppBar() {
     const router = useRouter();
+    const { isChange, user, setUser, handleLogout } = useContext(AppContext);
+
     const pathname = usePathname();
     const isHome = pathname === "/";
     // console.log('pathname', pathname);
 
+    const [userAvatar, setUserAvatar] = useState<string | null>(null);
+
+    useEffect(() => {
+        const storedAvatar = localStorage.getItem("userAvatar");
+        if (storedAvatar) {
+            setUserAvatar(JSON.parse(storedAvatar));
+        }
+    }, [isChange]);
+    // console.log(userAvatar);
     const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
     const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
-    const { isChange, user, setUser, handleLogout } = useContext(AppContext);
     const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
         setAnchorElNav(event.currentTarget);
     };
@@ -101,10 +108,7 @@ function ResponsiveAppBar() {
             router.push(page); // Điều hướng đến trang tương ứng
         }
     };
-    // console.log('aaa', user);
-    // React.useEffect(() => {
-    //     console.log('aaa', user);
-    // }, [isChange]);
+
 
     return (
         <AppBar position="static" sx={{ mt: 0, backgroundColor: "transparent", backdropFilter: "blur(20px)", boxShadow: "1px" }}>
@@ -232,38 +236,51 @@ function ResponsiveAppBar() {
                             </Button>
                         ))}
                     </Box>
-                    <Box sx={{ flexGrow: 0 }}>
+                    <Stack direction="row" spacing={2}>
                         {
                             !!user?.id ?
                                 <>
                                     <Tooltip title={user.email}>
-                                        <Grid2 direction="column" sx={{ width: 150 }}>
+                                        <Grid2 direction="column" sx={{ width: "fit-content" }}>
                                             <Button
+                                                variant="contained"
                                                 onClick={handleOpenUserMenu}
                                                 sx={{
                                                     textTransform: "none",
-                                                    width: "100%",
+                                                    background: "var(--Primary-50)",
                                                     height: "46px",
                                                     gap: "10px",
                                                     borderRadius: "8px",
-                                                    position: "relative", // Đảm bảo hiệu ứng hiển thị đúng
-                                                    boxShadow: "0 0 0px 1px var(--Primary-400)",
+                                                    minWidth: { xs: "60px", sm: "246px" }, //  Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
+                                                    display: "inline-flex",
+                                                    justifyContent: "center",
+                                                    p: "6px",
                                                     ":hover": {
-                                                        boxShadow: "0 0 8px 2px var(--Primary-500)", // Hiệu ứng viền mở rộng ra ngoài,
-                                                        transform: "scale(1.05)",
-                                                        background: "white"
+                                                        boxShadow: "0 0 1px 2px var(--Primary-500)",
                                                     },
                                                     ":active": { background: "var(--Primary-50)" },
-                                                    transition: "box-shadow 0.3s ease-in-out, transform 0.3s ease-in-out", // Hiệu ứng mượt
                                                 }}
                                             >
-                                                <AccountCircleIcon fontSize="large" color="primary" />
+                                                {
+                                                    userAvatar
+                                                        ?
+                                                        <Image
+                                                            src={userAvatar}
+                                                            width={32}
+                                                            height={32}
+                                                            alt="User avatar"
+                                                            style={{ objectFit: "contain", borderRadius: 50, aspectRatio: 1 / 1 }}
+                                                        />
+                                                        :
+                                                        <AccountCircleIcon fontSize="large" color="primary" />
+                                                }
                                                 <Typography
                                                     sx={{
-                                                        display: { xs: 'none', md: 'flex' },
+                                                        display: { xs: 'none', sm: 'flex' },
                                                         width: "inherit",
                                                         textAlign: "center",
-                                                        ml: 1 // Tạo khoảng cách nhỏ giữa icon và chữ
+                                                        ml: 1, // Tạo khoảng cách nhỏ giữa icon và chữ
+                                                        color: "var(--Primary-500)",
                                                     }}
                                                 >
                                                     {user.fullName}
@@ -295,8 +312,9 @@ function ResponsiveAppBar() {
                                         ))}
                                     </Menu>
                                 </>
-                                : <GoogleLoginBtn />}
-                    </Box>
+                                : <GoogleLoginBtn />
+                        }
+                    </Stack>
                 </Toolbar>
             </Container>
         </AppBar>

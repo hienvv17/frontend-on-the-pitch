@@ -29,10 +29,10 @@ export const publicApi = (subPath = "") => {
 
   api.interceptors.response.use(
     (response: AxiosResponse<APIResponse>) => {
-      // console.log("checkErrorCode(response)", response);
       return checkErrorCode(response);
     },
     (error) => {
+      console.log("checkErrorCode(response)", error);
       return checkErrorCode(error.response);
     }
   );
@@ -90,7 +90,7 @@ async function checkErrorCode(response: AxiosResponse<APIResponse>) {
     return response;
   } catch (error) {
     response = { ...response, data: { success: false } };
-    console.error(error);
+    console.error("eeeeeeee", error);
     return response;
   }
 }

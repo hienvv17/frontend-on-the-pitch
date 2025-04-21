@@ -1,6 +1,6 @@
 'use client';
 
-import { Typography, Box, ThemeProvider, createTheme, Divider, Chip, Stack, Grid2, Paper, useMediaQuery } from "@mui/material";
+import { Typography, Box, ThemeProvider, createTheme, Divider, Chip, Stack, Grid2, Paper, useMediaQuery, styled } from "@mui/material";
 import Footer from "./components/Footer";
 import ResponsiveAppBar from "./components/ResponsiveAppBar";
 import { grey } from "@mui/material/colors";
@@ -53,6 +53,14 @@ const theme = createTheme({
 //demo data
 const stadiumList = demoData.stadiumList;
 
+const CustomSlider = styled(Slider)`
+  .slick-dots li button:before {
+    color: grey;
+  }
+  .slick-dots li.slick-active button:before {
+    color: white;
+  }
+`;
 
 export default function HomePage() {
   const [chipSelected, setChipSelected] = React.useState({
@@ -118,7 +126,7 @@ export default function HomePage() {
     slidesToScroll: 1,
     responsive: [
       {
-        breakpoint: 1441,
+        breakpoint: 9999,
         settings: {
           slidesToShow: 3,
           slidesToScroll: 1,
@@ -170,10 +178,15 @@ export default function HomePage() {
             flex: 1, justifyContent: "center",
             alignItems: "center", gap: 4
           }} >
-            <Grid2>
+            <Grid2 sx={{ p: { xs: 2, sm: 5 } }}>
+              <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold"
+                sx={{
+                  fontSize: 'clamp(1.5rem, 5vw, 3rem)', // nhỏ nhất 1.5rem, lớn dần theo viewport, tối đa 3rem
+                }}
+              >
+                Đặt sân nhanh chóng, thanh toán thuận tiện, sẵn sàng ra sân mọi lúc
+              </Typography>
 
-              <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">Đặt sân nhanh chóng, thanh toán thuận tiện</Typography>
-              <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">Sẵn sàng ra sân mọi lúc</Typography>
             </Grid2>
             <Grid2 size={12}>
               <Divider orientation="horizontal" flexItem className="hover-divider"
@@ -266,83 +279,157 @@ export default function HomePage() {
         >
         </Divider>
         <Box sx={{ width: "90vw", textAlign: "center", }}>
-          <Grid2 container columnSpacing={{ xs: 1, sm: 2, md: 6 }} direction="row" sx={{ alignItems: "center", mx: "5vw" }}>
-            <Grid2 size={4} sx={{
-              justifyContent: "center",
-              alignItems: "center",
-              height: "100%"
-            }}>
+          <Grid2 container columnSpacing={{ xs: 1, sm: 2, md: 6 }} direction="row" sx={{ alignItems: "center", mx: "5vw", height: { xs: "140px" } }}>
+            <Grid2 size={4}
+              sx={{
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+              }}>
               <Box sx={{
                 backgroundColor: "var(--Primary-50)",
                 borderRadius: 8,
-                height: "fit-content",
+                height: "100%",
                 display: "flex",
                 flexDirection: "column", // Sắp xếp nội dung theo cột
                 alignItems: "center", // Căn giữa theo chiều ngang
                 justifyContent: "center", // Căn giữa theo chiều dọc
                 background: "var(--Primary-500)",
-                py: 3
+                // py: 3
               }}>
-                <Grid2 container direction="row" sx={{
+                <Grid2 container direction="column" sx={{
                   justifyContent: "center",
-                  alignItems: "flex-end",
+                  alignItems: "center",
+                  height: "100%",
                 }}>
-                  <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">20</Typography>
-                  <Typography variant="h6" color="var(--Primary-50)" fontWeight="bold">+</Typography>
+                  <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold"
+                    sx={{
+                      fontSize: 'clamp(1.5rem, 10vw, 3rem)', // nhỏ nhất 1.5rem, lớn dần theo viewport, tối đa 3rem
+                    }}
+                  >
+                    10
+                    <Box
+                      component="span"
+                      sx={{
+                        fontSize: '0.6em',
+                        position: 'relative',
+                        top: '0.1em',
+                        ml: '1px',
+                      }}
+                    >
+                      +
+                    </Box>
+                  </Typography>
+                  <Typography color="var(--Primary-50)" fontWeight="bold"
+                    sx={{
+                      fontSize: 'clamp(0.7rem, 2vw, 2rem)',
+                    }}
+                  >
+                    Sân
+                  </Typography>
                 </Grid2>
-                <Typography color="var(--Primary-50)" fontWeight="bold">Sân</Typography>
               </Box>
             </Grid2>
 
-            <Grid2 size={4} sx={{
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
+            <Grid2 size={4}
+              sx={{
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+              }}>
               <Box sx={{
                 backgroundColor: "var(--Primary-50)",
                 borderRadius: 8,
-                height: "fit-content",
+                height: "100%",
                 display: "flex",
                 flexDirection: "column", // Sắp xếp nội dung theo cột
                 alignItems: "center", // Căn giữa theo chiều ngang
                 justifyContent: "center", // Căn giữa theo chiều dọc
                 background: "var(--Primary-500)",
-                py: 3
+                // py: 3
               }}>
-                <Grid2 container direction="row" sx={{
+                <Grid2 container direction="column" sx={{
                   justifyContent: "center",
-                  alignItems: "flex-end",
+                  alignItems: "center",
+                  height: "100%",
                 }}>
-                  <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">3</Typography>
-                  <Typography variant="h6" color="var(--Primary-50)" fontWeight="bold">+</Typography>
+                  <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold"
+                    sx={{
+                      fontSize: 'clamp(1.5rem, 10vw, 3rem)', // nhỏ nhất 1.5rem, lớn dần theo viewport, tối đa 3rem
+                    }}
+                  >
+                    2
+                    <Box
+                      component="span"
+                      sx={{
+                        fontSize: '0.6em',
+                        position: 'relative',
+                        top: '0.1em',
+                        ml: '1px',
+                      }}
+                    >
+                      +
+                    </Box>
+                  </Typography>
+                  <Typography color="var(--Primary-50)" fontWeight="bold"
+                    sx={{
+                      fontSize: 'clamp(0.7rem, 2vw, 2rem)',
+                    }}
+                  >
+                    Cụm sân
+                  </Typography>
                 </Grid2>
-                <Typography color="var(--Primary-50)" fontWeight="bold">Cụm sân</Typography>
               </Box>
             </Grid2>
 
-            <Grid2 size={4} sx={{
-              justifyContent: "center",
-              alignItems: "center",
-            }}>
+            <Grid2 size={4}
+              sx={{
+                justifyContent: "center",
+                alignItems: "center",
+                height: "100%",
+              }}>
               <Box sx={{
                 backgroundColor: "var(--Primary-50)",
                 borderRadius: 8,
-                height: "fit-content",
+                height: "100%",
                 display: "flex",
                 flexDirection: "column", // Sắp xếp nội dung theo cột
                 alignItems: "center", // Căn giữa theo chiều ngang
                 justifyContent: "center", // Căn giữa theo chiều dọc
                 background: "var(--Primary-500)",
-                py: 3
+                // py: 3
               }}>
-                <Grid2 container direction="row" sx={{
+                <Grid2 container direction="column" sx={{
                   justifyContent: "center",
-                  alignItems: "flex-end",
+                  alignItems: "center",
+                  height: "100%",
                 }}>
-                  <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">3</Typography>
-                  <Typography variant="h6" color="var(--Primary-50)" fontWeight="bold">+</Typography>
+                  <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold"
+                    sx={{
+                      fontSize: 'clamp(1.5rem, 10vw, 3rem)', // nhỏ nhất 1.5rem, lớn dần theo viewport, tối đa 3rem
+                    }}
+                  >
+                    3
+                    <Box
+                      component="span"
+                      sx={{
+                        fontSize: '0.6em',
+                        position: 'relative',
+                        top: '0.1em',
+                        ml: '1px',
+                      }}
+                    >
+                      +
+                    </Box>
+                  </Typography>
+                  <Typography color="var(--Primary-50)" fontWeight="bold"
+                    sx={{
+                      fontSize: 'clamp(0.7rem, 2vw, 2rem)',
+                    }}
+                  >
+                    Môn thể thao
+                  </Typography>
                 </Grid2>
-                <Typography color="var(--Primary-50)" fontWeight="bold">Môn thể thao</Typography>
               </Box>
             </Grid2>
           </Grid2>
@@ -482,17 +569,17 @@ export default function HomePage() {
                 <Grid2 size={12} sx={{ height: "100%", width: "75vw", justifyContent: "center", alignItems: "center", my: 1 }}>
                   <Grid2 container sx={{ width: "100%", justifyContent: "center", }}>
                     <Grid2 sx={{ width: "100%", height: "300px", }}>
-                      <Slider {...settings}>
+                      <CustomSlider {...settings} >
                         {
-                          fields.fields.map((e) =>
+                          fields.fields.map((e, index) =>
                             chipSelected[sportType as keyof typeof chipSelected].chipNum === 1 ?
-                              <CardNews2 image={e.image} />
-                              : <Stack justifyItems={"center"}>
+                              <CardNews2 key={index} image={e.image} />
+                              : <Stack justifyItems={"center"} key={index}>
                                 <SportCard data={e} />
                               </Stack>
                           )
                         }
-                      </Slider>
+                      </CustomSlider>
                     </Grid2>
                   </Grid2>
                 </Grid2>

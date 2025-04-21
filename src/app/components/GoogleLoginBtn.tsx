@@ -1,14 +1,17 @@
 "use client";
 
-import { Stack, Button, Icon, CircularProgress, Typography } from "@mui/material";
-import { useGoogleLogin } from "@react-oauth/google";
+import { Stack, Button, Icon, CircularProgress, Typography, useMediaQuery, useTheme } from "@mui/material";
 import { useRouter } from "next/navigation";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../contexts/AppContext";
-import GoogleLogin from "./firebase/popup-login";
 import Cookies from "js-cookie";
-import { ACCESS_TOKEN, ROUTES } from "@/utility/constant";
 import { useAuthApi } from "@/api/auth/auth";
+import { getRedirectResult } from "firebase/auth";
+import { auth } from "@/firebaseConfig/firebaseConfig";
+import GoogleLogin from "./firebase/popup-login";
+import { ACCESS_TOKEN } from "@/utility/constant";
+
+
 
 export default function GoogleLoginBtn() {
     const router = useRouter();
@@ -18,6 +21,10 @@ export default function GoogleLoginBtn() {
     const [isLoading, setIsLoading] = useState(false);
 
     const { POST_LOGIN } = useAuthApi();
+
+    const theme = useTheme();
+
+    const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm")); // <600px
 
     const svgIcon = (
         <Icon
@@ -39,7 +46,7 @@ export default function GoogleLoginBtn() {
 
     // Hàm kích hoạt đăng nhập Google
 
-    //version 1:
+    //version 1: sử dụng api local
     // const login = useGoogleLogin({
     //     onSuccess: async (response) => {
     //         const res = await fetch("/api/auth/google", {
@@ -62,27 +69,33 @@ export default function GoogleLoginBtn() {
     // });
 
 
-    //version 2:
+    //version 2: sử dụng api đã deploy
+    //! không hoạt động trên di động vì trình duyệt chặn pop-up
+
     const handleLogin = async () => {
         setIsLoading(true);
         try {
             const data = await GoogleLogin();
+
             const idToken = await data?.user.getIdToken();
             if (!idToken) {
                 setIsLoading(false);
                 console.log("Google login failed");
                 return;
             }
+            console.log("idToken", idToken);
             const response = await POST_LOGIN(idToken);
+
             if (response.error) {
                 console.log("You are not authorized to access this page", response.error);
                 return;
             }
             Cookies.set(ACCESS_TOKEN, idToken);
             //   setUser({ email: response.staff.email, role: response.staff.role });
-            console.log("response", response);
+
+            localStorage.setItem("userAvatar", JSON.stringify(data?.user.photoURL));
             setUser(response.user);
-            router.refresh();
+            window.location.reload();
         } catch (error) {
             console.error("Login failed", error);
         } finally {
@@ -94,35 +107,63 @@ export default function GoogleLoginBtn() {
         <Stack direction="row" spacing={2}>
             <Button
                 variant="contained"
-                startIcon={svgIcon}
+                // startIcon={svgIcon}
                 onClick={handleLogin}
                 disabled={isLoading}
                 sx={{
+                    // position: "absolute",
+                    // top: "auto",
+                    // right: 0,
+                    // zIndex: 99,
                     textTransform: "none",
-                    background: "var(--Primary-500)",
+                    background: "var(--Primary-50)",
                     height: "46px",
                     gap: "10px",
                     borderRadius: "8px",
-                    minWidth: "200px", // 👈 Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
+                    minWidth: { xs: "60px", sm: "246px" }, // 👈 Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
                     display: "inline-flex",
                     justifyContent: "center",
+                    p: "6px",
                     ":hover": {
-                        boxShadow: "0 0 8px 2px var(--Primary-500)",
-                        background: "var(--Primary-600)"
+                        boxShadow: "0 0 1px 2px var(--Primary-500)",
                     },
-                    ":active": { background: "var(--Primary-700)" },
+                    ":active": { background: "var(--Primary-50)" },
                 }}
             >
-                <Typography sx={{ visibility: isLoading ? "hidden" : "visible" }}>
-                    Đăng nhập với Google
-                </Typography>
-                {isLoading && (
+                {!isLoading ?
+                    <>
+                        <Icon
+                            sx={{
+                                width: "fit-content",
+                                height: "fit-content",
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                background: "transparent",
+                                borderRadius: "6px",
+                                // border: "var(--Primary-600) solid 1px",
+                                // p: "8px",
+                                scale: 0.8,
+                                // ml: -1.2,
+                            }}
+                        >
+                            <img alt="googleIcon" src="/icon/googleIcon.svg" />
+                        </Icon>
+                        {!isSmallScreen &&
+                            <>
+                                <Typography sx={{ visibility: isLoading ? "hidden" : "visible", color: "var(--Primary-900)" }}>
+                                    Đăng nhập với Google
+                                </Typography>
+                            </>
+                        }
+                    </>
+                    :
                     <CircularProgress
                         size={24}
                         color="inherit"
                         sx={{ position: "absolute" }}
                     />
-                )}
+                }
             </Button>
 
         </Stack>

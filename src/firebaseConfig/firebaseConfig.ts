@@ -1,5 +1,5 @@
 import { initializeApp } from "firebase/app";
-import { getAuth, GoogleAuthProvider } from "firebase/auth";
+import { getAuth, GoogleAuthProvider, signInWithRedirect } from "firebase/auth";
 
 const firebaseConfig = {
   apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
@@ -16,5 +16,12 @@ const auth = getAuth(app);
 // Google provider setup
 const googleProvider = new GoogleAuthProvider();
 
-export { auth, googleProvider };
+// googleProvider.setCustomParameters({
+//   propmp: "select_account",
+// });
 
+//! google will stop login via redirect soon, beware to use this
+// export const signInGoogleRedirect = () =>
+//   signInWithRedirect(auth, googleProvider);
+
+export { auth, googleProvider };
