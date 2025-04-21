@@ -6,7 +6,7 @@ import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
 import Typography from "@mui/material/Typography";
 
-export function CardNews2(props) {
+export function CardNews2(props: any) {
   return (
     <Card
       sx={{

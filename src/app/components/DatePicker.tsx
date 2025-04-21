@@ -10,12 +10,12 @@ import { viVN } from '@mui/x-date-pickers/locales';
 moment.locale('vi');
 
 export default function DatePickerValue(props: any) {
-    const [value, setValue] = React.useState<Moment | null>(moment()); // Mặc định là hôm nay
+    const [value] = React.useState<Moment | null>(moment()); // Mặc định là hôm nay
 
-    const handleChange = (newValue: Moment | null) => {
-        setValue(newValue);
-        console.log("value", newValue?.format('DD/MM/YYYY')); // In ra giá trị ngày mới chọn
-    }
+    // const handleChange = (newValue: Moment | null) => {
+    //     setValue(newValue);
+    //     console.log("value", newValue?.format('DD/MM/YYYY')); // In ra giá trị ngày mới chọn
+    // }
 
     return (
         <LocalizationProvider

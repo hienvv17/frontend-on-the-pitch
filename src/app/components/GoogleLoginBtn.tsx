@@ -1,22 +1,19 @@
 "use client";
 
 import { Stack, Button, Icon, CircularProgress, Typography, useMediaQuery, useTheme } from "@mui/material";
-import { useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
+import { useContext, useState } from "react";
 import { AppContext } from "../contexts/AppContext";
 import Cookies from "js-cookie";
 import { useAuthApi } from "@/api/auth/auth";
-import { getRedirectResult } from "firebase/auth";
-import { auth } from "@/firebaseConfig/firebaseConfig";
 import GoogleLogin from "./firebase/popup-login";
 import { ACCESS_TOKEN } from "@/utility/constant";
+import Image from "next/image";
 
 
 
 export default function GoogleLoginBtn() {
-    const router = useRouter();
 
-    const { isChange, user, setUser, handleLogout } = useContext(AppContext);
+    const { setUser } = useContext(AppContext);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -26,23 +23,6 @@ export default function GoogleLoginBtn() {
 
     const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm")); // <600px
 
-    const svgIcon = (
-        <Icon
-            sx={{
-                width: "fit-content",
-                height: "fit-content",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "white",
-                borderRadius: "6px 0 0 6px",
-                p: "20%",
-                ml: -1.2,
-            }}
-        >
-            <img alt="googleIcon" src="/icon/googleIcon.svg" />
-        </Icon>
-    );
 
     // Hàm kích hoạt đăng nhập Google
 
@@ -83,7 +63,7 @@ export default function GoogleLoginBtn() {
                 console.log("Google login failed");
                 return;
             }
-            console.log("idToken", idToken);
+
             const response = await POST_LOGIN(idToken);
 
             if (response.error) {
@@ -91,7 +71,7 @@ export default function GoogleLoginBtn() {
                 return;
             }
             Cookies.set(ACCESS_TOKEN, idToken);
-            //   setUser({ email: response.staff.email, role: response.staff.role });
+
 
             localStorage.setItem("userAvatar", JSON.stringify(data?.user.photoURL));
             setUser(response.user);
@@ -120,7 +100,7 @@ export default function GoogleLoginBtn() {
                     height: "46px",
                     gap: "10px",
                     borderRadius: "8px",
-                    minWidth: { xs: "60px", sm: "246px" }, // 👈 Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
+                    minWidth: { xs: "60px", sm: "246px" }, //  Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
                     display: "inline-flex",
                     justifyContent: "center",
                     p: "6px",
@@ -147,7 +127,7 @@ export default function GoogleLoginBtn() {
                                 // ml: -1.2,
                             }}
                         >
-                            <img alt="googleIcon" src="/icon/googleIcon.svg" />
+                            <Image alt="googleIcon" src="/icon/googleIcon.svg" width={32} height={32} />
                         </Icon>
                         {!isSmallScreen &&
                             <>

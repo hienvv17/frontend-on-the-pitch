@@ -65,10 +65,9 @@ const settings = [
 
 function ResponsiveAppBar() {
     const router = useRouter();
-    const { isChange, user, setUser, handleLogout } = useContext(AppContext);
+    const { isChange, user, handleLogout } = useContext(AppContext);
 
     const pathname = usePathname();
-    const isHome = pathname === "/";
     // console.log('pathname', pathname);
 
     const [userAvatar, setUserAvatar] = useState<string | null>(null);

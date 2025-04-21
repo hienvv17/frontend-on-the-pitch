@@ -8,7 +8,6 @@ import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 import WhatshotIcon from '@mui/icons-material/Whatshot';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import React, { useEffect, useRef, useState } from "react";
-import { Carousel } from 'react-responsive-carousel';
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { CardNews2 } from "./components/CardNews2";
 import * as demoData from "@/utility/demoData";
@@ -85,12 +84,12 @@ export default function HomePage() {
   });
 
   const [selectedCarouselIndex, setSelectedCarouselIndex] = useState(0); // Xác định Carousel nào được chọn
-  const carouselRefs = useRef<(Carousel | null)[]>(Array.from({ length: 3 }, () => null)); // Mảng ref chứa 3 Carousel
+  const carouselRefs = useRef<(Slider | null)[]>(Array.from({ length: 3 }, () => null)); // Mảng ref chứa 3 Carousel
 
   // Khi num thay đổi, chỉ reset Carousel tương ứng
   useEffect(() => {
     const ref = carouselRefs.current[selectedCarouselIndex];
-    if (ref) ref.goToSlide(2); // Chỉ reset Carousel tương ứng
+    if (ref) ref.slickGoTo(0); // Chỉ reset Carousel tương ứng
   }, [chipSelected.soccer.chipNum, chipSelected.badminton.chipNum, chipSelected.tennis.chipNum, selectedCarouselIndex]);
 
   const handleChipClick = (sport: string, chipKey: string, chipNum: number, index: number) => {
@@ -200,7 +199,7 @@ export default function HomePage() {
               </Divider>
             </Grid2>
             <Grid2 size={12}>
-              <Typography color="var(--Primary-50)" sx={{ fontStyle: "italic" }} >"Không gì là không thể, chỉ cần bạn bắt đầu!"</Typography>
+              <Typography color="var(--Primary-50)" sx={{ fontStyle: "italic" }} >&quot;Không gì là không thể, chỉ cần bạn bắt đầu!&quot;</Typography>
             </Grid2>
           </Grid2>
 
@@ -569,7 +568,7 @@ export default function HomePage() {
                 <Grid2 size={12} sx={{ height: "100%", width: "75vw", justifyContent: "center", alignItems: "center", my: 1 }}>
                   <Grid2 container sx={{ width: "100%", justifyContent: "center", }}>
                     <Grid2 sx={{ width: "100%", height: "300px", }}>
-                      <CustomSlider {...settings} >
+                      <CustomSlider {...settings} ref={(el) => void (carouselRefs.current[index] = el)}>
                         {
                           fields.fields.map((e, index) =>
                             chipSelected[sportType as keyof typeof chipSelected].chipNum === 1 ?

@@ -1,5 +1,5 @@
 "use client"
-import { Box, createTheme, ThemeProvider, Typography } from "@mui/material";
+import { Box, createTheme, ThemeProvider } from "@mui/material";
 import ResponsiveAppBar from "./ResponsiveAppBar";
 import Footer from "./Footer";
 

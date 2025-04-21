@@ -4,17 +4,17 @@ import Button from '@mui/joy/Button';
 import Card from '@mui/joy/Card';
 import CardContent from '@mui/joy/CardContent';
 import CardOverflow from '@mui/joy/CardOverflow';
-import Chip from '@mui/joy/Chip';
-import Link from '@mui/joy/Link';
 import Typography from '@mui/joy/Typography';
-import ArrowOutwardIcon from '@mui/icons-material/ArrowOutward';
 import { StyledEngineProvider, CssVarsProvider } from '@mui/joy/styles';
 import { Box, Grid2 } from '@mui/material';
 import Image from 'next/legacy/image';
 import StarIcon from "@mui/icons-material/Star";
 import RoomIcon from "@mui/icons-material/Room";
 
-export default function SportCard(props) {
+interface SportCardProps {
+    [key: string]: any; // Cho phép các props khác
+}
+export default function SportCard(props: SportCardProps) {
 
     return (
         <StyledEngineProvider injectFirst>
@@ -32,7 +32,7 @@ export default function SportCard(props) {
                     <CardOverflow>
                         <AspectRatio variant="outlined" ratio="16/9" objectFit="cover">
                             <Image
-                                src={props.data.image} layout="fill"
+                                alt="img" src={props.data.image} layout="fill"
                             />
                         </AspectRatio>
                     </CardOverflow>

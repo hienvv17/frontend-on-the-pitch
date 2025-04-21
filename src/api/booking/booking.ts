@@ -1,5 +1,4 @@
-import { ROUTES } from "@/utility/constant";
-import { publicApi, privateApi } from "../base";
+import { publicApi } from "../base";
 
 const subPath = "";
 

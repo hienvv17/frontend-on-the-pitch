@@ -5,22 +5,14 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
 import { TimePicker } from '@mui/x-date-pickers/TimePicker';
 import { viVN } from '@mui/x-date-pickers/locales';
-import { IconButton, TextField } from '@mui/material';
-import { ClearIcon } from '@mui/x-date-pickers/icons';
 
 // Thiết lập ngôn ngữ toàn cục (Ví dụ: Tiếng Việt)
 moment.locale('vi');
 
 export default function TimePickerValue(props: any) {
-    const [value, setValue] = React.useState<Moment | null>(null); // Mặc định là giờ hiện tại
+    const [value] = React.useState<Moment | null>(null); // Mặc định là giờ hiện tại
 
-    const handleChange = (newValue: Moment | null) => {
-        setValue(newValue);
-        console.log("value", newValue?.format('HH:mm')); // In ra giá trị giờ mới chọn
-    }
 
-    const isToday = props.value && moment(props.value).isSame(moment(), 'day');
-    const now = moment();
 
     return (
         <LocalizationProvider

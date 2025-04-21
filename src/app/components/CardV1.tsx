@@ -1,9 +1,8 @@
-import { Card, CardContent, CardMedia, Typography, Box, Grid2 } from "@mui/material";
-import RoomIcon from "@mui/icons-material/Room";
-import StarIcon from "@mui/icons-material/Star";
+import { Card, CardContent, CardMedia, Typography, Box } from "@mui/material";
 import { grey } from "@mui/material/colors";
+import { ReactElement, JSXElementConstructor, ReactNode, ReactPortal } from "react";
 
-export default function CardV1(props) {
+export default function CardV1(props: { data: { image: string | undefined; location: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; rating: string | number | bigint | boolean | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | ReactPortal | Promise<string | number | bigint | boolean | ReactPortal | ReactElement<unknown, string | JSXElementConstructor<any>> | Iterable<ReactNode> | null | undefined> | null | undefined; }; }) {
     return (
         <Box sx={{
             display: "flex",

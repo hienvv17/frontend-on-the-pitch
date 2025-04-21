@@ -1,16 +1,7 @@
 "use client";
 
-import { googleLogout } from "@react-oauth/google";
-import { useRouter } from "next/navigation";
 import { createContext, useState, ReactNode, useEffect } from "react";
 
-type User = {
-    id: string;
-    name: string;
-    email: string;
-    picture?: string;
-    error?: string;
-};
 
 interface AppContextType {
     isChange: boolean;
@@ -33,7 +24,6 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const [user, setUser] = useState(null);
     const [isClient, setIsClient] = useState(false);
 
-    const router = useRouter();
 
     useEffect(() => {
         setIsClient(true);
