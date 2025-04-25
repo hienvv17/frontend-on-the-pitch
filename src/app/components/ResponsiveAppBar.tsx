@@ -20,6 +20,9 @@ import { AppContext } from "@/app/contexts/AppContext";
 import GoogleLoginBtn from "./GoogleLoginBtn";
 import Image from 'next/image';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import PersonIcon from '@mui/icons-material/Person';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import LogoutIcon from '@mui/icons-material/Logout';
 
 //định nghĩa white là loại color mới
 // Augment the palette to include an ochre color
@@ -55,11 +58,19 @@ const pages2 = [
 const settings = [
     {
         title: "Thông tin tài khoản",
-        page: "/user-info"
+        page: "/user/my-info",
+        icon: <PersonIcon sx={{ color: "var(--Primary-500)" }} />,
+    },
+    {
+        title: "Lịch sử đặt sân",
+        page: "/user/booking-history",
+        icon: <AssignmentIcon sx={{ color: "var(--Primary-500)" }} />,
+
     },
     {
         title: "Đăng xuất",
-        page: "logout"
+        page: "logout",
+        icon: <LogoutIcon sx={{ color: "red" }} />,
     }
 ];
 
@@ -110,7 +121,7 @@ function ResponsiveAppBar() {
 
 
     return (
-        <AppBar position="static" sx={{ mt: 0, backgroundColor: "transparent", backdropFilter: "blur(20px)", boxShadow: "1px" }}>
+        <AppBar position="static" sx={{ mt: 0, backgroundColor: "transparent", backdropFilter: "blur(20px)", boxShadow: "1px", zIndex: 999 }}>
             <Container maxWidth="xl" sx={{ background: "rgba(255, 255, 255, 0.9)" }}>
                 <Toolbar disableGutters>
                     {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
@@ -305,7 +316,8 @@ function ResponsiveAppBar() {
                                         onClose={handleCloseUserMenu}
                                     >
                                         {settings.map((item) => (
-                                            <MenuItem key={item.title} onClick={() => handleMenuClick(item.page)}>
+                                            <MenuItem key={item.title} onClick={() => handleMenuClick(item.page)} sx={{ gap: 2 }}>
+                                                {item.icon}
                                                 <Typography sx={{ textAlign: "center" }}>{item.title}</Typography>
                                             </MenuItem>
                                         ))}

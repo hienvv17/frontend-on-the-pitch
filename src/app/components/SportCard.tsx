@@ -8,13 +8,18 @@ import Typography from '@mui/joy/Typography';
 import { StyledEngineProvider, CssVarsProvider } from '@mui/joy/styles';
 import { Box, Grid2 } from '@mui/material';
 import Image from 'next/legacy/image';
-import StarIcon from "@mui/icons-material/Star";
+// import StarIcon from "@mui/icons-material/Star";
 import RoomIcon from "@mui/icons-material/Room";
+import { DEFAULT_IMG } from '@/utility/constant';
 
 interface SportCardProps {
     [key: string]: any; // Cho phép các props khác
 }
 export default function SportCard(props: SportCardProps) {
+
+    // console.log("branchInfo", props.branchInfo)
+
+    const defaultImg = DEFAULT_IMG;
 
     return (
         <StyledEngineProvider injectFirst>
@@ -32,12 +37,12 @@ export default function SportCard(props: SportCardProps) {
                     <CardOverflow>
                         <AspectRatio variant="outlined" ratio="16/9" objectFit="cover">
                             <Image
-                                alt="img" src={props.data.image} layout="fill"
+                                alt="img" src={props.data.image ? props.data.image : defaultImg} layout="fill"
                             />
                         </AspectRatio>
                     </CardOverflow>
                     <CardContent sx={{ textAlign: "center" }}>
-                        <Typography level="body-xs">Mở cửa: 06:00 - 21:00</Typography>
+                        <Typography level="body-xs">Mở cửa: {props.data.openTime ? props.data.openTime : "05:00"} - {props.data.closeTime ? props.data.closeTime : "23:00"}</Typography>
                         <Box
                             fontSize="h5.fontSize"
                             component="div"
@@ -55,11 +60,16 @@ export default function SportCard(props: SportCardProps) {
                                 alignItems: "center",
                             }}>
 
-                            <Box display="flex" alignItems="center" gap={1}>
-                                <RoomIcon color="primary" fontSize="small" />
-                                <Typography fontSize="12px">{props.data.location}</Typography>
+                            <Box display="flex" alignItems="center" gap={1} sx={{ width: "100%" }}>
+                                {/* <RoomIcon color="primary" fontSize="small" /> */}
+                                <Typography
+                                    fontSize="12px"
+                                    sx={{ width: "100%", color: "red", fontWeight: "bold" }}
+                                >
+                                    {props.data.defaultPrice ? (Number(props.data.defaultPrice) * 1000).toLocaleString('vi-VN') + "đ" : '\u00A0'}
+                                </Typography>
                             </Box>
-                            <Box
+                            {props.branchInfo?.[0]?.district && <Box
                                 display="flex"
                                 alignItems="center"
                                 gap={0.5}
@@ -68,14 +78,14 @@ export default function SportCard(props: SportCardProps) {
                                     top: 8, // Cách mép trên 8px
                                     right: 8, // Cách mép phải 8px
                                     zIndex: 99,
-                                    backgroundColor: "rgba(0, 0, 0, 0.6)", // Nền mờ giúp dễ đọc hơn
+                                    backgroundColor: "rgba(0, 0, 0, 0.8)", // Nền mờ giúp dễ đọc hơn
                                     borderRadius: "4px", // Bo góc nhẹ
                                     padding: "2px 6px", // Thêm padding để dễ nhìn
                                 }}
                             >
-                                <StarIcon sx={{ color: "#FFD700" }} fontSize="small" />
-                                <Typography sx={{ color: "#FFD700" }} fontSize="12px">{props.data.rating}</Typography>
-                            </Box>
+                                <RoomIcon sx={{ color: "#FFD700" }} fontSize="small" />
+                                <Typography sx={{ color: "#FFD700" }} fontSize="12px">{props.branchInfo[0].district}</Typography>
+                            </Box>}
                         </Grid2>
                     </CardContent>
                     <CardOverflow>

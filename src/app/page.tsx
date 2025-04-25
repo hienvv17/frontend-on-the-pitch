@@ -113,7 +113,7 @@ export default function HomePage() {
     }
   };
 
-  const isSmallScreen = useMediaQuery("(max-width:425px)");
+  const isSmallScreen = useMediaQuery("(max-width:725px)");
 
   const settings = {
     dots: true,
@@ -549,7 +549,7 @@ export default function HomePage() {
               width: "80vw",
               height: "fit-content",
               borderRadius: "8px",
-              pb: 2,
+              pb: 5,
               backgroundColor: "transparent",
               backdropFilter: "blur(10px)",
               justifyContent: "center", alignItems: "center",
@@ -565,14 +565,25 @@ export default function HomePage() {
               },
             }}>
               <Grid2 container spacing={2} direction="column" sx={{ height: "fit-content", width: "80vw", justifyContent: "center", alignItems: "center", }}>
-                <Grid2 size={12} sx={{ height: "100%", width: "75vw", justifyContent: "center", alignItems: "center", my: 1 }}>
-                  <Grid2 container sx={{ width: "100%", justifyContent: "center", }}>
+                <Grid2 size={12} sx={{ height: "fit-content", width: "75vw", justifyContent: "center", alignItems: "center", }}>
+                  <Grid2 container sx={{ width: "100%", justifyContent: "center", height: "fit-content" }}>
                     <Grid2 sx={{ width: "100%", height: "300px", }}>
-                      <CustomSlider {...settings} ref={(el) => void (carouselRefs.current[index] = el)}>
+                      <CustomSlider {...settings} ref={(el) => void (carouselRefs.current[index] = el)} sx={{ height: "inherit" }}>
                         {
                           fields.fields.map((e, index) =>
                             chipSelected[sportType as keyof typeof chipSelected].chipNum === 1 ?
-                              <CardNews2 key={index} image={e.image} />
+                              <Grid2 container direction="row" key={index}
+                                sx={{
+                                  height: "fit-content",
+                                  maxWidth: "100%",
+                                  justifyContent: "center",
+                                  alignItems: "center",
+                                }}
+                              >
+                                <Grid2 sx={{ height: "100%" }}>
+                                  <CardNews2 key={index} image={e.image} />
+                                </Grid2>
+                              </Grid2>
                               : <Stack justifyItems={"center"} key={index}>
                                 <SportCard data={e} />
                               </Stack>

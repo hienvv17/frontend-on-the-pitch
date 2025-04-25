@@ -11,7 +11,7 @@ function GoogleLogin() {
       const user = result.user;
       const token = await user.getIdToken();
       if (!token) {
-        console.log("Google login failed");
+        console.log("No token: Google login failed");
         return null;
       }
       const expriresIn = new Date(new Date().getTime() + 5 * 60 * 1000);
@@ -21,7 +21,7 @@ function GoogleLogin() {
       // You can now send the user information to your backend to create or authenticate the user
     } catch (error) {
       console.log("Error during Google login", error);
-
+      return null;
     }
   };
   return handleGoogleLogin();
