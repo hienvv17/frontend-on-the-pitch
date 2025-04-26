@@ -65,7 +65,7 @@ export const privateApi = (subPath = ""): AxiosInstance => {
       if (error.response) {
         if (error.response.status === 401) {
           Cookies.remove(ACCESS_TOKEN);
-          window.location.href = ROUTES.LOGIN;
+          window.location.href = ROUTES.HOME;
         }
       }
       return checkErrorCode(error.response);

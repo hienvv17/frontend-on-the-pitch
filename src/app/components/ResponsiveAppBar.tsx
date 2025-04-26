@@ -58,12 +58,12 @@ const pages2 = [
 const settings = [
     {
         title: "Thông tin tài khoản",
-        page: "/user/my-info",
+        page: "/khach-hang/thong-tin-tai-khoan",
         icon: <PersonIcon sx={{ color: "var(--Primary-500)" }} />,
     },
     {
         title: "Lịch sử đặt sân",
-        page: "/user/booking-history",
+        page: "/khach-hang/lich-su-dat-san",
         icon: <AssignmentIcon sx={{ color: "var(--Primary-500)" }} />,
 
     },

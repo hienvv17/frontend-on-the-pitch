@@ -67,7 +67,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         localStorage.removeItem("userAvatar");
         setUser(null);
 
-        // Chuyển hướng về trang chính sau khi đăng xuất
+        // tải lại trang sau khi đăng xuất, mục đích để chạy lại middleware 
+        window.location.reload();
     };
 
 
