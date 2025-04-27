@@ -22,6 +22,7 @@ export const msgDetail = [
   "Giờ vào sân không hợp lệ, vui lòng chọn giờ khác.",
   "Giờ trả sân không hợp lệ, vui lòng chọn giờ khác.",
   "Đã hết giờ đặt sân cho hôm nay, vui lòng chọn ngày khác.",
+  "File quá lớn. Vui lòng chọn file dưới 2 MB.",
 ];
 
 export const openTime = "05:00";

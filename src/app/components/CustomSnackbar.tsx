@@ -23,7 +23,7 @@ const CustomSnackbar = (props: CustomSnackbarProps) => {
             return;
         }
 
-        props.setOpenSnackBar((prev: any) => ({ ...prev, isOpen: false, msg: '', type: 'info' }));
+        props.setOpenSnackBar((prev: any) => ({ ...prev, isOpen: false, msg: msg, type: type }));
     };
 
     // const formatMessage = (msg: string) => {

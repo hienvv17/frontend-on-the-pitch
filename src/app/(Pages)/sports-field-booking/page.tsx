@@ -29,6 +29,8 @@ export default function SportsFieldBooking() {
 
     const [isLoading, setIsLoading] = useState(true);
 
+    const [isBusy, setIsBusy] = useState(false);
+
     const [isSearchDone, setIsSearchDone] = useState(false);
 
     const [isSearchDisable, setIsSearchDisable] = useState(false);
@@ -73,7 +75,7 @@ export default function SportsFieldBooking() {
             return;
         }
         setIsSearchDisable(false);
-        setOpenSnackBar({ isOpen: false, msg: '', type: 'info' });
+        setOpenSnackBar({ isOpen: false, msg: msgDetail[6], type: 'error' });
     }, [searchData.dayPicked])
 
     useEffect(() => {
@@ -159,8 +161,6 @@ export default function SportsFieldBooking() {
             startTime: formatTime(searchData.startTime) as string,
             endTime: formatTime(searchData.endTime) as string,
         }
-        console.log("searchData", searchData);
-        console.log("requestBody", requestBody);
 
         if (requestBody.sportCategoryId === 0) {
             setOpenSnackBar({ isOpen: true, msg: msgDetail[0], type: 'error' });
@@ -173,11 +173,13 @@ export default function SportsFieldBooking() {
             setData([]);
             return;
         }
+
         if (requestBody.endTime > "23:00") {
             setOpenSnackBar({ isOpen: true, msg: msgDetail[5], type: 'error' });
             setIsSearchDisable(true);
             return;
         }
+
         if (searchData.startTime === null) {
             if (searchData.endTime !== null) {
                 setOpenSnackBar({ isOpen: true, msg: msgDetail[4], type: 'error' });
@@ -193,20 +195,19 @@ export default function SportsFieldBooking() {
                     setOpenSnackBar({ isOpen: true, msg: msgDetail[3], type: 'error' });
                     return;
                 }
-                setOpenSnackBar({ isOpen: false, msg: '', type: 'error', duration: 100 });
+
             }
         };
 
-        setOpenSnackBar(prev => ({ ...prev, isOpen: false, msg: '', type: 'info' }));
 
         //TODO: gọi API để gửi dữ liệu tới back-end
         setIsSearchDone(true);
         setIsSearchDisable(true);
-
+        setIsBusy(true);
         try {
 
             const response = await POST_SEARCH_FIELDS(ROUTES.SPORT_FIELDS + '/available', requestBody)
-            console.log("response", response);
+
             if (response.status === 201) {
                 setData(response.data.items);
                 setOpenSnackBar({ isOpen: true, msg: msgDetail[2], type: 'info' });
@@ -220,6 +221,7 @@ export default function SportsFieldBooking() {
         } finally {
             setIsSearchDone(false);
             setIsSearchDisable(false);
+            setIsBusy(false);
         }
     }
 
@@ -344,21 +346,23 @@ export default function SportsFieldBooking() {
                                                     <Grid size={{ xs: 24, md: 7 }}>
                                                         <SelectBox
                                                             icon="SportsSoccer"
-                                                            title="Chọn môn thể thao"
+                                                            titleValue="Chọn môn thể thao"
                                                             name="sportId"
                                                             options={resData.sportFields}
                                                             // value={searchData.sportValue}
                                                             onChange={(e: any) => handleSelectChange(e, "sportValue")}
+                                                            isBusy={isBusy}
                                                         />
                                                     </Grid>
                                                     <Grid size={{ xs: 24, md: 6 }} sx={{ width: "100%" }}>
                                                         <SelectBox
                                                             icon="Room"
-                                                            title="Chọn cụm sân"
+                                                            titleValue="Chọn cụm sân"
                                                             name="sportBranchId"
                                                             options={resData.branchs}
                                                             // value={searchData.branchValue}
                                                             onChange={(e: any) => handleSelectChange(e, "branchValue")}
+                                                            isBusy={isBusy}
                                                         />
                                                     </Grid>
                                                     <Grid size={{ xs: 24, md: 4 }}>
@@ -366,7 +370,8 @@ export default function SportsFieldBooking() {
                                                             label="Chọn ngày"
                                                             name="dayPicked"
                                                             onChange={handleDateChange}
-                                                        // value={searchData.dayPicked}
+                                                            // value={searchData.dayPicked}
+                                                            isBusy={isBusy}
                                                         />
                                                     </Grid>
                                                     <Grid container direction="row" size={{ xs: 24, md: 7 }}>
@@ -387,7 +392,8 @@ export default function SportsFieldBooking() {
                                                                 value={searchData.startTime}
                                                                 value2={searchData}
                                                                 onError={(e: any) => handleTimeError(e, "startTime")}
-                                                            // slotProps={{ inputLabel: { shrink: true } }}
+                                                                // slotProps={{ inputLabel: { shrink: true } }}
+                                                                isBusy={isBusy}
                                                             />
                                                         </Grid>
                                                         <Grid size={{ xs: 12, md: 12 }}>
@@ -400,6 +406,7 @@ export default function SportsFieldBooking() {
                                                                 value={searchData.endTime}
                                                                 value2={searchData}
                                                                 onError={(e: any) => handleTimeError(e, "endTime")}
+                                                                isBusy={isBusy}
                                                             />
                                                         </Grid>
                                                     </Grid>

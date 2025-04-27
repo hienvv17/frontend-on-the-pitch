@@ -11,7 +11,7 @@ moment.locale('vi');
 
 export default function TimePickerValue(props: any) {
 
-    // const now = moment('2025-04-23 16:01');
+    // const now = moment('2025-04-27 19:25');
     const now = moment();
     const isToday = props.selectedDate.isSame(now, 'day');
 
@@ -33,7 +33,7 @@ export default function TimePickerValue(props: any) {
                 maxTime={moment().hour(props.maxHour).startOf('hour')}
                 minTime={moment().hour(props.name === 'endTime' ? 6 : 5).startOf('hour')}
                 skipDisabled={true} // Ẩn các giá trị đã bị disable khỏi bộ chọn
-                disabled={isToday && now.hour() >= 22}
+                disabled={(props.isBusy || isToday && (now.hour() >= 22)) || (props.name === 'endTime' && !props.value2.startTime)}
                 closeOnSelect={false}
                 slotProps={{
                     textField: {
@@ -47,43 +47,31 @@ export default function TimePickerValue(props: any) {
                     },
                 }}
                 shouldDisableTime={(timeValue, clockType) => {
+
+                    const nowTimeValue = props.value2.startTime ? props.value2.startTime : now;
+
                     if (clockType === 'hours') {
-                        if (props.name === 'endTime') {
-                            if (props.value2.startTime) {
-                                return timeValue.hour() < props.value2.startTime.hour() + 1;
-                            }
-                            if (!isToday) {
-                                return false;
-                            }
-                            return timeValue.hour() < now.hour() + 1;
-                        }
                         if (!isToday) {
                             return false;
                         }
                         if (now.minute() >= 30) {
-                            return timeValue.hour() < now.hour() + 1;
+                            return props.name === 'endTime' ? timeValue.hour() < (nowTimeValue.hour() + 1) : timeValue.hour() < (now.hour() + 1);
                         } else
-                            return timeValue.hour() < now.hour();
+                            return props.name === 'endTime' ? timeValue.hour() < nowTimeValue.hour() : timeValue.hour() < now.hour();
                     }
+
                     if (clockType === 'minutes') {
-                        if (props.name === 'endTime') {
-                            if (props.value2.startTime) {
-                                return timeValue.hour() === props.value2.startTime.hour() + 1 && timeValue.minute() < props.value2.startTime.minute();
-                            }
-                            if (!isToday) {
-                                return false;
-                            }
-                            return timeValue.hour() === now.hour() + 1 && timeValue.minute() < now.minute();
-                        }
                         if (!isToday) {
                             return false;
                         }
-                        // if (now.minute() >= 30) {
-                        //     console.log("1")
-                        //     return timeValue.minute() < 30;
-                        // } else
-                        //     return timeValue.minute() < 30;
+                        if (props.name === 'endTime') {
+
+                            return (timeValue.hour() === (nowTimeValue.hour() + 1)) && timeValue.minute() < nowTimeValue.minute();
+
+                        }
+                        return (timeValue.hour() === now.hour()) && (timeValue.minute() < now.minute());
                     }
+
                     return false;
                 }}
             />

@@ -4,7 +4,7 @@ import { PROTECTED_ROUTES } from "./utility/constant";
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-
+  // console.log("pathname", pathname);
   // Check nếu URL bắt đầu bằng một trong các protected routes
   const isProtected = PROTECTED_ROUTES.some((route) =>
     pathname.startsWith(route)
@@ -15,6 +15,8 @@ export function middleware(request: NextRequest) {
       return NextResponse.redirect(new URL("/dat-san", request.url));
     }
   }
+
+  NextResponse.next();
 }
 
 // khi có request đến các path được chỉ định thì middleware kiểm tra

@@ -35,6 +35,7 @@ export default function DatePickerValue(props: any) {
                     return customWeekDays[day.day()]; // Đổi chữ thành CN, T2, T3...
                 }}
                 sx={{ width: "100%" }}
+                disabled={props.isBusy}
             />
         </LocalizationProvider>
     );

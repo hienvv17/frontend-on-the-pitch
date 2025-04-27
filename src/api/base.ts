@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import Cookies from "js-cookie";
-import { ACCESS_TOKEN, ROUTES } from "@/utility/constant";
+import { ACCESS_TOKEN } from "@/utility/constant";
 
 export type APIResponse<T = unknown> = {
   items?: T[];
@@ -54,7 +54,7 @@ export const privateApi = (subPath = ""): AxiosInstance => {
       return config;
     },
     (error) => {
-      // console.error("Request error:", error);
+      console.error("Request error:", error);
       return Promise.reject(error);
     }
   );
@@ -64,8 +64,9 @@ export const privateApi = (subPath = ""): AxiosInstance => {
     async (error) => {
       if (error.response) {
         if (error.response.status === 401) {
-          Cookies.remove(ACCESS_TOKEN);
-          window.location.href = ROUTES.HOME;
+          // Cookies.remove(ACCESS_TOKEN);
+          console.log("error", error.response);
+          // window.location.href = ROUTES.HOME;
         }
       }
       return checkErrorCode(error.response);
