@@ -1,14 +1,13 @@
-import { ROUTES } from "@/utility/constant";
 import { privateApi, publicApi } from "../base";
 import { UserUpdateData } from "@/types/UserType";
 
-const subPath = "users";
+const subPath = "";
 
 const useUserApiPublic = () => {
   const configApi = publicApi(subPath);
 
-  const GET_USER_PUBLIC = async () => {
-    const res = await configApi.get(ROUTES.USERS + "/profile");
+  const GET_USER_PUBLIC = async (url: string) => {
+    const res = await configApi.get(url);
     console.log("GET_USER_PUBLIC: ", res);
     return res.data;
   };
@@ -27,11 +26,11 @@ const useUserApiPrivate = () => {
 
   const GET_P = async (url: string) => {
     const res = await configApi.get(url);
-    console.log("res", res);
+    // console.log("res", res);
     return res.data;
   };
 
-  const POST_P = async (url: string, data: UserUpdateData) => {
+  const POST_P = async (url: string, data?: UserUpdateData) => {
     const response = await configApi.post(url, data);
 
     return response;

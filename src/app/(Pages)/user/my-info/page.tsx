@@ -14,13 +14,12 @@ import Image from 'next/image';
 import { useUserApiPrivate } from '@/api/user/user';
 import { UserInfo } from '@/types/UserType';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
+import { msgDetail, ROUTES } from '@/utility/constant';
 
 
 export default function MyInfo() {
 
-    const { user } = useContext(AppContext);
-
-    // const [userAvatar, setUserAvatar] = useState<string | null>(null);
+    const { user, setOpenSnackBar } = useContext(AppContext);
 
     const [userInfo, setUserInfo] = useState<UserInfo>({
         fullName: '',
@@ -29,32 +28,23 @@ export default function MyInfo() {
         email: '',
     });
 
+    // const [updateData, setUpdateData] = useState<UserUpdateData>({
+    //     fullName: '',
+    //     phoneNumber: '',
+    //     image: '',
+    // })
+
     const { GET_P } = useUserApiPrivate();
 
     useEffect(() => {
         const getData = async () => {
-            const data = await GET_P('/profile');
+            const data = await GET_P(ROUTES.USERS + "/profile");
             console.log('data', data.user);
             setUserInfo(data.user);
         };
-
-        // const storedAvatar = localStorage.getItem("userAvatar");
-
-
-        // if (storedAvatar) {
-        //     setUserAvatar(JSON.parse(storedAvatar));
-        // }
-
-        getData();
-
+        if (user)
+            getData();
     }, []);
-
-    // useEffect(() => {
-    //     if (!user) {
-    //         router.push("/"); // Điều hướng về trang chủ nếu không có user
-    //         return;
-    //     }
-    // }, [user]);
 
     const [selectedFile, setSelectedFile] = useState<File | null>(null);
     const [avatar, setAvatar] = useState<string | null>(null);
@@ -62,21 +52,36 @@ export default function MyInfo() {
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
         if (file) {
+            const maxSize = 2000 * 1024;
+            if (file.size > maxSize) {
+                setOpenSnackBar({ isOpen: true, msg: msgDetail[7], type: 'error' });
+                return;
+            }
+
+            setOpenSnackBar({ isOpen: false, msg: msgDetail[7], type: 'error' });
+
             const reader = new FileReader();
             reader.onloadend = () => {
                 setAvatar(reader.result as string); // base64 string
+                setUserInfo(prev => ({
+                    ...prev,
+                    image: reader.result as string
+                }))
             };
             reader.readAsDataURL(file);
 
-            const maxSize = 2000 * 1024;
-            if (file.size > maxSize) {
-                alert('File quá lớn. Vui lòng chọn file dưới 2 MB.');
-                return;
-            }
 
             setSelectedFile(file);
         }
     }
+
+    // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //     const { name, value } = e.target;
+    //     setUserInfo(prev => ({
+    //         ...prev,
+    //         [name]: value,
+    //     }));
+    // };
 
     const handleSave = async () => {
         //TODO: gửi thông tin dạng json
@@ -116,7 +121,7 @@ export default function MyInfo() {
                         </Grid>
                         :
 
-                        <Box sx={{ height: '100vh', width: '100%' }}>
+                        <Box sx={{ height: 'fit-content', width: '100%', my: "40px" }}>
                             <Grid
                                 container
                                 direction="row"
@@ -134,6 +139,7 @@ export default function MyInfo() {
                                     sx={{
                                         width: '90%',          // Hoặc cố định như 600px tuỳ thiết kế
                                         height: '90dvh',
+                                        borderRadius: "8px"
                                     }}
                                 >
 
@@ -152,8 +158,8 @@ export default function MyInfo() {
                                             sx={{
                                                 width: '100%',
                                                 backgroundColor: "var(--Primary-800)",
-                                                padding: "10px 30px",
-                                                borderRadius: "8px 8px 0px 0px"
+                                                padding: "15px 30px",
+                                                borderRadius: "8px 8px 0px 0px",
                                             }}
                                         >
                                             <PersonIcon sx={{ color: "var(--Primary-50)" }} />
@@ -366,14 +372,18 @@ export default function MyInfo() {
                                                         }}
                                                     >
                                                         <Grid size={6}>
-                                                            <TextField fullWidth label="Họ tên" id="fullName" value={userInfo?.fullName || ''}
+                                                            <TextField fullWidth label="Họ tên" name="fullName" value={userInfo?.fullName || ''}
+                                                                onChange={e => setUserInfo(prev => ({
+                                                                    ...prev,
+                                                                    fullName: e.target.value
+                                                                }))}
                                                                 slotProps={{
                                                                     inputLabel: { shrink: true }
                                                                 }}
                                                             />
                                                         </Grid>
                                                         <Grid size={6}>
-                                                            <TextField fullWidth disabled label="Email" id="email" value={userInfo?.email || ''}
+                                                            <TextField fullWidth disabled label="Email" name="email" value={userInfo?.email || ''}
                                                                 slotProps={{
                                                                     inputLabel: { shrink: true }
                                                                 }}
@@ -384,7 +394,7 @@ export default function MyInfo() {
                                                         <TextField
                                                             fullWidth
                                                             label="Số điện thoại"
-                                                            id="phoneNumber"
+                                                            name="phoneNumber"
                                                             value={userInfo?.phoneNumber || ''}
                                                             onChange={(e) => setUserInfo((prev) => ({
                                                                 ...prev, phoneNumber: e.target.value
@@ -417,8 +427,8 @@ export default function MyInfo() {
                                                 mt: 2
                                             }}
                                         >
-                                            <Button variant="contained" startIcon={<BorderColorRoundedIcon />}
-                                                sx={{ backgroundColor: "var(--Primary-500)" }}
+                                            <Button variant="outlined" startIcon={<BorderColorRoundedIcon />}
+                                                // sx={{ backgroundColor: "var(--Primary-500)" }}
                                                 onClick={handleSave}
                                             >
                                                 Cập nhật
