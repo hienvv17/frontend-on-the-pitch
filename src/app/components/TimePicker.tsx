@@ -55,9 +55,9 @@ export default function TimePickerValue(props: any) {
                             return false;
                         }
                         if (now.minute() >= 30) {
-                            return props.name === 'endTime' ? timeValue.hour() < (nowTimeValue.hour() + 1) : timeValue.hour() < (now.hour() + 1);
+                            return props.name === 'endTime' ? timeValue.hour() <= (nowTimeValue.hour() + 1) : timeValue.hour() < (now.hour() + 1);
                         } else
-                            return props.name === 'endTime' ? timeValue.hour() < nowTimeValue.hour() : timeValue.hour() < now.hour();
+                            return props.name === 'endTime' ? timeValue.hour() <= nowTimeValue.hour() : timeValue.hour() < now.hour();
                     }
 
                     if (clockType === 'minutes') {
@@ -68,8 +68,8 @@ export default function TimePickerValue(props: any) {
 
                             return (timeValue.hour() === (nowTimeValue.hour() + 1)) && timeValue.minute() < nowTimeValue.minute();
 
-                        }
-                        return (timeValue.hour() === now.hour()) && (timeValue.minute() < now.minute());
+                        } else
+                            return (timeValue.hour() === now.hour()) && (timeValue.minute() < now.minute());
                     }
 
                     return false;

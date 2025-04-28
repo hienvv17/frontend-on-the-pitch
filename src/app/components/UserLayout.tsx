@@ -54,11 +54,11 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
                 <ResponsiveAppBar />
                 {children}
                 <Footer />
-                <CustomSnackbar
-                    snackBar={openSnackbar}
-                    setOpenSnackBar={setOpenSnackBar}
-                />
             </ThemeProvider>
+            <CustomSnackbar
+                snackBar={openSnackbar}
+                setOpenSnackBar={setOpenSnackBar}
+            />
         </Box>
     );
 };

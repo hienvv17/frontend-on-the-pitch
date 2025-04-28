@@ -250,7 +250,15 @@ function ResponsiveAppBar() {
                         {
                             !!user?.id ?
                                 <>
-                                    <Tooltip title={user.email}>
+                                    <Tooltip
+                                        title={
+                                            <>
+                                                {user.fullName}
+                                                <br />
+                                                ({user.email})
+                                            </>
+                                        }
+                                    >
                                         <Grid2 direction="column" sx={{ width: "fit-content" }}>
                                             <Button
                                                 variant="contained"
@@ -284,17 +292,40 @@ function ResponsiveAppBar() {
                                                         :
                                                         <AccountCircleIcon fontSize="large" color="primary" />
                                                 }
-                                                <Typography
+                                                {/* <Typography
                                                     sx={{
                                                         display: { xs: 'none', sm: 'flex' },
-                                                        width: "inherit",
-                                                        textAlign: "center",
+                                                        width: "100px",
+                                                        // textAlign: "center",
                                                         ml: 1, // Tạo khoảng cách nhỏ giữa icon và chữ
                                                         color: "var(--Primary-500)",
+                                                        overflow: 'hidden',
+                                                        textOverflow: 'ellipsis',
+                                                        whiteSpace: 'nowrap', // Không xuống dòng
+
                                                     }}
                                                 >
                                                     {user.fullName}
-                                                </Typography>
+                                                </Typography> */}
+                                                <Box
+                                                    fontSize="0.95rem"
+                                                    fontWeight={800}
+                                                    component="div"
+                                                    overflow="hidden"
+                                                    whiteSpace="pre-line"
+                                                    textOverflow="ellipsis"
+                                                    color="var(--Primary-500)"
+                                                    width="150px"
+                                                    // height={60}
+                                                    sx={{
+                                                        fontWeight: 500,
+                                                        display: { xs: 'none', sm: "block" },
+                                                        whiteSpace: 'nowrap',
+                                                        ml: 1,
+                                                    }}
+                                                >
+                                                    {user.fullName}
+                                                </Box>
                                             </Button>
                                         </Grid2>
 

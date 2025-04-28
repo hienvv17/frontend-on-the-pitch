@@ -1,6 +1,8 @@
 "use client";
 
+import { ACCESS_TOKEN } from "@/utility/constant";
 import { createContext, useState, ReactNode, useEffect } from "react";
+import Cookies from "js-cookie";
 
 
 type SnackbarType = 'success' | 'error' | 'info' | 'warning';
@@ -62,7 +64,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
 
     const handleLogout = async () => {
         // Xóa cookie bằng cách đặt thời gian hết hạn về 0
-        document.cookie = "accessToken=; Path=/; Max-Age=0";
+        Cookies.remove(ACCESS_TOKEN);
         localStorage.removeItem("user");
         localStorage.removeItem("userAvatar");
         setUser(null);

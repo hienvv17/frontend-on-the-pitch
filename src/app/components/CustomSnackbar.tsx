@@ -4,7 +4,7 @@ import Snackbar from "@mui/material/Snackbar"
 // import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 // import ErrorIcon from '@mui/icons-material/Error';
 // import InfoIcon from '@mui/icons-material/Info';
-// import WarningIcon from '@mui/icons-material/Warning';
+import WarningIcon from '@mui/icons-material/Warning';
 
 // interface snackbar {
 //     isOpen: boolean,
@@ -47,20 +47,20 @@ const CustomSnackbar = (props: CustomSnackbarProps) => {
     // };
 
 
-    // const getIconColor = () => {
-    //     switch (type) {
-    //         case 'success':
-    //             return '#388e3c'; // Màu của biểu tượng thành công
-    //         case 'error':
-    //             return '#d32f2f'; // Màu của biểu tượng lỗi
-    //         case 'info':
-    //             return '#ffffff'; // Màu của biểu tượng thông tin
-    //         case 'warning':
-    //             return '#f57c00'; // Màu của biểu tượng cảnh báo
-    //         default:
-    //             return '#000000'; // Màu mặc định nếu không khớp với bất kỳ loại nào
-    //     }
-    // };
+    const getIconColor = () => {
+        switch (type) {
+            // case 'success':
+            //     return '#388e3c'; // Màu của biểu tượng thành công
+            // case 'error':
+            //     return '#d32f2f'; // Màu của biểu tượng lỗi
+            // case 'info':
+            //     return '#ffffff'; // Màu của biểu tượng thông tin
+            case 'warning':
+                return '#ffffff'; // Màu của biểu tượng cảnh báo
+            default:
+                return '#000000'; // Màu mặc định nếu không khớp với bất kỳ loại nào
+        }
+    };
 
     const getBackgroundColor = () => {
         switch (type) {
@@ -71,18 +71,18 @@ const CustomSnackbar = (props: CustomSnackbarProps) => {
             case 'info':
                 return 'var(--Primary-500)'; // Màu nền cho thông báo thông tin
             case 'warning':
-                return '#fff3cd'; // Màu nền cho thông báo cảnh báo
+                return '#ffad33'; // Màu nền cho thông báo cảnh báo
             default:
                 return '#ffffff'; // Màu nền mặc định nếu không khớp với bất kỳ loại nào
         }
     };
 
-    // const iconMapping = {
-    //     success: <CheckCircleIcon sx={{ color: getIconColor() }} />,
-    //     error: <ErrorIcon sx={{ color: getIconColor() }} />,
-    //     info: <InfoIcon sx={{ color: getIconColor() }} />,
-    //     warning: <WarningIcon sx={{ color: getIconColor() }} />,
-    // };
+    const iconMapping = {
+        // success: <CheckCircleIcon sx={{ color: getIconColor() }} />,
+        // error: <ErrorIcon sx={{ color: getIconColor() }} />,
+        // info: <InfoIcon sx={{ color: getIconColor() }} />,
+        warning: <WarningIcon sx={{ color: getIconColor() }} />,
+    };
 
     return <>
         <Snackbar
@@ -95,7 +95,7 @@ const CustomSnackbar = (props: CustomSnackbarProps) => {
                 onClose={handleSnackBarClose}
                 severity={type as AlertColor}
                 variant="filled"
-                // iconMapping={iconMapping}
+                iconMapping={iconMapping}
                 sx={{
                     width: '100%',
                     bgcolor: getBackgroundColor(),

@@ -12,14 +12,15 @@ import { AppContext } from '@/app/contexts/AppContext';
 import { useContext, useEffect, useState } from 'react';
 import Image from 'next/image';
 import { useUserApiPrivate } from '@/api/user/user';
-import { UserInfo } from '@/types/UserType';
+import { UserInfo, UserUpdateData } from '@/types/UserType';
 import AddAPhotoIcon from '@mui/icons-material/AddAPhoto';
+import ClearIcon from '@mui/icons-material/Clear';
 import { msgDetail, ROUTES } from '@/utility/constant';
 
 
 export default function MyInfo() {
 
-    const { user, setOpenSnackBar } = useContext(AppContext);
+    const { user, setUser, setOpenSnackBar } = useContext(AppContext);
 
     const [userInfo, setUserInfo] = useState<UserInfo>({
         fullName: '',
@@ -28,26 +29,45 @@ export default function MyInfo() {
         email: '',
     });
 
-    // const [updateData, setUpdateData] = useState<UserUpdateData>({
-    //     fullName: '',
-    //     phoneNumber: '',
-    //     image: '',
-    // })
+    const [updateData, setUpdateData] = useState<UserUpdateData>({
+        fullName: '',
+        phoneNumber: '',
+        image: '',
+    })
 
-    const { GET_P } = useUserApiPrivate();
+    const [isChange, setIsChange] = useState(true);
+
+    const [isUpdate, setIsUpdate] = useState(false);
+
+    const [isDiscard, setIsDiscard] = useState(true);
+
+    const { GET_P, POST_P } = useUserApiPrivate();
+
+    const userAvatar = JSON.parse(localStorage.getItem("userAvatar") ?? "");
 
     useEffect(() => {
+
         const getData = async () => {
             const data = await GET_P(ROUTES.USERS + "/profile");
-            console.log('data', data.user);
-            setUserInfo(data.user);
-        };
-        if (user)
-            getData();
-    }, []);
 
-    const [selectedFile, setSelectedFile] = useState<File | null>(null);
-    const [avatar, setAvatar] = useState<string | null>(null);
+            setUserInfo(data.user);
+            setUpdateData({
+                fullName: data.user.fullName,
+                phoneNumber: data.user.phoneNumber,
+                image: data.user.image ? data.user.image : userAvatar,
+            });
+            setUser((prev: any) => ({
+                ...prev,
+                fullName: data.user.fullName,
+                phoneNumber: data.user.phoneNumber,
+                image: data.user.image ? data.user.image : '',
+            }));
+        };
+        getData();
+    }, [isUpdate]);
+
+    // const [selectedFile, setSelectedFile] = useState<File | null>(null);
+    // const [avatar, setAvatar] = useState<string | null>(null);
 
     const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -62,8 +82,8 @@ export default function MyInfo() {
 
             const reader = new FileReader();
             reader.onloadend = () => {
-                setAvatar(reader.result as string); // base64 string
-                setUserInfo(prev => ({
+                // setAvatar(reader.result as string); // base64 string
+                setUpdateData(prev => ({
                     ...prev,
                     image: reader.result as string
                 }))
@@ -71,34 +91,78 @@ export default function MyInfo() {
             reader.readAsDataURL(file);
 
 
-            setSelectedFile(file);
+            setIsChange(false);
+            setIsDiscard(false);
         }
     }
 
-    // const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    //     const { name, value } = e.target;
-    //     setUserInfo(prev => ({
-    //         ...prev,
-    //         [name]: value,
-    //     }));
-    // };
+    const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        setIsChange(false);
+        setIsDiscard(false);
+        const { name, value } = e.target;
+        // console.log("handleChange", name, value);
+        if (name === "email") {
+            return;
+        }
+        setUpdateData(prev => ({
+            ...prev,
+            [name]: value,
+        }));
+
+    };
+
+    const validatePhone = (value: string) => {
+        const trimValue = value.replaceAll(" ", "");
+
+        if (trimValue === "") {
+            console.log("2value", value);
+            setOpenSnackBar({ isOpen: false, msg: msgDetail[8], type: 'error' });
+            return;
+        }
+
+        // const phoneRegex = /(?:\+84|0084|0)[235789][0-9]{1,2}[0-9]{7}(?:[^\d]+|$)/;  //cho phép cả số máy bàn
+        const phoneRegex = /^([+]?84|0)((3[2-9]{1})|(5[2689]{1})|(7[06789]{1})|(8[123458]{1})|(9[01236789]{1}))[0-9]{7}$/;  //chỉ cho phép số di động các nhà mạng Việt Nam
+        if (!phoneRegex.test(trimValue)) {
+            setOpenSnackBar({ isOpen: true, msg: msgDetail[8], type: 'error' });
+            setIsChange(true);
+        } else {
+            setOpenSnackBar({ isOpen: false, msg: msgDetail[8], type: 'error' });
+            setIsChange(false);
+        }
+    };
+
+    const handleBlur = () => {
+        validatePhone(updateData.phoneNumber); // Khi blur(nhấp chuột ra khỏi TextField) mới validate
+    };
 
     const handleSave = async () => {
-        //TODO: gửi thông tin dạng json
+        //TODO: gửi thông tin cập nhật tới back-end
         console.log("SAVE");
-        console.log("selectedFile", selectedFile);
-        console.log("avatar", avatar);
 
-        const formData = new FormData();
-        if (selectedFile) {
-            formData.append('image', selectedFile);
-        }
-        formData.append('fullName', userInfo.fullName)
-        formData.append('phoneNumber', userInfo.phoneNumber);
+        const updateUserData = async () => {
+            const data = await POST_P(ROUTES.USERS + "/update-profile", {
+                fullName: updateData.fullName,
+                phoneNumber: !updateData.phoneNumber ? '' : ('0' + updateData.phoneNumber.slice(-9)),
+                image: '',
+            });
+            console.log('status', data.status);
+            setIsUpdate(prev => !prev);
+            setIsDiscard(true);
+            setIsChange(true);
+            setOpenSnackBar({ isOpen: true, msg: msgDetail[11], type: 'info' });
+        };
+        updateUserData();
+    };
 
-        formData.forEach((value, key) => {
-            console.log(key, value);
-        });
+    const handleDiscard = () => {
+        setUpdateData({
+            fullName: userInfo.fullName,
+            phoneNumber: userInfo.phoneNumber,
+            image: userInfo.image ? userInfo.image : userAvatar,
+        })
+        setOpenSnackBar({ isOpen: true, msg: msgDetail[10], type: 'warning' });
+        setIsDiscard(true);
+        setIsChange(true);
     };
 
     return (
@@ -138,7 +202,7 @@ export default function MyInfo() {
                                     elevation={5}
                                     sx={{
                                         width: '90%',          // Hoặc cố định như 600px tuỳ thiết kế
-                                        height: '90dvh',
+                                        height: 'fit-content',
                                         borderRadius: "8px"
                                     }}
                                 >
@@ -220,9 +284,9 @@ export default function MyInfo() {
                                                         flexDirection="column"
                                                         alignItems="center"
                                                         width="100%"
-                                                        // height="340px"
-                                                        border="1px solid #eaeaea"
-                                                        borderRadius="10px"
+                                                    // height="340px"
+                                                    // border="1px solid #eaeaea"
+                                                    // borderRadius="10px"
                                                     >
                                                         <Box
                                                             display="flex"
@@ -239,13 +303,13 @@ export default function MyInfo() {
                                                                 flexDirection="column"
                                                                 alignItems="center"
                                                                 justifyContent="center"
-                                                                bgcolor={userInfo.image ? 'transparent' : "#f4f6f8"}
+                                                                bgcolor={updateData.image ? 'transparent' : "#f4f6f8"}
                                                                 borderRadius="100%"
                                                                 padding="10px"
                                                                 width={160}
                                                                 height={160}
                                                             >
-                                                                {userInfo.image ? (
+                                                                {updateData.image ? (
                                                                     <Box sx={{
                                                                         width: '100%',
                                                                         height: '100%',
@@ -255,7 +319,7 @@ export default function MyInfo() {
                                                                         overflow: 'hidden' // Thêm thuộc tính này để ẩn phần thừa của ảnh
                                                                     }}>
                                                                         <Image
-                                                                            src={userInfo.image}
+                                                                            src={updateData.image}
                                                                             // width={50}
                                                                             // height={50}
                                                                             placeholder='empty'
@@ -263,11 +327,12 @@ export default function MyInfo() {
                                                                                 width: '100%',
                                                                                 // height: 'auto',
                                                                                 // objectFit: 'scale-down'
+                                                                                objectFit: 'cover'
                                                                             }}
                                                                             alt="avatar"
-                                                                            priority={false}
-                                                                            layout='fill'
-                                                                            objectFit='cover'
+                                                                            fill
+                                                                            sizes="(max-width: 600px) 80vw, 200px" // Kích thước ảnh cho các màn hình khác nhau
+                                                                            priority={true}
                                                                         />
 
                                                                         <Box
@@ -296,15 +361,15 @@ export default function MyInfo() {
                                                                                 type="file"
                                                                                 onChange={handleFileChange}
                                                                             />
-                                                                            <Tooltip title="Change avatar" placement="top">
+                                                                            <Tooltip title="Chọn ảnh" placement="top">
                                                                                 <label htmlFor="change-avatar">
                                                                                     <IconButton component="span">
-                                                                                        <AddAPhotoIcon sx={{ fontSize: 25, color: 'white' }} />
+                                                                                        <AddAPhotoIcon sx={{ fontSize: 25, color: '#FFFFFF' }} />
                                                                                     </IconButton>
                                                                                 </label>
                                                                             </Tooltip>
                                                                             <Typography align="center" sx={{ fontSize: '14px', color: '#FFFFFF' }}>
-                                                                                Change Avatar
+                                                                                Đổi hình đại diện
                                                                             </Typography>
                                                                         </Box>
                                                                     </Box>
@@ -317,7 +382,7 @@ export default function MyInfo() {
                                                                             type="file"
                                                                             onChange={handleFileChange}
                                                                         />
-                                                                        <Tooltip title="Add avatar" placement="top">
+                                                                        <Tooltip title="Chọn ảnh" placement="top">
                                                                             <label htmlFor="upload-avatar">
                                                                                 <IconButton component="span">
                                                                                     <AddAPhotoIcon sx={{ fontSize: 25 }} />
@@ -325,16 +390,16 @@ export default function MyInfo() {
                                                                             </label>
                                                                         </Tooltip>
                                                                         <Typography align="center" sx={{ fontSize: '14px', color: '#72808d' }}>
-                                                                            Upload Avatar
+                                                                            Thêm hình đại diện
                                                                         </Typography>
                                                                     </>
                                                                 )}
                                                             </Box>
                                                         </Box>
                                                         <Typography align="center" sx={{ marginTop: '20px', fontSize: '14px', color: '#72808d' }}>
-                                                            *.jpeg, *.jpg, *.png.
+                                                            Dung lượng ảnh tối đa 2 MB
                                                             <br />
-                                                            Maximum 2 MB
+                                                            (*.jpeg, *.jpg, *.png.)
                                                         </Typography>
                                                     </Box>
                                                 </Grid>
@@ -372,11 +437,8 @@ export default function MyInfo() {
                                                         }}
                                                     >
                                                         <Grid size={6}>
-                                                            <TextField fullWidth label="Họ tên" name="fullName" value={userInfo?.fullName || ''}
-                                                                onChange={e => setUserInfo(prev => ({
-                                                                    ...prev,
-                                                                    fullName: e.target.value
-                                                                }))}
+                                                            <TextField fullWidth label="Họ tên" name="fullName" value={updateData.fullName || ''}
+                                                                onChange={handleChange}
                                                                 slotProps={{
                                                                     inputLabel: { shrink: true }
                                                                 }}
@@ -395,10 +457,9 @@ export default function MyInfo() {
                                                             fullWidth
                                                             label="Số điện thoại"
                                                             name="phoneNumber"
-                                                            value={userInfo?.phoneNumber || ''}
-                                                            onChange={(e) => setUserInfo((prev) => ({
-                                                                ...prev, phoneNumber: e.target.value
-                                                            }))}
+                                                            value={updateData?.phoneNumber || ''}
+                                                            onChange={handleChange}
+                                                            onBlur={handleBlur}
                                                             slotProps={{
                                                                 inputLabel: { shrink: true }
                                                             }}
@@ -421,18 +482,32 @@ export default function MyInfo() {
                                             <Divider orientation="horizontal" variant="middle"
                                                 sx={{ bgcolor: 'grey.300' }} />
                                         </Box>
-                                        <Grid container direction="row" justifyContent={"center"} alignItems={"center"}
+                                        <Grid container direction="row" spacing={4} justifyContent={"center"} alignItems={"center"}
                                             sx={{
                                                 width: '100%',
-                                                mt: 2
+                                                my: 2
                                             }}
                                         >
-                                            <Button variant="outlined" startIcon={<BorderColorRoundedIcon />}
-                                                // sx={{ backgroundColor: "var(--Primary-500)" }}
+
+                                            <Button variant="contained" startIcon={<BorderColorRoundedIcon />}
+                                                // sx={{ width: "100%" }}
                                                 onClick={handleSave}
+                                                disabled={isChange}
                                             >
                                                 Cập nhật
                                             </Button>
+
+
+
+                                            <Button variant="outlined" startIcon={<ClearIcon />}
+                                                // sx={{ backgroundColor: "var(--Primary-500)" }}
+                                                color="error"
+                                                onClick={handleDiscard}
+                                                disabled={isDiscard}
+                                            >
+                                                Hủy
+                                            </Button>
+
                                         </Grid>
 
                                     </Grid>

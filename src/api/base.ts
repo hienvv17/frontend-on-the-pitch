@@ -1,6 +1,6 @@
 import axios, { AxiosInstance, AxiosResponse } from "axios";
 import Cookies from "js-cookie";
-import { ACCESS_TOKEN } from "@/utility/constant";
+import { ACCESS_TOKEN, ROUTES } from "@/utility/constant";
 
 export type APIResponse<T = unknown> = {
   items?: T[];
@@ -18,7 +18,7 @@ export const publicApi = (subPath = "") => {
 
   api.interceptors.request.use(
     (config) => {
-      // console.log("Sending request to:", config);
+      console.log("Sending request to: " + config.baseURL + config.url);
       return config;
     },
     (error) => {
@@ -50,7 +50,7 @@ export const privateApi = (subPath = ""): AxiosInstance => {
     async (config) => {
       const accessToken = Cookies.get(ACCESS_TOKEN);
       if (config.headers) config.headers.authorization = `${accessToken}`;
-      // console.log("Sending request to:", config.baseURL, config.url);
+      console.log("Sending request to: " + config.baseURL + config.url);
       return config;
     },
     (error) => {
@@ -64,11 +64,14 @@ export const privateApi = (subPath = ""): AxiosInstance => {
     async (error) => {
       if (error.response) {
         if (error.response.status === 401) {
-          // Cookies.remove(ACCESS_TOKEN);
+          Cookies.remove(ACCESS_TOKEN);
           console.log("error", error.response);
-          // window.location.href = ROUTES.HOME;
+          localStorage.removeItem("user");
+          localStorage.removeItem("userAvatar");
+          window.location.href = ROUTES.HOME;
         }
       }
+      // console.log("error12", error.response);
       return checkErrorCode(error.response);
     }
   );

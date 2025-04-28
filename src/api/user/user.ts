@@ -31,9 +31,7 @@ const useUserApiPrivate = () => {
   };
 
   const POST_P = async (url: string, data?: UserUpdateData) => {
-    const response = await configApi.post(url, data);
-
-    return response;
+    return await configApi.post(url, JSON.stringify(data));
   };
 
   return { GET_P, POST_P };

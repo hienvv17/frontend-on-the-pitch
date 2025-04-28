@@ -15,14 +15,18 @@ export const DEFAULT_IMG =
   "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743151739/image_12_ub4gfu.png";
 
 export const msgDetail = [
-  "Vui lòng chọn môn thể thao.",
-  "Vui lòng chọn cụm sân.",
-  "Gửi yêu cầu thành công.",
-  "Giờ trả sân phải lớn hơn giờ vào sân ít nhất 1 giờ.",
-  "Giờ vào sân không hợp lệ, vui lòng chọn giờ khác.",
-  "Giờ trả sân không hợp lệ, vui lòng chọn giờ khác.",
-  "Đã hết giờ đặt sân cho hôm nay, vui lòng chọn ngày khác.",
-  "File quá lớn. Vui lòng chọn file dưới 2 MB.",
+  "Vui lòng chọn môn thể thao",
+  "Vui lòng chọn cụm sân",
+  "Gửi yêu cầu thành công",
+  "Giờ trả sân phải lớn hơn giờ vào sân ít nhất 1 giờ",
+  "Giờ vào sân không hợp lệ, vui lòng chọn giờ khác",
+  "Giờ trả sân không hợp lệ, vui lòng chọn giờ khác",
+  "Đã hết giờ đặt sân cho hôm nay, vui lòng chọn ngày khác",
+  "File quá lớn. Vui lòng chọn file dưới 2 MB",
+  "Số điện thoại không hợp lệ",
+  "Phiên hết hạn, bạn đã bị đăng xuất",
+  "Đã hủy thay đổi",
+  "Cập nhật thông tin tài khoản thành công",
 ];
 
 export const openTime = "05:00";
