@@ -32,7 +32,7 @@ export const publicApi = (subPath = "") => {
       return checkErrorCode(response);
     },
     (error) => {
-      // console.log("checkErrorCode(response)", error);
+      console.log("checkErrorCode(response)", error);
       return checkErrorCode(error.response);
     }
   );

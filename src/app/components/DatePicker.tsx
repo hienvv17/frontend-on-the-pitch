@@ -1,22 +1,28 @@
-import * as React from 'react';
-import moment, { Moment } from 'moment';
-import 'moment/locale/vi'; // Chỉ cần import nếu sử dụng ngôn ngữ khác mặc định (ví dụ: Tiếng Việt)
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterMoment } from '@mui/x-date-pickers/AdapterMoment';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
-import { viVN } from '@mui/x-date-pickers/locales';
+import React from "react";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
+import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import moment, { Moment } from "moment";
+import "moment/locale/vi";
+import { viVN } from "@mui/x-date-pickers/locales";
+import { IconButton, InputAdornment } from "@mui/material";
+import ClearIcon from "@mui/icons-material/Clear";
 
-// Thiết lập ngôn ngữ toàn cục (Ví dụ: Tiếng Việt)
-moment.locale('vi');
+type CustomDatePickerProps = {
+    label?: string;
+    name?: string;
+    value: Moment | null;
+    onChange: (value: Moment | null) => void;
+    [key: string]: any;
+};
 
-export default function DatePickerValue(props: any) {
-    const [value] = React.useState<Moment | null>(moment()); // Mặc định là hôm nay
-
-    // const handleChange = (newValue: Moment | null) => {
-    //     setValue(newValue);
-    //     console.log("value", newValue?.format('DD/MM/YYYY')); // In ra giá trị ngày mới chọn
-    // }
-
+const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
+    label,
+    name,
+    value,
+    onChange,
+    ...rest
+}) => {
     return (
         <LocalizationProvider
             dateAdapter={AdapterMoment}
@@ -24,19 +30,47 @@ export default function DatePickerValue(props: any) {
             localeText={viVN.components.MuiLocalizationProvider.defaultProps.localeText}
         >
             <DatePicker
-                label={props.label}
+
+                label={label}
                 value={value}
-                name={props.name}
-                onChange={props.onChange}
-                minDate={moment()} // Chặn các ngày nhỏ hơn hôm nay
+                name={name}
+                onChange={onChange}
+                minDate={moment()}
                 format="DD/MM/YYYY"
                 dayOfWeekFormatter={(day) => {
                     const customWeekDays = ["CN", "T2", "T3", "T4", "T5", "T6", "T7"];
-                    return customWeekDays[day.day()]; // Đổi chữ thành CN, T2, T3...
+                    return customWeekDays[day.day()];
                 }}
                 sx={{ width: "100%" }}
-                disabled={props.isBusy}
+                disabled={rest.isBusy}
+                views={["year", "month", "day"]}
+                slotProps={{
+                    textField: {
+                        fullWidth: true,
+                        error: false,
+                        InputProps: value && moment.isMoment(value) && value.isValid()
+                            ? {
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                onChange(null);
+                                            }}
+                                            size="small"
+                                            edge="end"
+                                        >
+                                            <ClearIcon fontSize="small" />
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }
+                            : undefined,
+                    },
+                }}
             />
         </LocalizationProvider>
     );
-}
+};
+
+export default CustomDatePicker;

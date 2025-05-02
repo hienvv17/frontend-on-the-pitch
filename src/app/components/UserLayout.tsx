@@ -43,6 +43,13 @@ const theme = createTheme({
             contrastText: '#041426',
         },
     },
+    components: {
+        MuiInputBase: {
+            defaultProps: {
+                disableInjectingGlobalStyles: true,
+            },
+        },
+    },
 });
 
 const UserLayout = ({ children }: { children: React.ReactNode }) => {
@@ -51,6 +58,7 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
     return (
         <Box sx={{ display: "flex", flexDirection: 'column', bgcolor: 'white', minHeight: '100vh' }}>
             <ThemeProvider theme={theme}>
+
                 <ResponsiveAppBar />
                 {children}
                 <Footer />

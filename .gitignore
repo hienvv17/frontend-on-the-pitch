@@ -31,6 +31,8 @@ yarn-error.log*
 
 # local draft folders
 **/draft/
+.history
+**/demo/
 
 # vercel
 .vercel

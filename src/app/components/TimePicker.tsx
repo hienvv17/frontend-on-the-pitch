@@ -13,8 +13,8 @@ export default function TimePickerValue(props: any) {
 
     // const now = moment('2025-04-27 19:25');
     const now = moment();
-    const isToday = props.selectedDate.isSame(now, 'day');
-
+    const isToday = props.selectedDate && props.selectedDate.isSame(now, 'day');
+    // console.log("TimePickerValue -> props", props)
     return (
         <LocalizationProvider
             dateAdapter={AdapterMoment}
@@ -52,17 +52,17 @@ export default function TimePickerValue(props: any) {
 
                     if (clockType === 'hours') {
                         if (!isToday) {
-                            return false;
+                            return props.name === 'endTime' ? timeValue.hour() <= nowTimeValue.hour() : false;
                         }
                         if (now.minute() >= 30) {
-                            return props.name === 'endTime' ? timeValue.hour() <= (nowTimeValue.hour() + 1) : timeValue.hour() < (now.hour() + 1);
+                            return props.name === 'endTime' ? timeValue.hour() < (nowTimeValue.hour() + 1) : timeValue.hour() < (now.hour() + 1);
                         } else
                             return props.name === 'endTime' ? timeValue.hour() <= nowTimeValue.hour() : timeValue.hour() < now.hour();
                     }
 
                     if (clockType === 'minutes') {
                         if (!isToday) {
-                            return false;
+                            return (timeValue.hour() === (nowTimeValue.hour() + 1)) && timeValue.minute() < nowTimeValue.minute();
                         }
                         if (props.name === 'endTime') {
 
