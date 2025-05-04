@@ -5,7 +5,7 @@ import Footer from "./components/Footer";
 import ResponsiveAppBar from "./components/ResponsiveAppBar";
 import { grey } from "@mui/material/colors";
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
-import WhatshotIcon from '@mui/icons-material/Whatshot';
+// import WhatshotIcon from '@mui/icons-material/Whatshot';
 import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import React, { useEffect, useRef, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
@@ -508,7 +508,7 @@ export default function HomePage() {
                 />
 
                 {/* Chip 2 */}
-                <Chip
+                {/* <Chip
                   label="Sân hot"
                   color={chipSelected[sportType as keyof typeof chipSelected].chipNum === 2 ? "primary" : "default"}
                   variant={chipSelected[sportType as keyof typeof chipSelected].chipNum === 2 ? "filled" : "outlined"}
@@ -520,7 +520,7 @@ export default function HomePage() {
                     },
                   }}
                   onClick={() => handleChipClick(sportType, "chip2", 2, index)}
-                />
+                /> */}
 
                 {/* Chip 3 */}
                 {/* <Chip

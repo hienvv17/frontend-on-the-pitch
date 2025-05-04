@@ -1,3 +1,5 @@
+import { closeTime, openTime } from "./constant";
+
 type TimeSlot = {
   id: number;
   startTime: string;
@@ -46,13 +48,20 @@ export const calculateUnitPrice = (
     const duration = next - current;
     const hours = duration / 60;
 
-    const matchedSlot = timeSlots.find((slot) => {
-      const slotStart = toMinutes(slot.startTime);
-      const slotEnd = toMinutes(slot.endTime);
-      return current >= slotStart && current < slotEnd;
-    });
+    const matchedSlot = !timeSlots
+      ? ({
+          id: 0,
+          startTime: openTime,
+          endTime: closeTime,
+          pricePerHour: defaultPricePerHour,
+        } as TimeSlot)
+      : timeSlots.find((slot) => {
+          const slotStart = toMinutes(slot.startTime);
+          const slotEnd = toMinutes(slot.endTime);
+          return current >= slotStart && current < slotEnd;
+        });
 
-    const pricePerHour = matchedSlot
+    const pricePerHour = matchedSlot?.pricePerHour
       ? matchedSlot.pricePerHour
       : defaultPricePerHour;
     const blockTotal = Math.round(pricePerHour * hours);
@@ -63,7 +72,7 @@ export const calculateUnitPrice = (
     if (
       lastBlock &&
       lastBlock.price === pricePerHour &&
-      lastBlock.source === (matchedSlot ? "slot" : "default")
+      lastBlock.source === (matchedSlot && timeSlots ? "slot" : "default")
     ) {
       lastBlock.to = toTimeString(next);
       lastBlock.hours += hours;
@@ -75,7 +84,7 @@ export const calculateUnitPrice = (
         price: pricePerHour,
         hours,
         total: blockTotal,
-        source: matchedSlot ? "slot" : "default",
+        source: matchedSlot && timeSlots ? "slot" : "default",
       });
     }
 

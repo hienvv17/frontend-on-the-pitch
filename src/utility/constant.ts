@@ -31,7 +31,7 @@ export const msgDetail = [
   "Email hợp lệ",
   "Vui lòng chọn thời gian thuê sân ít nhất 1 giờ",
   "Vui lòng chọn ngày",
-  "Đang xử lý yêu cầu",
+  "Đang xử lý...",
 ];
 
 export const openTime = "05:00";

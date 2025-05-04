@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import { Button, Typography, Box, Dialog, DialogActions, DialogContent, DialogTitle, Divider } from "@mui/material";
 import { format, addMinutes, isEqual } from "date-fns";
 import Grid from '@mui/material/Grid2';
@@ -36,7 +36,7 @@ interface TimeSlotSelectorProps {
 }
 
 export default function TimeSlotSelector({ disabledSlots = [], open, onClose, ...rest }: TimeSlotSelectorProps) {
-  console.log("TimeSlotSelector ->rest", rest.bookingData);
+  // console.log("TimeSlotSelector ->rest", rest.searchData);
 
   const { setOpenSnackBar } = useContext(AppContext);
 
@@ -46,9 +46,12 @@ export default function TimeSlotSelector({ disabledSlots = [], open, onClose, ..
 
   const timeSlots = generateTimeSlots();
 
-  // useEffect(() => {
-  //   console.log("selectedSlots", rest.selectedSlots);
-  // }, [rest.selectedSlots]);
+  useEffect(() => {
+    rest.setBookingData((prev: any) => ({
+      ...prev,
+      bookingDate: rest.searchData.dayPicked !== null ? rest.searchData.dayPicked.format("YYYY-MM-DD") : '',
+    }));
+  }, []);
 
 
   const isSlotSelected = (slot: Date) =>
@@ -91,7 +94,7 @@ export default function TimeSlotSelector({ disabledSlots = [], open, onClose, ..
       ...prev,
       startTime: '',
       endTime: '',
-      bookingDate: '',
+      bookingDate: rest.searchData.dayPicked !== null ? rest.searchData.dayPicked.format("YYYY-MM-DD") : '',
       totalPrice: 0,
       email: '',
       sportFieldId: 0
@@ -99,7 +102,7 @@ export default function TimeSlotSelector({ disabledSlots = [], open, onClose, ..
 
     rest.setSelectedSlots([]);
     rest.setStartSlot(null);
-    rest.setSelectedDate(null);
+    rest.setSelectedDate(rest.searchData.dayPicked);
     setOpenSnackBar({ isOpen: false, msg: msgDetail[14], type: 'error' });
     onClose(); // Đóng Dialog
   };
@@ -166,10 +169,10 @@ export default function TimeSlotSelector({ disabledSlots = [], open, onClose, ..
   }
 
 
-  console.log("rest.selectedDate", rest.selectedDate);
+  // console.log("rest.selectedDate", rest.selectedDate);
 
   const handleDateChange = (e: any) => {
-    console.log("handleDateChange ->e", e);
+    // console.log("handleDateChange ->e", e);
     const value = e === null ? e : moment(e).format("YYYY-MM-DD");
     rest.setSelectedDate(e);
     rest.setBookingData((prev: any) => ({

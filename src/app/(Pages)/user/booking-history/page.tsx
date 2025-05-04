@@ -45,7 +45,7 @@ export default function BookingHistory() {
             setHistory(data.data.bookingHistories[0]);
         };
         getData();
-        console.log("history", history);
+        // console.log("history", history);
     }, []);
 
     const handleChangePage = () => {

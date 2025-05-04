@@ -17,6 +17,7 @@ import { AppContext } from "@/app/contexts/AppContext";
 import OrderPopUp from "@/app/components/OrderPopUp";
 import TimeSlotSelector from "@/app/components/TimeSlotSelector";
 import CustomDatePicker from "@/app/components/DatePicker";
+import PaymentPopUp from "@/app/components/PaymentPopUp";
 
 
 
@@ -105,7 +106,7 @@ export default function SportsFieldBooking() {
             return;
         }
         setIsSearchDisable(false);
-        setOpenSnackBar({ isOpen: false, msg: msgDetail[6], type: 'error' });
+        setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: 'info' });
     }, [searchData.dayPicked])
 
     useEffect(() => {
@@ -168,10 +169,11 @@ export default function SportsFieldBooking() {
             ...prev,
             [name]: e ? e.value : e,
         }));
+        setData([]);
     };
 
     const handleDateChange = (e: any) => {
-        console.log("handleDateChange ->e", e);
+        // console.log("handleDateChange ->e", e);
         const value = e === null ? e : moment(e, "YYYY-MM-DD");
         setSelectedDate(value)
         setSearchData((prev) => ({
@@ -194,7 +196,7 @@ export default function SportsFieldBooking() {
             endTime: formatTime(searchData.endTime) as string,
         }
 
-        console.log("searchSubmit -> requestBody", requestBody);
+        // console.log("searchSubmit -> requestBody", requestBody);
 
         if (requestBody.branchId === 0) {
             setOpenSnackBar({ isOpen: true, msg: msgDetail[1], type: 'error' });
@@ -207,10 +209,10 @@ export default function SportsFieldBooking() {
                 try {
                     if (!requestBody.date && !requestBody.sportCategoryId && !requestBody.startTime && !requestBody.endTime) {
                         response = await GET_OPTIONS(ROUTES.SPORT_FIELDS + `/${requestBody.branchId}`);
-                        console.log("GET_OPTIONS response", response);
+                        // console.log("GET_OPTIONS response", response);
                     }
                     else {
-                        setOpenSnackBar({ isOpen: false, msg: msgDetail[1], type: 'error' });
+                        setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: 'info' });
 
                         if (requestBody.sportCategoryId === 0) {
                             setOpenSnackBar({ isOpen: true, msg: msgDetail[0], type: 'error' });
@@ -253,9 +255,9 @@ export default function SportsFieldBooking() {
                         setIsSearchDone(true);
                         setIsSearchDisable(true);
                         setIsBusy(true);
-                        console.log("requestBody", requestBody);
+                        // console.log("requestBody", requestBody);
                         response = await POST_SEARCH_FIELDS(ROUTES.SPORT_FIELDS + '/available', requestBody)
-                        console.log("POST_SEARCH_FIELDS requestBody", response);
+                        // console.log("POST_SEARCH_FIELDS requestBody", response);
                     }
 
                     setBookingData(prev => ({
@@ -267,13 +269,13 @@ export default function SportsFieldBooking() {
                     }));
 
                     if (response.status === 201) {
-                        console.log(response);
+                        // console.log(response);
                         setData(response.data.items);
                         setOpenSnackBar({ isOpen: true, msg: msgDetail[2], type: 'info' });
                         return;
                     }
                     else if (response.message === "Success") {
-                        console.log(response);
+                        // console.log(response);
                         setData(response.items);
                         setOpenSnackBar({ isOpen: true, msg: msgDetail[2], type: 'info' });
                         return;
@@ -328,8 +330,8 @@ export default function SportsFieldBooking() {
     };
 
     const handleClickOpen = (field: any, branch: any) => {
-        console.log("->field", field);
-        console.log("->branch", branch);
+        // console.log("->field", field);
+        // console.log("->branch", branch);
         // console.log("->bookingData", bookingData);
         setDialogData({
             field,
@@ -350,20 +352,20 @@ export default function SportsFieldBooking() {
 
     const [confirmOrder, setConfirmOrder] = useState(false);
 
-    useEffect(() => {
-        const createOrder = async () => {
-            console.log("created");
-        };
+    // useEffect(() => {
+    //     const createOrder = async () => {
+    //         console.log("created");
+    //     };
 
-        if (confirmOrder) {
-            console.log("bookingData", bookingData);
-            //TODO: gọi API đặt sân
-            createOrder();
-        }
+    //     if (confirmOrder) {
+    //         console.log("bookingData", bookingData);
+    //         //TODO: gọi API đặt sân
+    //         createOrder();
+    //     }
 
 
-        setConfirmOrder(false);
-    }, [confirmOrder]);
+    //     // setConfirmOrder(false);
+    // }, [confirmOrder]);
 
     const handleConfirmOrder = () => {
         // console.log("confirmOder", bookingData);
@@ -376,6 +378,11 @@ export default function SportsFieldBooking() {
             email: tempEmail,
         }));
         setConfirmOrder(true);
+    };
+
+    const handleClosePayment = () => {
+        // console.log("confirmOder", bookingData);
+        setConfirmOrder(false);
     };
 
     return (
@@ -624,6 +631,7 @@ export default function SportsFieldBooking() {
                     setBookingData={setBookingData}
                     selectedDate={selectedDate}
                     setSelectedDate={setSelectedDate}
+                    searchData={searchData}
                 // orderInfo={bookingData}
                 // setBookingData={setBookingData}
                 />
@@ -647,6 +655,13 @@ export default function SportsFieldBooking() {
                     handleOpenDialog2={handleOpenDialog2}
                     setTempEemail={setTempEemail}
                     setSelectedDate={setSelectedDate}
+                    searchData={searchData}
+                />
+                <PaymentPopUp
+                    title="Quét mã thanh toán"
+                    open={confirmOrder}
+                    onClose={handleClosePayment}
+                    bookingData={bookingData}
                 />
             </UserLayout >
         </>

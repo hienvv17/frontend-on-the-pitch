@@ -82,12 +82,12 @@ export default function OrderPopUp(props: any) {
         setEmail('');
         setIsDisableBtn(true);
         setOpenSnackBar({ isOpen: false, msg: '', type: 'error' });
-        props.setSelectedDate(null);
+        props.setSelectedDate(props.searchData.dayPicked);
         props.setBookingData((prev: any) => ({
             ...prev,
             startTime: '',
             endTime: '',
-            bookingDate: '',
+            bookingDate: props.searchData.dayPicked !== null ? props.searchData.dayPicked.format("YYYY-MM-DD") : '',
             totalPrice: 0,
             email: '',
             sportFieldId: 0

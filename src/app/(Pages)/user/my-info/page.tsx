@@ -49,7 +49,7 @@ export default function MyInfo() {
 
         const getData = async () => {
             const data = await GET_P(ROUTES.USERS + "/profile");
-
+            // console.log("my-info -> data", data);
             setUserInfo(data.user);
             setUpdateData({
                 fullName: data.user.fullName,
@@ -115,7 +115,7 @@ export default function MyInfo() {
         const trimValue = value.replaceAll(" ", "");
 
         if (trimValue === "") {
-            console.log("2value", value);
+            // console.log("2value", value);
             setOpenSnackBar({ isOpen: false, msg: msgDetail[8], type: 'error' });
             return;
         }
@@ -137,7 +137,7 @@ export default function MyInfo() {
 
     const handleSave = async () => {
         //TODO: gửi thông tin cập nhật tới back-end
-        console.log("SAVE");
+        // console.log("SAVE");
 
         const updateUserData = async () => {
             const data = await POST_P(ROUTES.USERS + "/update-profile", {

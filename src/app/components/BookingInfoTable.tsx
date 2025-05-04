@@ -47,8 +47,10 @@ export default function BookingInfoTable(props: any) {
     // console.log("props.selectedSlots[0]", props.selectedSlots);
 
     // const unitPrice = props.unitPrice * 1000;
+    // console.log("!props.data.field.timsSlots = ", !props.data.field.timsSlots);
 
-    const result = calculateUnitPrice(props.data.field.timsSlots, props.orderInfo.startTime, props.orderInfo.endTime, Number(props.data.field.defaultPrice));
+    const result =
+        calculateUnitPrice(props.data.field.timsSlots, props.orderInfo.startTime, props.orderInfo.endTime, Number(props.data.field.defaultPrice / 1000)); // nếu be có update thì xóa /1000
     // console.log("result", result);
 
     // số giờ thuê

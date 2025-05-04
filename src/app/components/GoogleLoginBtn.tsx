@@ -75,6 +75,7 @@ export default function GoogleLoginBtn() {
 
             localStorage.setItem("userAvatar", JSON.stringify(data?.user.photoURL));
             setUser(response.user);
+            console.log("Login successfully");
             window.location.reload();
         } catch (error) {
             console.error("Login failed", error);
