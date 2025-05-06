@@ -7,7 +7,7 @@ export function middleware(request: NextRequest) {
   // console.log("pathname", pathname);
   // Check nếu URL bắt đầu bằng một trong các protected routes
   const isProtected = PROTECTED_ROUTES.some((route) =>
-    pathname.startsWith(route)
+    pathname.startsWith(route),
   );
 
   if (isProtected) {

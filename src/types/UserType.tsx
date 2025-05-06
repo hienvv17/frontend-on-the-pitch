@@ -1,11 +1,11 @@
 interface BaseUser {
-    fullName: string;
-    phoneNumber: string;
-    image: string;
+  fullName: string;
+  phoneNumber: string;
+  image: string;
 }
 
 interface Info extends BaseUser {
-    email: string;
+  email: string;
 }
 
 // interface Create extends BaseUser {

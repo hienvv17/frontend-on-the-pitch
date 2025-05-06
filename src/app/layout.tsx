@@ -4,8 +4,6 @@ import "./globals.css";
 import QueryProvider from "@/Provider/QueryProvider";
 import { AppProvider } from "./contexts/AppContext";
 
-
-
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
   variable: "--font-geist-sans",
@@ -32,14 +30,9 @@ export default function RootLayout({
         <body
           className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         >
-          <AppProvider>
-
-            {children}
-
-          </AppProvider>
+          <AppProvider>{children}</AppProvider>
         </body>
       </html>
     </QueryProvider>
   );
 }
-

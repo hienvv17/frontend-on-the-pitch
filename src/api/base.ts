@@ -24,7 +24,7 @@ export const publicApi = (subPath = "") => {
     (error) => {
       // console.error("Request error:", error);
       return Promise.reject(error);
-    }
+    },
   );
 
   api.interceptors.response.use(
@@ -34,7 +34,7 @@ export const publicApi = (subPath = "") => {
     (error) => {
       console.log("checkErrorCode(response)", error);
       return checkErrorCode(error.response);
-    }
+    },
   );
 
   return api;
@@ -56,7 +56,7 @@ export const privateApi = (subPath = ""): AxiosInstance => {
     (error) => {
       console.error("Request error:", error);
       return Promise.reject(error);
-    }
+    },
   );
 
   api.interceptors.response.use(
@@ -73,7 +73,7 @@ export const privateApi = (subPath = ""): AxiosInstance => {
       }
       // console.log("error12", error.response);
       return checkErrorCode(error.response);
-    }
+    },
   );
 
   return api;

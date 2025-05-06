@@ -6,7 +6,7 @@ export function CardNews2(props: any) {
   return (
     <Card
       sx={{
-        maxWidth: '300px',
+        maxWidth: "300px",
         height: "100%",
         // margin: 4,
         pt: { xs: 2, sm: 4, md: 1 },
@@ -14,10 +14,10 @@ export function CardNews2(props: any) {
         borderRadius: 0,
         position: "relative",
         aspectRatio: "1/1",
-        overflow: 'hidden',
+        overflow: "hidden",
         scale: 0.87,
         justifyItems: "center",
-        background: "none"
+        background: "none",
       }}
     >
       <CardMedia
@@ -38,10 +38,8 @@ export function CardNews2(props: any) {
           backgroundPosition: "center",
           boxShadow: "0 8px 40px -12px rgba(0,0,0,0.3)",
           transition: "0.3s",
-
         }}
       />
-
     </Card>
   );
 }

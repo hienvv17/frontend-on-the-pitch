@@ -34,7 +34,7 @@ export const calculateUnitPrice = (
   timeSlots: TimeSlot[],
   start: string,
   end: string,
-  defaultPricePerHour = 1000
+  defaultPricePerHour = 1000,
 ): { total: number; breakdown: PriceBlock[] } => {
   const startMins = toMinutes(start);
   const endMins = toMinutes(end);
