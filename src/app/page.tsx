@@ -220,7 +220,7 @@ export default function HomePage() {
 
   const [selectedCarouselIndex, setSelectedCarouselIndex] = useState(0); // Xác định Carousel nào được chọn
   const carouselRefs = useRef<(Slider | null)[]>(
-    Array.from({ length: 3 }, () => null),
+    Array.from({ length: 3 }, () => null)
   ); // Mảng ref chứa 3 Carousel
 
   // Khi num thay đổi, chỉ reset Carousel tương ứng
@@ -238,7 +238,7 @@ export default function HomePage() {
     sport: string,
     chipKey: string,
     chipNum: number,
-    index: number,
+    index: number
   ) => {
     setSelectedCarouselIndex(index);
     setChipSelected((prevState) => ({
@@ -1404,7 +1404,7 @@ export default function HomePage() {
                           textOverflow: "ellipsis",
                         }}
                       >
-                        "{review.comment}"
+                        {review.comment}
                       </Typography>
                     </Paper>
                   </motion.div>
@@ -1422,3 +1422,4 @@ export default function HomePage() {
     </ThemeProvider>
   );
 }
+
