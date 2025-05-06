@@ -351,7 +351,7 @@ export default function HomePage() {
 
             }}
           >
-            <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
+            <motion.div initial={{ opacity: 0.1, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8 }}>
               <Typography
                 variant="h1"
                 sx={{
@@ -425,7 +425,7 @@ export default function HomePage() {
               </motion.div>
             </Box>
 
-            <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 1.5 }}>
+            <motion.div initial={{ opacity: 1 }} animate={{ opacity: 1 }} transition={{ duration: 1, delay: 1.5 }}>
               <Box
                 sx={{
                   position: "absolute",
