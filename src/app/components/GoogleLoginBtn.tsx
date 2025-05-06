@@ -102,7 +102,7 @@ export default function GoogleLoginBtn() {
                     height: "46px",
                     gap: "10px",
                     borderRadius: "8px",
-                    minWidth: { xs: "60px", sm: "246px" }, //  Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
+                    minWidth: { xs: "60px", sm: "140px" }, //  Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
                     display: "inline-flex",
                     justifyContent: "center",
                     p: "6px",
@@ -129,12 +129,12 @@ export default function GoogleLoginBtn() {
                                 // ml: -1.2,
                             }}
                         >
-                            <Image alt="googleIcon" src="/icon/googleIcon.svg" width={32} height={32} />
+                            <Image alt="googleIcon" src="/icon/googleIcon.svg" width={24} height={24} />
                         </Icon>
                         {!isSmallScreen &&
                             <>
                                 <Typography sx={{ visibility: isLoading ? "hidden" : "visible", color: "var(--Primary-900)" }}>
-                                    Đăng nhập với Google
+                                    Đăng nhập
                                 </Typography>
                             </>
                         }

@@ -40,10 +40,12 @@ import {  Typography,
   IconButton,
   Avatar,
   Badge,
-  Divider,
   Grid2,Stack, } from "@mui/material";
   import { motion } from "framer-motion"
-import Footer from "./components/Footer";
+
+import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers"
+import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs"
+import dayjs from "dayjs"
 import ResponsiveAppBar from "./components/ResponsiveAppBar";
 import { grey } from "@mui/material/colors";
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
@@ -57,7 +59,7 @@ import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ScrollToTopBtn from "./components/ScrollToTopBtn";
-
+import Footer from "./components/Footer";
 const HeroVideo = styled("video")({
   position: "absolute",
   width: "100%",
@@ -136,7 +138,7 @@ export default function HomePage() {
   const [sportTab, setSportTab] = useState(0)
   const [branch, setBranch] = useState("")
   const [sport, setSport] = useState("")
-  // const [date, setDate] = useState(dayjs())
+  const [date, setDate] = useState(dayjs())
   const [courtType, setCourtType] = useState("")
   const bookingFormRef = useRef(null)
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"))
@@ -279,49 +281,195 @@ export default function HomePage() {
   const featuredCourts = [
     {
       id: 1,
-      name: "Premier Soccer Field",
+      name: "Sân nhân tạo Star",
       image: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
           backgroundSize: "cover", // Tỷ lệ ảnh",
-      nextAvailable: "2:00 PM Today",
-      type: "Soccer",
-      size: "11-a-side",
+      nextAvailable: "2:00 PM ",
+      type: "Bóng đá",
+      size: "Sân 11",
     },
     {
       id: 2,
-      name: "Center Court Tennis",
+      name: "Cầu lông Tiến Minh",
             image: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
 
-      nextAvailable: "3:30 PM Today",
+      nextAvailable: "3:30 PM ",
       type: "Tennis",
-      size: "Singles/Doubles",
+      size: "Đơn/Đôi",
+
     },
     {
       id: 3,
-      name: "Golden Badminton Arena",
+      name: "Tenis Hoàng Gia",
             image: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
 
-      nextAvailable: "5:00 PM Today",
-      type: "Badminton",
-      size: "Doubles",
+      nextAvailable: "5:00 PM ",
+      type: "Cầu lông",
+      size: "Đôi",
     },
     {
       id: 4,
-      name: "Urban Soccer Field",
+      name: "Sân nhân tạo Gadent",
             image: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
 
-      nextAvailable: "6:30 PM Today",
-      type: "Soccer",
-      size: "7-a-side",
+      nextAvailable: "6:30 PM ",
+      type: "Bóng đá",
+      size: "Sân 7",
     },
     {
       id: 5,
       name: "Elite Tennis Club",
             image: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
 
-      nextAvailable: "10:00 AM Tomorrow",
+      nextAvailable: "10:00 AM ",
       type: "Tennis",
-      size: "Singles/Doubles",
+      size: "Đơn/Đôi",
     },
+  ]
+  const soccerFields = [
+    {
+      id: 1,
+      name: "Sân cỏ nhân tạo Star",
+      image: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
+      type: "Sân 11",
+      branch: "Central Branch",
+      price: "960.000đ/giờ",
+    },
+    {
+      id: 2,
+      name: "Sân cỏ nhân tạo Star",
+      image: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
+      type: "Sân 7",
+      branch: "Riverside Branch",
+      price: "560.000đ/giờ",
+    },
+    {
+      id: 3,
+      name: "Sân cỏ nhân tạo Star",
+      image: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
+      type: "Sân 5",
+      branch: "Western Branch",
+      price: "150.000đ/giờ",
+    },
+  ]
+  
+  const badmintonCourts = [
+    {
+      id: 1,
+      name: "Cầu lông Tiến Minh",
+      image: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
+      type: "Đôi",
+      branch: "Central Branch",
+      price: "250.000đ/giờ",
+    },
+    {
+      id: 2,
+      name: "Cầu lông Tiến Minh",
+
+      image: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
+      type: "Đơn/Đôi",
+      branch: "Eastern Branch",
+      price: "560.000đ/giờ",
+    },
+    {
+      id: 3,
+      name: "Cầu lông Tiến Minh",
+
+      image: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
+      type: "Giải đấu",
+      branch: "Northern Branch",
+      price: "1.670.000đ/giờ",
+    },
+  ]
+  
+  const tennisCourts = [
+    {
+      id: 1,
+      name: "Hoang Gia Tennis Club",
+      image: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
+      type: "Sân đất",
+      branch: "Southern Branch",
+      price: "270.000đ/giờ",
+    },
+    {
+      id: 2,
+      name: "Hoang Gia Tennis Club",
+      image: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
+      type: "Sân cứng",
+      branch: "Central Branch",
+      price: "470.000đ/giờ",
+    },
+    {
+      id: 3,
+      name: "Hoang Gia Tennis Club",
+      image: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
+      type: "Sân cỏ",
+      branch: "Premium Branch",
+      price: "870.000đ/giờ",
+    },
+  ]
+  
+  const promotions = [
+    {
+      id: 1,
+      title: "Book 5 times, get 1 free playing hour",
+      image: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
+      badge: "HOT",
+    },
+    {
+      id: 2,
+      title: "30% off when booking a court 3 days in advance",
+      image: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
+      badge: "FLASH DEAL",
+    },
+    {
+      id: 3,
+      title: "Free team shirt when booking for the first time",
+      image: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
+      badge: "NEW",
+    },
+  ]
+  
+  const reviews = [
+    {
+      id: 1,
+      name: "Lê Thanh Tùng",
+      avatar: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
+      bookings: 1,
+      rating: 5,
+      comment: "Ứng dụng đặt chỗ sân vận động nhanh chóng và dễ dàng, không cần gọi điện. Sân vận động tuyệt vời, chủ sở hữu nhiệt tình.",
+    },
+    {
+      id: 2,
+      name: "Võ Văn Hiền",
+      avatar: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
+      bookings: 8,
+      rating: 4.5,
+      comment: "Quá trình đặt chỗ rất thuận tiện. Sân luôn được bảo dưỡng tốt và nhân viên thân thiện.",
+    },
+    {
+      id: 3,
+      name: "Nguyễn Văn Tẻm",
+      avatar: "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
+      bookings: 20,
+      rating: 5,
+      comment: "Tôi thích cách dễ dàng để đặt sân với bạn bè của tôi. Hệ thống thông báo rất hữu ích!",
+    },
+  ]
+  
+  const branches = [
+    "",
+    "Cầu lông Tiến Minh",
+    "Hoàng Gia Tenis Club",
+    "Sân cỏ nhân tạo Star",
+  ]
+  
+  const address = [
+    "",
+    "1220 Quang Trung, Phường 12, Quận Gò Vấp, TP.HCM",
+    "889 Nguyễn Văn Quá,Phường Đông Hưng Thuận, Quận 12, TP.HCM",
+    "12 Nguyễn Văn Bá, Phường Bình Thọ, Quận Thủ Đức, TP.HCM",
+
   ]
   
   return (
@@ -471,10 +619,10 @@ export default function HomePage() {
                 color: theme.palette.primary.dark,
               }}
             >
-              Featured Courts
+             Sân đấu nổi bật
             </Typography>
             <Typography variant="h6" align="center" color="textSecondary" sx={{ mb: 6 }}>
-              Discover our most popular sports venues
+            Khám phá những địa điểm thể thao phổ biến nhất của chúng tôi
             </Typography>
           </motion.div>
 
@@ -482,11 +630,11 @@ export default function HomePage() {
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.8, delay: 0.2 }}
+            transition={{ duration: 0.2, delay: 0 }}
           >
             <CustomSlider {...featuredSliderSettings}>
               {featuredCourts.map((court) => (
-                <Box key={court.id} sx={{ px: 1 }}>
+                <Box key={court.id} sx={{ px: "0px" }}>
                   <Card
                     sx={{
                       height: 380,
@@ -496,9 +644,11 @@ export default function HomePage() {
                         transform: "translateY(-10px)",
                         boxShadow: "0 20px 30px rgba(0,0,0,0.15)",
                       },
+                      borderRadius:"20px",
+                      marginRight:"30px"
                     }}
                   >
-                    <CardMedia component="img" height="220" image={court.image} alt={court.name} />
+                    <CardMedia component="img" height="200" image={court.image} alt={court.name} />
                     <CardContent sx={{ position: "relative" }}>
                       <Chip
                         label={court.type}
@@ -514,13 +664,13 @@ export default function HomePage() {
                       <Typography gutterBottom variant="h5" component="div" sx={{ fontWeight: 600 }}>
                         {court.name}
                       </Typography>
-                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
                         {court.size}
                       </Typography>
-                      <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                      <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
                         <AccessTime sx={{ color: theme.palette.primary.main, mr: 1, fontSize: 20 }} />
                         <Typography variant="body2" color="primary" sx={{ fontWeight: 500 }}>
-                          Next available: {court.nextAvailable}
+                          Có sẵn: {court.nextAvailable}
                         </Typography>
                       </Box>
                       <Button
@@ -546,170 +696,469 @@ export default function HomePage() {
         </Container>
       </Box>
 
-
-
-      <Box
-        sx={{
-          position: "relative",
-          // backgroundImage: "linear-gradient(to top, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0)), url('https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png')", // Đường dẫn ảnh
-          backgroundSize: "cover", // Tỷ lệ ảnh
-          backgroundRepeat: "no-repeat", // Không lặp lại ảnh
-          backgroundPosition: "center", // Căn giữa ảnh
-          height: "fit-content",
-          WebkitMaskImage: "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 2%)",
-          maskImage: "linear-gradient(to bottom, rgba(0,0,0,0) 0%, rgba(0,0,0,1) 2%)",
-          pb: 15,
-        }}
-      >
-        {Object.entries(stadiumList).map(([sportType, fields], index) => (
-          <Box key={index}
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              alignItems: "center",
-              justifyContent: "start",
-              height: "100%", // Căn giữa theo chiều dọc toàn bộ viewport
-              textAlign: "center",
-              gap: 4,
-            }}
+      <Box sx={{ py: { xs: 6, md: 10 } }}>
+        <Container maxWidth="lg">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
           >
-            <Box sx={{ mt: 10 }}>
-              <Typography variant="h4" color="var(--Primary-50)" fontWeight="bold">{fields.title}</Typography>
-            </Box>
-            <Divider orientation="horizontal" flexItem className="hover-divider"
+            <Typography
+              variant="h2"
+              align="center"
               sx={{
-                bgcolor: grey[500],
-                borderBottomWidth: '3px',
-                width: '20%',
-                mx: "auto"
+                mb: 1,
+                fontSize: { xs: "2rem", md: "2.5rem" },
+                fontWeight: 700,
+                color: theme.palette.primary.dark,
               }}
             >
-            </Divider>
-            <Box sx={{ maxWidth: "60vw", textAlign: "center" }}>
-              <Typography color="var(--Primary-50)" sx={{ fontStyle: "italic" }} >{fields.intro}</Typography>
-            </Box>
-            <Divider orientation="horizontal" flexItem className="hover-divider"
-              sx={{
-                bgcolor: grey[500],
-                borderBottomWidth: '3px',
-                width: '20%',
-                mx: "auto"
-              }}
-            >
-            </Divider>
-            <Box sx={{ maxWidth: "fit-content", textAlign: "center" }}>
-              <Stack direction="row" spacing={4} sx={{ width: "fit-content" }}>
-                {/* Chip 1 */}
-                <Chip
-                  label="Hình ảnh thực tế"
-                  color={chipSelected[sportType as keyof typeof chipSelected].chipNum === 1 ? "primary" : "default"}
-                  variant={chipSelected[sportType as keyof typeof chipSelected].chipNum === 1 ? "filled" : "outlined"}
-                  icon={
-                    <PhotoLibraryIcon
-                      sx={{ color: chipSelected[sportType as keyof typeof chipSelected].chipNum === 1 ? "white" : grey[400] }}
-                    />
-                  }
-                  sx={{
-                    width: "100%",
-                    "& .MuiChip-label": {
-                      color: chipSelected[sportType as keyof typeof chipSelected].chipNum === 1 ? "white" : grey[400],
-                    },
-                  }}
-                  onClick={() => handleChipClick(sportType, "chip1", 1, index)}
-                />
+              Tại sao chọn chúng tôi
+            </Typography>
+            <Typography variant="h6" align="center" color="textSecondary" sx={{ mb: 8 }}>
+              Cách dễ nhất để đặt cơ sở thể thao
+            </Typography>
+          </motion.div>
 
-                {/* Chip 2 */}
-                {/* <Chip
-                  label="Sân hot"
-                  color={chipSelected[sportType as keyof typeof chipSelected].chipNum === 2 ? "primary" : "default"}
-                  variant={chipSelected[sportType as keyof typeof chipSelected].chipNum === 2 ? "filled" : "outlined"}
-                  icon={<WhatshotIcon sx={{ "&&": { color: "orange" } }} />}
-                  sx={{
-                    width: "100%",
-                    "& .MuiChip-label": {
-                      color: chipSelected[sportType as keyof typeof chipSelected].chipNum === 2 ? "white" : grey[400],
-                    },
-                  }}
-                  onClick={() => handleChipClick(sportType, "chip2", 2, index)}
-                /> */}
-
-                {/* Chip 3 */}
-                {/* <Chip
-                  label="Đánh giá của khách hàng"
-                  color={chipSelected[sportType as keyof typeof chipSelected].chipNum === 3 ? "primary" : "default"}
-                  variant={chipSelected[sportType as keyof typeof chipSelected].chipNum === 3 ? "filled" : "outlined"}
-                  icon={
-                    <CommentIcon
-                      sx={{ color: chipSelected[sportType as keyof typeof chipSelected].chipNum === 3 ? "white" : grey[400] }}
-                    />
-                  }
-                  sx={{
-                    width: "100%",
-                    "& .MuiChip-label": {
-                      color: chipSelected[sportType as keyof typeof chipSelected].chipNum === 3 ? "white" : grey[400],
-                    },
-                  }}
-                  onClick={() => handleChipClick(sportType, "chip3", 3, index)}
-                /> */}
-
-              </Stack>
-            </Box>
-
-
-            <Paper sx={{
-              width: "80vw",
-              height: "fit-content",
-              borderRadius: "8px",
-              pb: 5,
-              backgroundColor: "transparent",
-              backdropFilter: "blur(10px)",
-              justifyContent: "center", alignItems: "center",
-              "&::before": {
-                content: '""',
-                position: "absolute",
-                inset: 0,
-                padding: "1px",
-                background: "linear-gradient(to right, transparent, var(--Primary-500), transparent)", // Gradient viền
-                WebkitMask: "linear-gradient(white, white) content-box, linear-gradient(white, white)", // Giữ nội dung không bị ảnh hưởng
-                WebkitMaskComposite: "destination-out",
-                maskComposite: "exclude",
+          <Grid container spacing={4}>
+            {[
+              {
+                icon: <CalendarMonth sx={{ fontSize: 50, color: theme.palette.primary.main }} />,
+                title: "Đặt sân nhanh chóng ",
+                description: "Chọn môn thể thao, địa điểm và xác nhận đặt sân chỉ vài bước.",
               },
-            }}>
-              <Grid2 container spacing={2} direction="column" sx={{ height: "fit-content", width: "80vw", justifyContent: "center", alignItems: "center", }}>
-                <Grid2 size={12} sx={{ height: "fit-content", width: "75vw", justifyContent: "center", alignItems: "center", }}>
-                  <Grid2 container sx={{ width: "100%", justifyContent: "center", height: "fit-content" }}>
-                    <Grid2 sx={{ width: "100%", height: "300px", }}>
-                      <CustomSlider {...settings} ref={(el) => void (carouselRefs.current[index] = el)} sx={{ height: "inherit" }}>
-                        {
-                          fields.fields.map((e, index) =>
-                            chipSelected[sportType as keyof typeof chipSelected].chipNum === 1 ?
-                              <Grid2 container direction="row" key={index}
-                                sx={{
-                                  height: "fit-content",
-                                  maxWidth: "100%",
-                                  justifyContent: "center",
-                                  alignItems: "center",
-                                }}
-                              >
-                                <Grid2 sx={{ height: "100%" }}>
-                                  <CardNews2 key={index} image={e.image} />
-                                </Grid2>
-                              </Grid2>
-                              : <Stack justifyItems={"center"} key={index}>
-                                <SportCard data={e} />
-                              </Stack>
-                          )
-                        }
-                      </CustomSlider>
-                    </Grid2>
-                  </Grid2>
-                </Grid2>
-              </Grid2>
-            </Paper>
-          </Box>
-        ))}
+              {
+                icon: <Place sx={{ fontSize: 50, color: theme.palette.primary.main }} />,
+                title: "Hơn 50 chi nhánh toàn quốc",
+                description: "Tìm sân gần bạn với hệ thống cơ sở thể thao rộng khắp.",
+              },
+              {
+                icon: <CreditCard sx={{ fontSize: 50, color: theme.palette.primary.main }} />,
+                title: "Thanh toán linh hoạt",
+                description: "Hỗ trợ MoMo, VNPay, thẻ tín dụng hoặc tiền mặt khi đến sân.",
+              },
+              {
+                icon: <CalendarMonth sx={{ fontSize: 50, color: theme.palette.primary.main }} />,
+                title: "Quản lý đặt sân dễ dàng",
+                description: "Xem, chỉnh sửa hoặc huỷ đặt sân thông qua tài khoản cá nhân.",
+              },
+            ].map((item, index) => (
+              <Grid item xs={12} sm={6} md={3} key={index}>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Paper
+                    elevation={0}
+                    sx={{
+                      p: 3,
+                      height: "100%",
+                      display: "flex",
+                      flexDirection: "column",
+                      alignItems: "center",
+                      textAlign: "center",
+                      borderRadius: 4,
+                      backgroundColor: "rgba(0, 0, 0, 0.02)",
+                      transition: "all 0.3s ease",
+                      "&:hover": {
+                        backgroundColor: "white",
+                        boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
+                        transform: "translateY(-10px)",
+                      },
+                    }}
+                  >
+                    <motion.div
+                      whileHover={{ scale: 1.1, rotate: 5 }}
+                      transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                    >
+                      {item.icon}
+                    </motion.div>
+                    <Typography variant="h6" sx={{ my: 2, fontWeight: 600 }}>
+                      {item.title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      {item.description}
+                    </Typography>
+                  </Paper>
+                </motion.div>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
       </Box>
+
+      {/* List of Sports (Tabs) */}
+      <Box sx={{ py: { xs: 6, md: 10 }, backgroundColor: "#f8f9fa" }}>
+        <Container maxWidth="lg">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <Typography
+              variant="h2"
+              align="center"
+              sx={{
+                mb: 1,
+                fontSize: { xs: "2rem", md: "2.5rem" },
+                fontWeight: 700,
+                color: theme.palette.primary.dark,
+              }}
+            >
+              Cơ sở thể thao của chúng tôi
+            </Typography>
+            <Typography variant="h6" align="center" color="textSecondary" sx={{ mb: 4 }}>
+            Lựa chọn từ nhiều môn thể thao và địa điểm khác nhau
+            </Typography>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+          >
+            <Tabs
+              value={sportTab}
+              onChange={handleSportTabChange}
+              centered
+              sx={{
+                mb: 4,
+                "& .MuiTab-root": {
+                  fontSize: { xs: "0.9rem", md: "1rem" },
+                  fontWeight: 600,
+                  px: { xs: 2, md: 4 },
+                  py: 2,
+                },
+                "& .Mui-selected": {
+                  color: theme.palette.primary.main,
+                },
+              }}
+              TabIndicatorProps={{
+                style: {
+                  backgroundColor: theme.palette.primary.main,
+                  height: 3,
+                },
+              }}
+            >
+              <Tab label=" Bóng Đá" icon={<SportsSoccer />} iconPosition="start" />
+              <Tab label=" Cầu Lông" icon={<SportsCricket />} iconPosition="start" />
+              <Tab label=" Tennis" icon={<SportsTennis />} iconPosition="start" />
+            </Tabs>
+          </motion.div>
+
+          <Box sx={{ mt: 2 }}>
+            {/* Soccer Fields */}
+            {sportTab === 0 && (
+              <Grid container spacing={3}>
+                {soccerFields.map((field, index) => (
+                  <Grid item xs={12} sm={6} md={4} key={field.id}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                    >
+                      <Card>
+                        <CardMedia component="img" height="180" image={field.image} alt={field.name} />
+                        <CardContent>
+                          <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: 600 }}>
+                            {field.name}
+                          </Typography>
+                          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+                            <Typography variant="body2" color="text.secondary">
+                              Loại: {field.type}
+                            </Typography>
+                            <Typography variant="body2" color="primary" sx={{ fontWeight: 500 }}>
+                              {field.price}
+                            </Typography>
+                          </Box>
+                          
+                          <Box sx={{ display: "flex", gap: 1 }}>
+                            <Button variant="outlined" color="primary" size="small" sx={{ flex: 1 }}>
+                            Xem chi tiết
+                            </Button>
+                            <Button variant="contained" color="primary" size="small" sx={{ flex: 1 }}>
+                            Đặt lịch ngay
+                            </Button>
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  </Grid>
+                ))}
+              </Grid>
+            )}
+
+            {/* Badminton Courts */}
+            {sportTab === 1 && (
+              <Grid container spacing={3}>
+                {badmintonCourts.map((court, index) => (
+                  <Grid item xs={12} sm={6} md={4} key={court.id}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                    >
+                      <Card>
+                        <CardMedia component="img" height="180" image={court.image} alt={court.name} />
+                        <CardContent>
+                          <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: 600 }}>
+                            {court.name}
+                          </Typography>
+                          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+                            <Typography variant="body2" color="text.secondary">
+                            Loại: {court.type}
+                            </Typography>
+                            <Typography variant="body2" color="primary" sx={{ fontWeight: 500 }}>
+                              {court.price}
+                            </Typography>
+                          </Box>
+                          
+                          <Box sx={{ display: "flex", gap: 1 }}>
+                            <Button variant="outlined" color="primary" size="small" sx={{ flex: 1 }}>
+                            Xem chi tiết
+                            </Button>
+                            <Button variant="contained" color="primary" size="small" sx={{ flex: 1 }}>
+                              Đặt lịch ngay
+                            </Button>
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  </Grid>
+                ))}
+              </Grid>
+            )}
+
+            {/* Tennis Courts */}
+            {sportTab === 2 && (
+              <Grid container spacing={3}>
+                {tennisCourts.map((court, index) => (
+                  <Grid item xs={12} sm={6} md={4} key={court.id}>
+                    <motion.div
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                    >
+                      <Card>
+                        <CardMedia component="img" height="180" image={court.image} alt={court.name} />
+                        <CardContent>
+                          <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: 600 }}>
+                            {court.name}
+                          </Typography>
+                          <Box sx={{ display: "flex", justifyContent: "space-between", mb: 2 }}>
+                            <Typography variant="body2" color="text.secondary">
+                              Loại: {court.type}
+                            </Typography>
+                            <Typography variant="body2" color="primary" sx={{ fontWeight: 500 }}>
+                              {court.price}
+                            </Typography>
+                          </Box>
+                          
+                          <Box sx={{ display: "flex", gap: 1 }}>
+                            <Button variant="outlined" color="primary" size="small" sx={{ flex: 1 }}>
+                            Xem chi tiết
+                            </Button>
+                            <Button variant="contained" color="primary" size="small" sx={{ flex: 1 }}>
+                              Đặt lịch ngay
+                            </Button>
+                          </Box>
+                        </CardContent>
+                      </Card>
+                    </motion.div>
+                  </Grid>
+                ))}
+              </Grid>
+            )}
+          </Box>
+        </Container>
+      </Box>
+
+      {/* System Branch */}
+      <Box sx={{ py: { xs: 6, md: 10 } }}>
+        <Container maxWidth="lg">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <Typography
+              variant="h2"
+              align="center"
+              sx={{
+                mb: 1,
+                fontSize: { xs: "2rem", md: "2.5rem" },
+                fontWeight: 700,
+                color: theme.palette.primary.dark,
+              }}
+            >
+              Chi nhánh của chúng tôi
+            </Typography>
+            <Typography variant="h6" align="center" color="textSecondary" sx={{ mb: 6 }}>
+            Tìm một cơ sở thể thao gần bạn
+            </Typography>
+          </motion.div>
+
+          
+
+          <Grid container spacing={3}>
+            {[1, 2, 3].map((item, index) => (
+              <Grid item xs={12} sm={6} md={4} key={index}>
+                <motion.div
+                  initial={{ opacity: 0, y: 20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: index * 0.1 }}
+                >
+                  <Card sx={{ display: "flex", flexDirection: "column", height: "100%" }}>
+                    <CardMedia
+                      component="img"
+                      height="160"
+                      image={`https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`}
+                      alt={`Branch ${index + 1}`}
+                    />
+                    <CardContent sx={{ flexGrow: 1 }}>
+                      <Typography gutterBottom variant="h6" component="div" sx={{ fontWeight: 600 }}>
+                        {branches[index + 1]} 
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 1 }}>
+                      {address[index + 1]} 
+                      </Typography>
+                      <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                        Mở cửa: 6:00 AM - 11:00 PM
+                      </Typography>
+                      <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                        <CheckCircle sx={{ color: "green", mr: 1, fontSize: 16 }} />
+                        <Typography variant="body2">{index % 2 === 0 ? "Bóng đá" : "Tennis "}</Typography>
+                      </Box>
+                      <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                        <CheckCircle sx={{ color: "green", mr: 1, fontSize: 16 }} />
+                        <Typography variant="body2">
+                          {index % 2 === 0 ? "Tennis " : "Cầu lông"}
+                        </Typography>
+                      </Box>
+                    </CardContent>
+                    <Box sx={{ p: 2, pt: 0 }}>
+                      <Button variant="contained" color="primary" fullWidth>
+                        Xem
+                      </Button>
+                    </Box>
+                  </Card>
+                </motion.div>
+              </Grid>
+            ))}
+          </Grid>
+        </Container>
+      </Box>
+
+      
+
+      
+
+      {/* Customer Reviews */}
+      <Box sx={{ py: { xs: 6, md: 10 }, backgroundColor: "#f8f9fa" }}>
+        <Container maxWidth="lg">
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6 }}
+          >
+            <Typography
+              variant="h2"
+              align="center"
+              sx={{
+                mb: 1,
+                fontSize: { xs: "2rem", md: "2.5rem" },
+                fontWeight: 700,
+                color: theme.palette.primary.dark,
+              }}
+            >
+              Đánh giá của khách hàng
+            </Typography>
+            <Typography variant="h6" align="center" color="textSecondary" sx={{ mb: 6 }}>
+            Khách hàng nói gì về chúng tôi
+            </Typography>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.8, delay: 0.2 }}
+          >
+            <CustomSlider {...reviewSliderSettings}>
+              {reviews.map((review) => (
+                <Box key={review.id} sx={{ px: 1 }}>
+                  <motion.div whileHover={{ scale: 1.03 }} transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                    <Paper
+                      elevation={2}
+                      sx={{
+                        p: 3,
+                        height: 280,
+                        borderRadius: 4,
+                        display: "flex",
+                        flexDirection: "column",
+                        marginRight:5
+                      }}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                        <Avatar src={review.avatar} alt={review.name} sx={{ width: 60, height: 60, mr: 2 }} />
+                        <Box>
+                          <Typography variant="h6" sx={{ fontWeight: 600 }}>
+                            {review.name}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            {review.bookings} bookings
+                          </Typography>
+                        </Box>
+                      </Box>
+                      <Box sx={{ mb: 2 }}>
+                        <Rating
+                          value={review.rating}
+                          precision={0.5}
+                          readOnly
+                          icon={<Star sx={{ color: "#FFD700" }} />}
+                        />
+                      </Box>
+                      <Typography
+                        variant="body1"
+                        sx={{
+                          flex: 1,
+                          fontStyle: "italic",
+                          color: "text.secondary",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                        }}
+                      >
+                        "{review.comment}"
+                      </Typography>
+                    </Paper>
+                  </motion.div>
+                </Box>
+              ))}
+            </CustomSlider>
+          </motion.div>
+        </Container>
+      </Box>
+
+      
+      
+
+      {/* Footer */}
       <Footer />
+
+
+    
+     
       <ScrollToTopBtn />
     </ThemeProvider>
   );
