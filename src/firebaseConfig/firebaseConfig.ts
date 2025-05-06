@@ -16,12 +16,8 @@ const auth = getAuth(app);
 // Google provider setup
 const googleProvider = new GoogleAuthProvider();
 
-// googleProvider.setCustomParameters({
-//   propmp: "select_account",
-// });
-
-//! google will stop login via redirect soon, beware to use this
-// export const signInGoogleRedirect = () =>
-//   signInWithRedirect(auth, googleProvider);
+googleProvider.setCustomParameters({
+  propmp: "select_account",
+});
 
 export { auth, googleProvider };

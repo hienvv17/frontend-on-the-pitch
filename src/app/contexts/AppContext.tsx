@@ -56,6 +56,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
             if (user) {
                 localStorage.setItem("user", JSON.stringify(user));
             } else {
+                console.log("No user logged");
                 localStorage.removeItem("user");
                 localStorage.removeItem("userAvatar");
             }
@@ -65,8 +66,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     const handleLogout = async () => {
         // Xóa cookie bằng cách đặt thời gian hết hạn về 0
         Cookies.remove(ACCESS_TOKEN);
-        localStorage.removeItem("user");
-        localStorage.removeItem("userAvatar");
+        // localStorage.removeItem("user");
+        // localStorage.removeItem("userAvatar");
         setUser(null);
 
         // tải lại trang sau khi đăng xuất, mục đích để chạy lại middleware 

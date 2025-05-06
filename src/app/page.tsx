@@ -6,7 +6,6 @@ import ResponsiveAppBar from "./components/ResponsiveAppBar";
 import { grey } from "@mui/material/colors";
 import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 // import WhatshotIcon from '@mui/icons-material/Whatshot';
-import ArrowDownwardIcon from '@mui/icons-material/ArrowDownward';
 import React, { useEffect, useRef, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { CardNews2 } from "./components/CardNews2";
@@ -15,6 +14,7 @@ import SportCard from "./components/SportCard";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+import ScrollToTopBtn from "./components/ScrollToTopBtn";
 
 
 
@@ -107,11 +107,6 @@ export default function HomePage() {
 
   const scrollDown = useRef<HTMLDivElement | null>(null);
 
-  const handleScroll = () => {
-    if (scrollDown.current) {
-      scrollDown.current.scrollIntoView({ behavior: "smooth" });
-    }
-  };
 
   const isSmallScreen = useMediaQuery("(max-width:725px)");
 
@@ -150,6 +145,7 @@ export default function HomePage() {
 
   return (
     <ThemeProvider theme={theme}>
+      <ResponsiveAppBar />
       <Box
         sx={{
           position: "relative",
@@ -163,7 +159,7 @@ export default function HomePage() {
         }}
       >
 
-        <ResponsiveAppBar />
+
 
         <Grid2 container direction="column"
           sx={{
@@ -211,48 +207,53 @@ export default function HomePage() {
               alignItems: "center",
             }}
           >
-            <Grid2>
+            {/* <Grid2>
               <Box
                 sx={{
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
-                  width: 50,
-                  height: 50,
+                  width: 40,
+                  height: 40,
                   background: "transparent",
                   backdropFilter: "blur(10px)",
                   borderRadius: "50%",
                   border: "1px solid grey",
                   cursor: "pointer",
-                  transition: "background 0.4s linear, border 0.3s ease-in-out, transform 0.3s ease-in-out",
+                  transition: {
+                    xs: "none",
+                    md: "background 0.4s linear, border 0.3s ease-in-out, transform 0.3s ease-in-out",
+                  },
                   color: "grey",
 
 
-                  "&:hover": {
-                    border: "4px solid var(--Primary-500)", // Tăng độ dày viền khi hover
-                    color: "var(--Primary-500)", // Đổi màu icon
-                    background: "var(--Primary-50)", // Đổi màu nền
-                    transform: "scale(1.2)", // Giữ nguyên padding, phóng to toàn bộ thay vì co giãn
-                    boxShadow: "0 0 15px 5px var(--Primary-500)", // Thêm hiệu ứng phát quang
+                  "@media (hover: hover) and (pointer: fine)": {
+                    "&:hover": {
+                      border: "4px solid var(--Primary-500)",
+                      color: "var(--Primary-500)",
+                      background: "var(--Primary-50)",
+                      transform: "scale(1.2)",
+                      boxShadow: "0 0 15px 5px var(--Primary-500)",
+                    },
                   },
                 }}
                 onClick={handleScroll}
               >
-                <ArrowDownwardIcon
+                <KeyboardArrowDownIcon
                   sx={{
                     fontSize: 30,
                     color: "inherit",
-                    transition: "color 0.4s ease-in-out, transform 0.3s ease-in-out"
+                    transition: { xs: "none", md: "color 0.4s ease-in-out, transform 0.3s ease-in-out" }
                   }}
                 />
               </Box>
-            </Grid2>
+            </Grid2> */}
 
 
           </Grid2>
         </Grid2>
       </Box>
-
+      <Box ref={scrollDown}></Box>
       <Box
         sx={{
           display: "flex",
@@ -265,7 +266,7 @@ export default function HomePage() {
           my: 10
         }}
       >
-        <Box ref={scrollDown}>
+        <Box >
           <Typography variant="h4" color="var(--Primary-500)" fontWeight="bold">Đa dạng sân với</Typography>
         </Box>
         <Divider orientation="horizontal" flexItem className="hover-divider"
@@ -599,6 +600,7 @@ export default function HomePage() {
         ))}
       </Box>
       <Footer />
+      <ScrollToTopBtn />
     </ThemeProvider>
   );
 }

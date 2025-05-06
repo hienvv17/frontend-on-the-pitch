@@ -74,6 +74,8 @@ const settings = [
     }
 ];
 
+
+
 function ResponsiveAppBar() {
     const router = useRouter();
     const { isChange, user, handleLogout } = useContext(AppContext);
@@ -121,7 +123,7 @@ function ResponsiveAppBar() {
 
 
     return (
-        <AppBar position="static" sx={{ mt: 0, backgroundColor: "transparent", backdropFilter: "blur(20px)", boxShadow: "1px", zIndex: 999 }}>
+        <AppBar position="sticky" sx={{ mt: 0, backgroundColor: "transparent", backdropFilter: "blur(20px)", boxShadow: "1px", }}>
             <Container maxWidth="xl" sx={{ background: "rgba(255, 255, 255, 0.9)" }}>
                 <Toolbar disableGutters>
                     {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
@@ -181,7 +183,7 @@ function ResponsiveAppBar() {
                             }}
                             open={Boolean(anchorElNav)}
                             onClose={handleCloseNavMenu}
-                            sx={{ display: { xs: 'block', md: 'none' } }}
+                            sx={{ display: { xs: 'block', md: 'none' }, zIndex: 999999 }}
                         >
                             {pages2.map((page) => (
                                 <MenuItem key={page.title} onClick={() => router.push(`${page.url}`)}>
@@ -331,7 +333,7 @@ function ResponsiveAppBar() {
 
                                     </Tooltip>
                                     <Menu
-                                        sx={{ mt: '45px' }}
+                                        sx={{ mt: '45px', zIndex: 999999 }}
                                         id="menu-appbar"
                                         anchorEl={anchorElUser}
                                         anchorOrigin={{

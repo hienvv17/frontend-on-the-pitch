@@ -24,6 +24,7 @@ function GoogleLogin() {
       return null;
     }
   };
+
   return handleGoogleLogin();
 }
 

@@ -5,7 +5,7 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Divider from '@mui/material/Divider';
 import UserLayout from '@/app/components/UserLayout';
-import { CircularProgress, Grid2 as Grid, IconButton, Paper, TextField, Tooltip, Typography } from '@mui/material';
+import { CircularProgress, Container, Grid2 as Grid, IconButton, TextField, Tooltip, Typography } from '@mui/material';
 import BorderColorRoundedIcon from '@mui/icons-material/BorderColorRounded';
 import PersonIcon from '@mui/icons-material/Person';
 import { AppContext } from '@/app/contexts/AppContext';
@@ -78,7 +78,7 @@ export default function MyInfo() {
                 return;
             }
 
-            setOpenSnackBar({ isOpen: false, msg: msgDetail[7], type: 'error' });
+            setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: 'info' });
 
             const reader = new FileReader();
             reader.onloadend = () => {
@@ -97,7 +97,6 @@ export default function MyInfo() {
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        setIsChange(false);
         setIsDiscard(false);
         const { name, value } = e.target;
         // console.log("handleChange", name, value);
@@ -108,7 +107,11 @@ export default function MyInfo() {
             ...prev,
             [name]: value,
         }));
-
+        if (name === "phoneNumber") {
+            setIsChange(true);
+            return;
+        }
+        setIsChange(false);
     };
 
     const validatePhone = (value: string) => {
@@ -116,7 +119,7 @@ export default function MyInfo() {
 
         if (trimValue === "") {
             // console.log("2value", value);
-            setOpenSnackBar({ isOpen: false, msg: msgDetail[8], type: 'error' });
+            setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: 'info' });
             return;
         }
 
@@ -126,12 +129,15 @@ export default function MyInfo() {
             setOpenSnackBar({ isOpen: true, msg: msgDetail[8], type: 'error' });
             setIsChange(true);
         } else {
-            setOpenSnackBar({ isOpen: false, msg: msgDetail[8], type: 'error' });
+            setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: 'info' });
             setIsChange(false);
         }
     };
 
     const handleBlur = () => {
+        if (!updateData.phoneNumber) {
+            return;
+        }
         validatePhone(updateData.phoneNumber); // Khi blur(nhấp chuột ra khỏi TextField) mới validate
     };
 
@@ -185,64 +191,65 @@ export default function MyInfo() {
                         </Grid>
                         :
 
-                        <Box sx={{ height: 'fit-content', width: '100%', my: "40px" }}>
-                            <Grid
-                                container
-                                direction="row"
-                                justifyContent="center"
-                                alignItems="center"
-                                sx={{
-                                    borderRadius: '20px',
-                                    width: '100%',
-                                    height: '100%', // Phải có để alignItems hoạt động
-                                    zIndex: 100,
-                                }}
-                            >
-                                <Paper
-                                    elevation={5}
+                        <Grid container direction={"row"} sx={{
+                            borderRadius: "20px",
+                            height: "fit-content",
+                            justifyContent: "center",
+                            width: "100%",
+                            zIndex: 100,
+                            // mt: { xs: "-10vh", sm: "-20vh", md: "-25vh", lg: "-35vh", xl: "-21%" },
+                        }}>
+                            <Box sx={{
+                                width: "fit-content",
+                                background: { xs: "none", sm: "white" },
+                                borderRadius: "inherit",
+                            }}>
+                                <Container
+                                    // elevation={5}
                                     sx={{
-                                        width: '90%',          // Hoặc cố định như 600px tuỳ thiết kế
-                                        height: 'fit-content',
-                                        borderRadius: "8px"
+                                        width: "95vw",
+                                        mt: 2,
+                                        mb: "30px",
+                                        border: "2px solid var(--Primary-200)",
+                                        position: "relative",
+                                        zIndex: 99,
+                                        backgroundColor: "var(--Primary-50)",
+                                        borderRadius: "20px",
+                                        boxShadow: "0px 5px 5.8px 0px rgba(0, 0, 0, 0.10)",
+                                        py: { xs: "16px", sm: "24px" },
+                                        gap: "60px"
                                     }}
                                 >
 
-                                    <Grid
-                                        container
-                                        direction={"column"}
+                                    <Grid container
+                                        direction={"row"}
+                                        justifyContent="flex-start"
+                                        alignItems="center"
+                                        spacing={2}
+                                        sx={{
+                                            width: '100%',
+                                            // backgroundColor: "var(--Primary-800)",
+                                            // padding: "15px 30px",
+                                            // borderRadius: "8px 8px 0px 0px",
+                                        }}
+                                    >
+                                        <PersonIcon sx={{ color: "var(--Primary-500)" }} />
+                                        <Typography variant="h5" color="var(--Primary-500)" sx={{ fontWeight: 'bold' }}>Thông tin tài khoản</Typography>
+                                    </Grid>
+
+                                    <Grid container
+                                        direction={"row"}
                                         justifyContent="center"
                                         alignItems="center"
+                                        sx={{ height: "350px", }}
                                     >
-
-                                        <Grid container
-                                            direction={"row"}
-                                            justifyContent="flex-start"
-                                            alignItems="center"
-                                            spacing={2}
-                                            sx={{
-                                                width: '100%',
-                                                backgroundColor: "var(--Primary-800)",
-                                                padding: "15px 30px",
-                                                borderRadius: "8px 8px 0px 0px",
-                                            }}
-                                        >
-                                            <PersonIcon sx={{ color: "var(--Primary-50)" }} />
-                                            <Typography color="var(--Primary-50)">Thông tin tài khoản</Typography>
-                                        </Grid>
-
-                                        <Grid container
-                                            direction={"row"}
+                                        <Grid container size={4}
+                                            alignItems="flex-start"
                                             justifyContent="center"
-                                            alignItems="center"
-                                            sx={{ height: "350px", }}
+                                            sx={{ height: "100%" }}
                                         >
-                                            <Grid container size={4}
-                                                alignItems="flex-start"
-                                                justifyContent="center"
-                                                sx={{ height: "100%" }}
-                                            >
-                                                <Grid container justifyContent="center" alignItems="center" sx={{ mt: 6 }}>
-                                                    {/* <Box
+                                            <Grid container justifyContent="center" alignItems="center" sx={{ mt: 6 }}>
+                                                {/* <Box
                                                         sx={{
                                                             height: 200,
                                                             width: 200,
@@ -279,193 +286,193 @@ export default function MyInfo() {
                                                             <Typography>avatar</Typography>
                                                         )}
                                                     </Box> */}
+                                                <Box
+                                                    display="flex"
+                                                    flexDirection="column"
+                                                    alignItems="center"
+                                                    width="100%"
+                                                // height="340px"
+                                                // border="1px solid #eaeaea"
+                                                // borderRadius="10px"
+                                                >
                                                     <Box
                                                         display="flex"
-                                                        flexDirection="column"
                                                         alignItems="center"
-                                                        width="100%"
-                                                    // height="340px"
-                                                    // border="1px solid #eaeaea"
-                                                    // borderRadius="10px"
+                                                        justifyContent="center"
+                                                        border="1px dashed grey"
+                                                        borderRadius="100%"
+                                                        width={180}
+                                                        height={180}
+                                                    // marginTop="20px"
                                                     >
                                                         <Box
                                                             display="flex"
+                                                            flexDirection="column"
                                                             alignItems="center"
                                                             justifyContent="center"
-                                                            border="1px dashed grey"
+                                                            bgcolor={updateData.image ? 'transparent' : "#f4f6f8"}
                                                             borderRadius="100%"
-                                                            width={180}
-                                                            height={180}
-                                                        // marginTop="20px"
+                                                            padding="10px"
+                                                            width={160}
+                                                            height={160}
                                                         >
-                                                            <Box
-                                                                display="flex"
-                                                                flexDirection="column"
-                                                                alignItems="center"
-                                                                justifyContent="center"
-                                                                bgcolor={updateData.image ? 'transparent' : "#f4f6f8"}
-                                                                borderRadius="100%"
-                                                                padding="10px"
-                                                                width={160}
-                                                                height={160}
-                                                            >
-                                                                {updateData.image ? (
-                                                                    <Box sx={{
-                                                                        width: '100%',
-                                                                        height: '100%',
-                                                                        position: 'relative',
-                                                                        border: '1px solid grey',
-                                                                        borderRadius: '100%',
-                                                                        overflow: 'hidden' // Thêm thuộc tính này để ẩn phần thừa của ảnh
-                                                                    }}>
-                                                                        <Image
-                                                                            src={updateData.image}
-                                                                            // width={50}
-                                                                            // height={50}
-                                                                            placeholder='empty'
-                                                                            style={{
-                                                                                width: '100%',
-                                                                                // height: 'auto',
-                                                                                // objectFit: 'scale-down'
-                                                                                objectFit: 'cover'
-                                                                            }}
-                                                                            alt="avatar"
-                                                                            fill
-                                                                            sizes="(max-width: 600px) 80vw, 200px" // Kích thước ảnh cho các màn hình khác nhau
-                                                                            priority={true}
-                                                                        />
+                                                            {updateData.image ? (
+                                                                <Box sx={{
+                                                                    width: '100%',
+                                                                    height: '100%',
+                                                                    position: 'relative',
+                                                                    border: '1px solid grey',
+                                                                    borderRadius: '100%',
+                                                                    overflow: 'hidden' // Thêm thuộc tính này để ẩn phần thừa của ảnh
+                                                                }}>
+                                                                    <Image
+                                                                        src={updateData.image}
+                                                                        // width={50}
+                                                                        // height={50}
+                                                                        placeholder='empty'
+                                                                        style={{
+                                                                            width: '100%',
+                                                                            // height: 'auto',
+                                                                            // objectFit: 'scale-down'
+                                                                            objectFit: 'cover'
+                                                                        }}
+                                                                        alt="avatar"
+                                                                        fill
+                                                                        sizes="(max-width: 600px) 80vw, 200px" // Kích thước ảnh cho các màn hình khác nhau
+                                                                        priority={true}
+                                                                    />
 
-                                                                        <Box
-                                                                            sx={{
-                                                                                position: 'absolute',
-                                                                                top: 0,
-                                                                                left: 0,
-                                                                                width: '100%',
-                                                                                height: '100%',
-                                                                                display: 'flex',
-                                                                                flexDirection: 'column',
-                                                                                alignItems: 'center',
-                                                                                justifyContent: 'center',
-                                                                                bgcolor: 'rgba(0, 0, 0, 0.7)',  // Nền đen mờ để làm nổi bật nội dung trên ảnh
-                                                                                color: 'white',  // Màu chữ trắng để tương phản với nền
-                                                                                opacity: 0,      // Bắt đầu với opacity = 0 để ẩn nội dung
-                                                                                '&:hover': {
-                                                                                    opacity: 1,  // Hiển thị nội dung khi di chuột qua
-                                                                                }
-                                                                            }}
-                                                                        >
-                                                                            <input
-                                                                                accept="image/*"
-                                                                                style={{ display: 'none' }}
-                                                                                id="change-avatar"
-                                                                                type="file"
-                                                                                onChange={handleFileChange}
-                                                                            />
-                                                                            <Tooltip title="Chọn ảnh" placement="top">
-                                                                                <label htmlFor="change-avatar">
-                                                                                    <IconButton component="span">
-                                                                                        <AddAPhotoIcon sx={{ fontSize: 25, color: '#FFFFFF' }} />
-                                                                                    </IconButton>
-                                                                                </label>
-                                                                            </Tooltip>
-                                                                            <Typography align="center" sx={{ fontSize: '14px', color: '#FFFFFF' }}>
-                                                                                Đổi hình đại diện
-                                                                            </Typography>
-                                                                        </Box>
-                                                                    </Box>
-                                                                ) : (
-                                                                    <>
+                                                                    <Box
+                                                                        sx={{
+                                                                            position: 'absolute',
+                                                                            top: 0,
+                                                                            left: 0,
+                                                                            width: '100%',
+                                                                            height: '100%',
+                                                                            display: 'flex',
+                                                                            flexDirection: 'column',
+                                                                            alignItems: 'center',
+                                                                            justifyContent: 'center',
+                                                                            bgcolor: 'rgba(0, 0, 0, 0.7)',  // Nền đen mờ để làm nổi bật nội dung trên ảnh
+                                                                            color: 'white',  // Màu chữ trắng để tương phản với nền
+                                                                            opacity: 0,      // Bắt đầu với opacity = 0 để ẩn nội dung
+                                                                            '&:hover': {
+                                                                                opacity: 1,  // Hiển thị nội dung khi di chuột qua
+                                                                            }
+                                                                        }}
+                                                                    >
                                                                         <input
                                                                             accept="image/*"
                                                                             style={{ display: 'none' }}
-                                                                            id="upload-avatar"
+                                                                            id="change-avatar"
                                                                             type="file"
                                                                             onChange={handleFileChange}
                                                                         />
                                                                         <Tooltip title="Chọn ảnh" placement="top">
-                                                                            <label htmlFor="upload-avatar">
+                                                                            <label htmlFor="change-avatar">
                                                                                 <IconButton component="span">
-                                                                                    <AddAPhotoIcon sx={{ fontSize: 25 }} />
+                                                                                    <AddAPhotoIcon sx={{ fontSize: 25, color: '#FFFFFF' }} />
                                                                                 </IconButton>
                                                                             </label>
                                                                         </Tooltip>
-                                                                        <Typography align="center" sx={{ fontSize: '14px', color: '#72808d' }}>
-                                                                            Thêm hình đại diện
+                                                                        <Typography align="center" sx={{ fontSize: '14px', color: '#FFFFFF' }}>
+                                                                            Đổi hình đại diện
                                                                         </Typography>
-                                                                    </>
-                                                                )}
-                                                            </Box>
+                                                                    </Box>
+                                                                </Box>
+                                                            ) : (
+                                                                <>
+                                                                    <input
+                                                                        accept="image/*"
+                                                                        style={{ display: 'none' }}
+                                                                        id="upload-avatar"
+                                                                        type="file"
+                                                                        onChange={handleFileChange}
+                                                                    />
+                                                                    <Tooltip title="Chọn ảnh" placement="top">
+                                                                        <label htmlFor="upload-avatar">
+                                                                            <IconButton component="span">
+                                                                                <AddAPhotoIcon sx={{ fontSize: 25 }} />
+                                                                            </IconButton>
+                                                                        </label>
+                                                                    </Tooltip>
+                                                                    <Typography align="center" sx={{ fontSize: '14px', color: '#72808d' }}>
+                                                                        Thêm hình đại diện
+                                                                    </Typography>
+                                                                </>
+                                                            )}
                                                         </Box>
-                                                        <Typography align="center" sx={{ marginTop: '20px', fontSize: '14px', color: '#72808d' }}>
-                                                            Dung lượng ảnh tối đa 2 MB
-                                                            <br />
-                                                            (*.jpeg, *.jpg, *.png.)
-                                                        </Typography>
                                                     </Box>
-                                                </Grid>
+                                                    <Typography align="center" sx={{ marginTop: '20px', fontSize: '14px', color: '#72808d' }}>
+                                                        Dung lượng ảnh tối đa 2 MB
+                                                        <br />
+                                                        (*.jpeg, *.jpg, *.png.)
+                                                    </Typography>
+                                                </Box>
                                             </Grid>
+                                        </Grid>
 
 
 
 
-                                            <Grid container direction="column" size={8} sx={{
-                                                height: "100%",
-                                                // justifyContent: "center",
-                                                alignItems: "center",
-                                            }}>
-                                                <Grid container
+                                        <Grid container direction="column" size={8} sx={{
+                                            height: "100%",
+                                            // justifyContent: "center",
+                                            alignItems: "center",
+                                        }}>
+                                            <Grid container
+                                                direction={"row"}
+                                                justifyContent="flex-start"
+                                                // alignItems="center"
+                                                spacing={4}
+                                                sx={{
+                                                    width: '100%',
+                                                    height: '100%',
+                                                    // mt: 5,
+                                                    px: 6,
+                                                    // gap: 2
+                                                    // flexGrow: 1
+                                                }}
+                                            >
+                                                <Grid
+                                                    container
                                                     direction={"row"}
-                                                    justifyContent="flex-start"
-                                                    // alignItems="center"
-                                                    spacing={4}
+                                                    justifyContent="center"
+                                                    alignItems="center"
                                                     sx={{
                                                         width: '100%',
-                                                        height: '100%',
-                                                        // mt: 5,
-                                                        px: 6,
-                                                        // gap: 2
-                                                        // flexGrow: 1
                                                     }}
                                                 >
-                                                    <Grid
-                                                        container
-                                                        direction={"row"}
-                                                        justifyContent="center"
-                                                        alignItems="center"
-                                                        sx={{
-                                                            width: '100%',
-                                                        }}
-                                                    >
-                                                        <Grid size={6}>
-                                                            <TextField fullWidth label="Họ tên" name="fullName" value={updateData.fullName || ''}
-                                                                onChange={handleChange}
-                                                                slotProps={{
-                                                                    inputLabel: { shrink: true }
-                                                                }}
-                                                            />
-                                                        </Grid>
-                                                        <Grid size={6}>
-                                                            <TextField fullWidth disabled label="Email" name="email" value={userInfo?.email || ''}
-                                                                slotProps={{
-                                                                    inputLabel: { shrink: true }
-                                                                }}
-                                                            />
-                                                        </Grid>
-                                                    </Grid>
                                                     <Grid size={6}>
-                                                        <TextField
-                                                            fullWidth
-                                                            label="Số điện thoại"
-                                                            name="phoneNumber"
-                                                            value={updateData?.phoneNumber || ''}
+                                                        <TextField fullWidth label="Họ tên" name="fullName" value={updateData.fullName || ''}
                                                             onChange={handleChange}
-                                                            onBlur={handleBlur}
                                                             slotProps={{
                                                                 inputLabel: { shrink: true }
                                                             }}
                                                         />
                                                     </Grid>
-                                                    {/* {
+                                                    <Grid size={6}>
+                                                        <TextField fullWidth disabled label="Email" name="email" value={userInfo?.email || ''}
+                                                            slotProps={{
+                                                                inputLabel: { shrink: true }
+                                                            }}
+                                                        />
+                                                    </Grid>
+                                                </Grid>
+                                                <Grid size={6}>
+                                                    <TextField
+                                                        fullWidth
+                                                        label="Số điện thoại"
+                                                        name="phoneNumber"
+                                                        value={updateData?.phoneNumber || ''}
+                                                        onChange={handleChange}
+                                                        onBlur={handleBlur}
+                                                        slotProps={{
+                                                            inputLabel: { shrink: true }
+                                                        }}
+                                                    />
+                                                </Grid>
+                                                {/* {
                                                         userInfo?.memberPoint &&
                                                     <Grid size={6}>
                                                         <TextField fullWidth disabled label="Điểm thành viên" id="memberPoint" value={userInfo?.memberPoint || 0}
@@ -475,45 +482,44 @@ export default function MyInfo() {
                                                             />
                                                     </Grid>
                                                         } */}
-                                                </Grid>
                                             </Grid>
                                         </Grid>
-                                        <Box width="95%">
-                                            <Divider orientation="horizontal" variant="middle"
-                                                sx={{ bgcolor: 'grey.300' }} />
-                                        </Box>
-                                        <Grid container direction="row" spacing={4} justifyContent={"center"} alignItems={"center"}
-                                            sx={{
-                                                width: '100%',
-                                                my: 2
-                                            }}
+                                    </Grid>
+                                    <Box width="95%">
+                                        <Divider orientation="horizontal" variant="middle"
+                                            sx={{ bgcolor: 'grey.300' }} />
+                                    </Box>
+                                    <Grid container direction="row" spacing={4} justifyContent={"center"} alignItems={"center"}
+                                        sx={{
+                                            width: '100%',
+                                            my: 2
+                                        }}
+                                    >
+
+                                        <Button variant="contained" startIcon={<BorderColorRoundedIcon />}
+                                            // sx={{ width: "100%" }}
+                                            onClick={handleSave}
+                                            disabled={isChange}
                                         >
-
-                                            <Button variant="contained" startIcon={<BorderColorRoundedIcon />}
-                                                // sx={{ width: "100%" }}
-                                                onClick={handleSave}
-                                                disabled={isChange}
-                                            >
-                                                Cập nhật
-                                            </Button>
+                                            Cập nhật
+                                        </Button>
 
 
 
-                                            <Button variant="outlined" startIcon={<ClearIcon />}
-                                                // sx={{ backgroundColor: "var(--Primary-500)" }}
-                                                color="error"
-                                                onClick={handleDiscard}
-                                                disabled={isDiscard}
-                                            >
-                                                Hủy
-                                            </Button>
-
-                                        </Grid>
+                                        <Button variant="outlined" startIcon={<ClearIcon />}
+                                            // sx={{ backgroundColor: "var(--Primary-500)" }}
+                                            color="error"
+                                            onClick={handleDiscard}
+                                            disabled={isDiscard}
+                                        >
+                                            Hủy
+                                        </Button>
 
                                     </Grid>
-                                </Paper>
-                            </Grid>
-                        </Box>
+
+                                </Container>
+                            </Box>
+                        </Grid>
                 }
             </UserLayout>
 

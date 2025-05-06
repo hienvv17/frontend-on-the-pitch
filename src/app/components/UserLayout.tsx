@@ -7,6 +7,7 @@ import { Inter } from 'next/font/google';
 import CustomSnackbar from "./CustomSnackbar";
 import { useContext } from "react";
 import { AppContext } from "../contexts/AppContext";
+import ScrollToTopBtn from "./ScrollToTopBtn";
 
 const inter = Inter({ subsets: ['latin'], weight: ['400', '500', '600', '700'] });
 
@@ -56,12 +57,13 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
     const { openSnackbar, setOpenSnackBar } = useContext(AppContext);
 
     return (
-        <Box sx={{ display: "flex", flexDirection: 'column', bgcolor: 'white', minHeight: '100vh' }}>
+        <Box sx={{ display: "flex", flexDirection: 'column', bgcolor: 'white', minHeight: '100vh', height: "fit-content" }}>
             <ThemeProvider theme={theme}>
 
                 <ResponsiveAppBar />
                 {children}
                 <Footer />
+                <ScrollToTopBtn />
             </ThemeProvider>
             <CustomSnackbar
                 snackBar={openSnackbar}

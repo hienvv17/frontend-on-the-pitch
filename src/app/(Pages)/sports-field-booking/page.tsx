@@ -407,44 +407,48 @@ export default function SportsFieldBooking() {
                         :
 
                         <>
-                            <Box sx={{
-                                position: "relative",
-                                p: "1em",
-                                flexDirection: "column",
-                                alignItems: "flex-start",
-                                gap: 10,
-                                backgroundImage: "url('/image/image_11.png')", // Đường dẫn ảnh
-                                backgroundSize: "cover", // Tỷ lệ ảnh
-                                backgroundRepeat: "no-repeat", // Không lặp lại ảnh
-                                backgroundPosition: "center", // Căn giữa ảnh
-                                aspectRatio: 1920 / 500,
-                                zIndex: 1,
-                            }}>
-                            </Box>
+                            <Box
+                                sx={{
+                                    position: "relative",
+                                    p: "1em",
+                                    flexDirection: "column",
+                                    alignItems: "flex-start",
+                                    gap: 10,
+                                    backgroundImage: "url('/image/image_11.png')", // Đường dẫn ảnh
+                                    backgroundSize: "cover", // Tỷ lệ ảnh
+                                    backgroundRepeat: "no-repeat", // Không lặp lại ảnh
+                                    backgroundPosition: "center", // Căn giữa ảnh
+                                    aspectRatio: 1920 / 500,
+                                    zIndex: 1,
+                                }}
+                            />
 
                             <Grid2 container direction={"row"} sx={{
                                 borderRadius: "20px",
                                 height: "fit-content",
                                 justifyContent: "center",
-                                width: "100%",
+                                width: "95vw",
                                 zIndex: 100,
-                                mt: { xs: "-10vh", sm: "-20vh", md: "-25vh", lg: "-35vh", xl: "-21%" },
+                                // mt: { xs: "-15vh", sm: "-30vh", md: "-30vh", lg: "-35vh", xl: "-21%" },
+                                mt: "-23%",
+                                //     top: "-200px",
+                                mx: "auto"
                             }}>
                                 <Box sx={{
                                     width: "fit-content",
-                                    background: { xs: "none", sm: "white" },
+                                    background: "white",
                                     borderRadius: "inherit",
                                 }}>
                                     <Container sx={{
-                                        width: "95vw",
+                                        width: "100%",
                                         // mt: { xs: "-10vh", sm: "-20vh", md: "-25vh", lg: "-35vh" },
                                         mb: "30px",
-                                        border: "2px solid var(--Primary-200)",
+                                        // border: "2px solid var(--Primary-200)",
                                         position: "relative",
                                         zIndex: 99,
                                         backgroundColor: "var(--Primary-50)",
                                         borderRadius: "20px",
-                                        boxShadow: "0px 5px 5.8px 0px rgba(0, 0, 0, 0.10)",
+                                        // boxShadow: "0px 5px 5.8px 0px rgba(0, 0, 0, 0.10)",
                                         py: { xs: "16px", sm: "24px" },
                                         gap: "60px"
                                     }}>
@@ -581,9 +585,8 @@ export default function SportsFieldBooking() {
                                                     <Stack direction="row" alignItems="center" spacing={1} sx={{ width: "100%", mx: 3, }}>
                                                         <Divider sx={{ flexGrow: 1 }} />
                                                         {
-                                                            data.length > 0
-                                                                ? <Typography variant="body1"> Có <b>{data.length.toString().padStart(2, '0')}</b> sân thỏa tìm kiếm</Typography>
-                                                                : <Typography variant="body1">Không có sân trống</Typography>
+                                                            data.length > 0 &&
+                                                            <Typography variant="body1"> Có <b>{data.length.toString().padStart(2, '0')}</b> sân thỏa tìm kiếm</Typography>
                                                         }
                                                         <Divider sx={{ flexGrow: 1 }} />
                                                     </Stack>

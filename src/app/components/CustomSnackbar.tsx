@@ -90,6 +90,7 @@ const CustomSnackbar = (props: CustomSnackbarProps) => {
             autoHideDuration={props.duration ? props.duration : 6000}
             onClose={handleSnackBarClose}
             anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+            sx={{ zIndex: 9999999 }}
         >
             <Alert
                 onClose={handleSnackBarClose}
@@ -99,6 +100,7 @@ const CustomSnackbar = (props: CustomSnackbarProps) => {
                 sx={{
                     width: '100%',
                     bgcolor: getBackgroundColor(),
+
                 }}
             >
                 {msg}
