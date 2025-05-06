@@ -139,10 +139,13 @@ export default function HomePage() {
   const [sport, setSport] = useState("");
   const [date, setDate] = useState(dayjs());
   const [courtType, setCourtType] = useState("");
-  const bookingFormRef = useRef(null);
+  const bookingFormRef = useRef<HTMLDivElement>(null);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
 
-  const handleSportTabChange = (event, newValue) => {
+  const handleSportTabChange = (
+    event: any,
+    newValue: React.SetStateAction<number>
+  ) => {
     setSportTab(newValue);
   };
 
