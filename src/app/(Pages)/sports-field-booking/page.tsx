@@ -27,6 +27,8 @@ import OrderPopUp from "@/app/components/OrderPopUp";
 import TimeSlotSelector from "@/app/components/TimeSlotSelector";
 import CustomDatePicker from "@/app/components/DatePicker";
 import PaymentPopUp from "@/app/components/PaymentPopUp";
+import { getSportFieldsByBranch } from "@/utility/getSportCategory";
+
 
 export default function SportsFieldBooking() {
   const { setOpenSnackBar } = useContext(AppContext);
@@ -48,24 +50,28 @@ export default function SportsFieldBooking() {
 
   const [searchData, setSearchData] = useState<{
     sportValue: string | null;
+    sportOption: any | null;
     branchValue: string | null;
+    branchOption: any | null;
     dayPicked: moment.Moment | string | null;
     startTime: moment.Moment | null;
     endTime: moment.Moment | null;
   }>({
     sportValue: null,
+    sportOption: null,
     branchValue: null,
+    branchOption: null,
     dayPicked: null,
     startTime: null,
     endTime: null,
   });
 
-  const [resData, setResData] = useState({
+  const [resData, setResData] = useState<any>({
     branchs: [],
     sportFields: [],
     raw: {
-      branchs: {},
-      sportFields: {},
+      branchs: [],
+      sportFields: [],
     },
   });
 
@@ -119,6 +125,7 @@ export default function SportsFieldBooking() {
       try {
         setIsLoading(true);
         const branchRes = await GET_OPTIONS(ROUTES.BRANCHES);
+        console.log("branchRes", branchRes);
         const sportCatRes = await GET_OPTIONS(ROUTES.SPORT_CATEGORIES);
         const reformattedData = branchRes.items.map((data: any) => {
           return {
@@ -149,6 +156,34 @@ export default function SportsFieldBooking() {
     getData();
   }, []);
 
+  useEffect(() => {
+    const reformattedData2 = getSportFieldsByBranch(searchData.branchValue, resData);
+    // console.log("searchData.branchValue", searchData.branchValue);
+    console.log("reformattedData2", reformattedData2);
+
+    setResData((prevData: any) => ({
+      ...prevData,
+      sportFields: reformattedData2
+    }));
+
+    setSearchData((prev: any) => ({
+      ...prev,
+      sportValue: null,
+      dayPicked: null,
+      startTime: null,
+      endTime: null,
+    }));
+
+    if (reformattedData2.length === 1) {
+      setSearchData((prev: any) => ({
+        ...prev,
+        sportOption: reformattedData2[0],
+        sportValue: reformattedData2[0].value
+      }));
+    }
+
+  }, [searchData.branchValue]);
+
   const handleStartTimeChange = (e: moment.Moment) => {
     // console.log("e", e)
     setSearchData((prev) => ({
@@ -168,10 +203,21 @@ export default function SportsFieldBooking() {
 
   const handleSelectChange = (e: any, name: string) => {
     // console.log("e", e)
-    setSearchData((prev) => ({
-      ...prev,
-      [name]: e ? e.value : e,
-    }));
+    if (name === "sportValue") {
+      setSearchData((prev) => ({
+        ...prev,
+        [name]: e ? e.value : e,
+        sportOption: e
+      }));
+    }
+    if (name === "branchValue") {
+      setSearchData((prev) => ({
+        ...prev,
+        [name]: e ? e.value : e,
+        branchOption: e,
+        sportOption: null
+      }));
+    }
     setData([]);
   };
 
@@ -208,6 +254,7 @@ export default function SportsFieldBooking() {
       return;
     } else {
       const getData = async (requestBody: any) => {
+        // console.log("requestBody", requestBody);
         let response;
         try {
           if (
@@ -558,7 +605,7 @@ export default function SportsFieldBooking() {
                             titleValue="Chọn cụm sân"
                             name="sportBranchId"
                             options={resData.branchs}
-                            // value={searchData.branchValue}
+                            value={searchData.branchOption}
                             onChange={(e: any) =>
                               handleSelectChange(e, "branchValue")
                             }
@@ -571,7 +618,7 @@ export default function SportsFieldBooking() {
                             titleValue="Chọn môn thể thao"
                             name="sportId"
                             options={resData.sportFields}
-                            // value={searchData.sportValue}
+                            value={searchData.sportOption}
                             onChange={(e: any) =>
                               handleSelectChange(e, "sportValue")
                             }
@@ -776,8 +823,8 @@ export default function SportsFieldBooking() {
           selectedDate={selectedDate}
           setSelectedDate={setSelectedDate}
           searchData={searchData}
-          // orderInfo={bookingData}
-          // setBookingData={setBookingData}
+        // orderInfo={bookingData}
+        // setBookingData={setBookingData}
         />
 
         <OrderPopUp

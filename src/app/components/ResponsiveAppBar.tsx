@@ -23,6 +23,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PersonIcon from "@mui/icons-material/Person";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import LogoutIcon from "@mui/icons-material/Logout";
+import EditNoteIcon from '@mui/icons-material/EditNote';
 
 //định nghĩa white là loại color mới
 // Augment the palette to include an ochre color
@@ -64,6 +65,11 @@ const settings = [
     title: "Lịch sử đặt sân",
     page: "/khach-hang/lich-su-dat-san",
     icon: <AssignmentIcon sx={{ color: "var(--Primary-500)" }} />,
+  },
+  {
+    title: "Đánh giá của tôi",
+    page: "/khach-hang/danh-gia-cua-toi",
+    icon: <EditNoteIcon sx={{ color: "var(--Primary-500)" }} />,
   },
   {
     title: "Đăng xuất",

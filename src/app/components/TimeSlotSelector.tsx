@@ -50,7 +50,7 @@ export default function TimeSlotSelector({
   onClose,
   ...rest
 }: TimeSlotSelectorProps) {
-  // console.log("TimeSlotSelector ->rest", rest.searchData);
+  console.log("TimeSlotSelector ->rest", rest);
 
   const { setOpenSnackBar } = useContext(AppContext);
 

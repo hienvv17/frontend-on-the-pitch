@@ -16,6 +16,7 @@ import { formatPrice } from "@/utility/formatPrice";
 
 export default function PaymentPopUp(props: any) {
   // const data = props.data;
+  console.log("bookingData", props.bookingData);
 
   return (
     <>
@@ -240,7 +241,7 @@ export default function PaymentPopUp(props: any) {
                 sx={{ textTransform: "none" }}
                 color="error"
                 onClick={props.onClose}
-                // disabled={isDiscard}
+              // disabled={isDiscard}
               >
                 Hủy
               </Button>

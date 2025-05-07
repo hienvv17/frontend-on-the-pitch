@@ -50,8 +50,8 @@ export default function BookingHistory() {
   useEffect(() => {
     const getData = async () => {
       const data = await POST_P("/field-bookings/history");
-      // console.log('data', data.data);
-      setHistory(data.data.items);
+      console.log('data', data.data);
+      // setHistory(data.data.items);
     };
     getData();
     // console.log("history", history);
@@ -164,7 +164,7 @@ export default function BookingHistory() {
                             sx={{ ...classes.tableHeader }}
                             colSpan={1}
                           >
-                            Mã đơn
+                            Mã đặt sân
                           </TableCell>
                           <TableCell
                             sx={{ ...classes.tableHeader }}
