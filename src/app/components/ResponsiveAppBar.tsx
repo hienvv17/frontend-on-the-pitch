@@ -309,6 +309,7 @@ function ResponsiveAppBar() {
                         ":active": { background: "var(--Primary-50)" },
                       }}
                     >
+<<<<<<< HEAD
                       {userAvatar ? (
                         <Image
                           src={userAvatar}
@@ -325,6 +326,148 @@ function ResponsiveAppBar() {
                         <AccountCircleIcon fontSize="large" color="primary" />
                       )}
                       {/* <Typography
+=======
+                        On The Pitch
+                    </Typography>
+
+                    <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                        <IconButton
+                            size="large"
+                            aria-label="account of current user"
+                            aria-controls="menu-appbar"
+                            aria-haspopup="true"
+                            onClick={handleOpenNavMenu}
+                            color="primary"
+                        >
+                            <MenuIcon />
+                        </IconButton>
+                        <Menu
+                            id="menu-appbar"
+                            anchorEl={anchorElNav}
+                            anchorOrigin={{
+                                vertical: 'bottom',
+                                horizontal: 'left',
+                            }}
+                            keepMounted
+                            transformOrigin={{
+                                vertical: 'top',
+                                horizontal: 'left',
+                            }}
+                            open={Boolean(anchorElNav)}
+                            onClose={handleCloseNavMenu}
+                            sx={{ display: { xs: 'block', md: 'none' }, zIndex: 999999 }}
+                        >
+                            {pages2.map((page) => (
+                                <MenuItem key={page.title} onClick={() => router.push(`${page.url}`)}>
+                                    <Typography sx={{ textAlign: 'center' }}>{page.title}</Typography>
+                                </MenuItem>
+                            ))}
+                        </Menu>
+                    </Box>
+                    {/* <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} /> */}
+                    <Box
+                        component="img"
+                        sx={{
+                            height: 22,
+                            width: 22,
+                            // maxHeight: { xs: 233, md: 167 },
+                            // maxWidth: { xs: 350, md: 250 },
+                            display: { xs: 'flex', md: 'none' },
+                            mr: 1
+                        }}
+                        alt="The house from the offer."
+                        src="/icon/iconOTP.png"
+                    />
+                    <Typography
+                        variant="h6"
+                        noWrap
+                        component="a"
+                        href="/"
+                        sx={{
+                            mr: 2,
+                            display: { xs: 'flex', md: 'none' },
+                            flexGrow: 1,
+                            fontWeight: 700,
+                            color: "var(--Primary-500)",
+                            textDecoration: 'none',
+                        }}
+                    >
+                        On The Pitch
+                    </Typography>
+                    <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, mx: '50px', gap: '20px' }}>
+                        {pages2.map((page) => (
+                            <Button
+                                key={page.title}
+                                onClick={() => router.push(`${page.url}`)}
+                                sx={{
+                                    my: 2, color: "var(--Primary-500)", display: 'block', textTransform: 'none',
+                                    position: 'relative', // Để Divider có thể hiển thị đúng vị trí
+                                    '&:hover .hover-divider': {
+                                        borderBottomWidth: page.url == pathname ? '3px' : '1px', // Hiện Divider khi hover
+                                        width: '100%', // Hiện từ từ
+                                    }
+                                }}
+
+                            >
+                                <Typography fontWeight={page.url == pathname ? 'fontWeightBold' : "0"}>{page.title}</Typography>
+                                <Divider orientation="horizontal" flexItem className="hover-divider"
+                                    sx={{
+                                        bgcolor: "var(--Primary-500)", borderBottomWidth: page.url == pathname ? '3px' : '0px',
+                                        width: page.url == pathname ? '100%' : '0%',
+                                        transition: 'width 0.3s ease-in-out, border-bottom-width 0.3s ease-in-out', // Hiệu ứng mượt mà
+                                    }}>
+                                </Divider>
+                            </Button>
+                        ))}
+                    </Box>
+                    <Stack direction="row" spacing={2}>
+                        {
+                            !!user?.id ?
+                                <>
+                                    <Tooltip
+                                        title={
+                                            <>
+                                                {user.fullName}
+                                                <br />
+                                                ({user.email})
+                                            </>
+                                        }
+                                    >
+                                        <Grid2 direction="column" sx={{ width: "fit-content" }}>
+                                            <Button
+                                                variant="contained"
+                                                onClick={handleOpenUserMenu}
+                                                sx={{
+                                                    textTransform: "none",
+                                                    background: "var(--Primary-50)",
+                                                    height: "46px",
+                                                    gap: "10px",
+                                                    borderRadius: "8px",
+                                                    minWidth: { xs: "100%", sm: "100%" }, //  Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
+                                                    display: "inline-flex",
+                                                    justifyContent: "center",
+                                                    p: "12px",
+                                                    ":hover": {
+                                                        boxShadow: "0 0 1px 2px var(--Primary-500)",
+                                                    },
+                                                    ":active": { background: "var(--Primary-50)" },
+                                                }}
+                                            >
+                                                {
+                                                    userAvatar
+                                                        ?
+                                                        <Image
+                                                            src={userAvatar}
+                                                            width={32}
+                                                            height={32}
+                                                            alt="User avatar"
+                                                            style={{ objectFit: "contain", borderRadius: 50, aspectRatio: 1 / 1 }}
+                                                        />
+                                                        :
+                                                        <AccountCircleIcon fontSize="large" color="primary" />
+                                                }
+                                                {/* <Typography
+>>>>>>> 5ad2726 (fix: layout booking historys)
                                                     sx={{
                                                         display: { xs: 'none', sm: 'flex' },
                                                         width: "100px",
@@ -339,6 +482,7 @@ function ResponsiveAppBar() {
                                                 >
                                                     {user.fullName}
                                                 </Typography> */}
+<<<<<<< HEAD
                       <Box
                         fontSize="0.95rem"
                         fontWeight={800}
@@ -399,5 +543,61 @@ function ResponsiveAppBar() {
       </Container>
     </AppBar>
   );
+=======
+                                                <Box
+                                                    fontSize="0.95rem"
+                                                    fontWeight={800}
+                                                    component="div"
+                                                    overflow="hidden"
+                                                    whiteSpace="pre-line"
+                                                    textOverflow="ellipsis"
+                                                    color="var(--Primary-500)"
+                                                    width="100%"
+                                                    // height={60}
+                                                    sx={{
+                                                        fontWeight: 500,
+                                                        display: { xs: 'none', sm: "block" },
+                                                        whiteSpace: 'nowrap',
+                                                        ml: 0,
+                                                    }}
+                                                >
+                                                    {user.fullName}
+                                                </Box>
+                                            </Button>
+                                        </Grid2>
+
+                                    </Tooltip>
+                                    <Menu
+                                        sx={{ mt: '45px', zIndex: 999999 }}
+                                        id="menu-appbar"
+                                        anchorEl={anchorElUser}
+                                        anchorOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'right',
+                                        }}
+                                        keepMounted
+                                        transformOrigin={{
+                                            vertical: 'top',
+                                            horizontal: 'right',
+                                        }}
+                                        open={Boolean(anchorElUser)}
+                                        onClose={handleCloseUserMenu}
+                                    >
+                                        {settings.map((item) => (
+                                            <MenuItem key={item.title} onClick={() => handleMenuClick(item.page)} sx={{ gap: 2 }}>
+                                                {item.icon}
+                                                <Typography sx={{ textAlign: "center" }}>{item.title}</Typography>
+                                            </MenuItem>
+                                        ))}
+                                    </Menu>
+                                </>
+                                : <GoogleLoginBtn />
+                        }
+                    </Stack>
+                </Toolbar>
+            </Container>
+        </AppBar>
+    );
+>>>>>>> 5ad2726 (fix: layout booking historys)
 }
 export default ResponsiveAppBar;
