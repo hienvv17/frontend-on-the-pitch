@@ -16,7 +16,7 @@ import {
   alpha,
   useTheme,
   useMediaQuery,
-  Grid
+  Grid,
 } from "@mui/material";
 
 import {
@@ -205,7 +205,7 @@ export default function SportsFieldBooking() {
             !requestBody.endTime
           ) {
             response = await GET_OPTIONS(
-              ROUTES.SPORT_FIELDS + `/${requestBody.branchId}`,
+              ROUTES.SPORT_FIELDS + `/${requestBody.branchId}`
             );
           } else {
             setOpenSnackBar({
@@ -275,7 +275,7 @@ export default function SportsFieldBooking() {
             setIsBusy(true);
             response = await POST_SEARCH_FIELDS(
               ROUTES.SPORT_FIELDS + "/available",
-              requestBody,
+              requestBody
             );
           }
 
@@ -328,14 +328,14 @@ export default function SportsFieldBooking() {
       setOpenSnackBar(
         e
           ? { isOpen: true, msg: msgDetail[4], type: "error" }
-          : { isOpen: false, msg: msgDetail[4], type: "error" },
+          : { isOpen: false, msg: msgDetail[4], type: "error" }
       );
     }
     if (name === "endTime") {
       setOpenSnackBar(
         e
           ? { isOpen: true, msg: msgDetail[5], type: "error" }
-          : { isOpen: false, msg: msgDetail[5], type: "error" },
+          : { isOpen: false, msg: msgDetail[5], type: "error" }
       );
     }
     if (e !== null) {
@@ -461,7 +461,7 @@ export default function SportsFieldBooking() {
                   mb: 2,
                   textShadow: "0 2px 4px rgba(0,0,0,0.5)",
                   fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
-                  color: "#fff"
+                  color: "#fff",
                 }}
               >
                 Đặt Sân Thể Thao Trực Tuyến
@@ -475,15 +475,24 @@ export default function SportsFieldBooking() {
                   mx: "auto",
                   textShadow: "0 1px 2px rgba(0,0,0,0.5)",
                   fontSize: { xs: "1rem", sm: "1.1rem", md: "1.25rem" },
-                   color: "#fff"
+                  color: "#fff",
                 }}
               >
-                Tìm và đặt sân thể thao một cách nhanh chóng, dễ dàng với hệ thống đặt sân trực tuyến của chúng tôi
+                Tìm và đặt sân thể thao một cách nhanh chóng, dễ dàng với hệ
+                thống đặt sân trực tuyến của chúng tôi
               </Typography>
             </Box>
           </Box>
 
-          <Container maxWidth="xl" sx={{ mt: { xs: -5, sm: -7, md: -8 }, mb: 8, position: "relative", zIndex: 10 }}>
+          <Container
+            maxWidth="xl"
+            sx={{
+              mt: { xs: -5, sm: -7, md: -8 },
+              mb: 8,
+              position: "relative",
+              zIndex: 10,
+            }}
+          >
             <Card
               elevation={8}
               sx={{
@@ -523,11 +532,17 @@ export default function SportsFieldBooking() {
                   sx={{
                     display: "flex",
                     flexDirection: "column",
-                    justifyContent:"center",
+                    justifyContent: "center",
                     gap: 3,
                   }}
                 >
-                  <Grid container spacing={2} alignItems="center" gap={3} justifyContent={"center"}>
+                  <Grid
+                    container
+                    spacing={2}
+                    alignItems="center"
+                    gap={3}
+                    justifyContent={"center"}
+                  >
                     <Grid xs={12} md={5}>
                       <Paper
                         elevation={0}
@@ -544,8 +559,16 @@ export default function SportsFieldBooking() {
                           },
                         }}
                       >
-                        <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
-                          <LocationOn sx={{ color: "var(--Primary-500)", mr: 1 }} />
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            mb: 1.5,
+                          }}
+                        >
+                          <LocationOn
+                            sx={{ color: "var(--Primary-500)", mr: 1 }}
+                          />
                           <Typography variant="subtitle1" fontWeight={600}>
                             Cụm Sân
                           </Typography>
@@ -555,7 +578,9 @@ export default function SportsFieldBooking() {
                           titleValue="Chọn cụm sân"
                           name="sportBranchId"
                           options={resData.branchs}
-                          onChange={(e: any) => handleSelectChange(e, "branchValue")}
+                          onChange={(e: any) =>
+                            handleSelectChange(e, "branchValue")
+                          }
                           isBusy={isBusy}
                         />
                       </Paper>
@@ -577,8 +602,16 @@ export default function SportsFieldBooking() {
                           },
                         }}
                       >
-                        <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
-                          <SportsSoccer sx={{ color: "var(--Primary-500)", mr: 1 }} />
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            mb: 1.5,
+                          }}
+                        >
+                          <SportsSoccer
+                            sx={{ color: "var(--Primary-500)", mr: 1 }}
+                          />
                           <Typography variant="subtitle1" fontWeight={600}>
                             Môn Thể Thao
                           </Typography>
@@ -588,7 +621,9 @@ export default function SportsFieldBooking() {
                           titleValue="Chọn môn thể thao"
                           name="sportId"
                           options={resData.sportFields}
-                          onChange={(e: any) => handleSelectChange(e, "sportValue")}
+                          onChange={(e: any) =>
+                            handleSelectChange(e, "sportValue")
+                          }
                           isBusy={isBusy}
                         />
                       </Paper>
@@ -610,8 +645,16 @@ export default function SportsFieldBooking() {
                           },
                         }}
                       >
-                        <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
-                          <CalendarMonth sx={{ color: "var(--Primary-500)", mr: 1 }} />
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            mb: 1.5,
+                          }}
+                        >
+                          <CalendarMonth
+                            sx={{ color: "var(--Primary-500)", mr: 1 }}
+                          />
                           <Typography variant="subtitle1" fontWeight={600}>
                             Ngày
                           </Typography>
@@ -627,64 +670,84 @@ export default function SportsFieldBooking() {
                     </Grid>
 
                     <Grid xs={12} md={5}>
-  <Paper
-    elevation={0}
-    sx={{
-      p: 2,
-      borderRadius: "12px",
-      border: "1px solid",
-      borderColor: "divider",
-      height: "100%",
-      transition: "all 0.2s",
-      "&:hover": {
-        borderColor: "var(--Primary-300)",
-        boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-      },
-    }}
-  >
-    <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
-      <AccessTime sx={{ color: "var(--Primary-500)", mr: 1 }} />
-      <Typography variant="subtitle1" fontWeight={600}>
-        Thời Gian
-      </Typography>
-    </Box>
-    <Grid container spacing={2} justifyContent="center">
-      <Grid item xs={6} sx={{ display: "flex", justifyContent: "center" }}>
-        <Box sx={{ width: "100%", maxWidth: 200 }}>
-          <TimePickerValue
-            label="Giờ vào sân"
-            name="startTime"
-            onChange={handleStartTimeChange}
-            maxHour={22}
-            selectedDate={searchData.dayPicked}
-            value={searchData.startTime}
-            value2={searchData}
-            onError={(e: any) => handleTimeError(e, "startTime")}
-            isBusy={isBusy || searchData.dayPicked === null}
-          />
-        </Box>
-      </Grid>
-      <Grid item xs={6} sx={{ display: "flex", justifyContent: "center" }}>
-       
-          <TimePickerValue
-            label="Giờ trả sân"
-            name="endTime"
-            onChange={handleEndTimeChange}
-            maxHour={23}
-            selectedDate={searchData.dayPicked}
-            value={searchData.endTime}
-            value2={searchData}
-            onError={(e: any) => handleTimeError(e, "endTime")}
-            isBusy={isBusy}
-          />
-      </Grid>
-    </Grid>
-  </Paper>
-</Grid>
-
+                      <Paper
+                        elevation={0}
+                        sx={{
+                          p: 2,
+                          borderRadius: "12px",
+                          border: "1px solid",
+                          borderColor: "divider",
+                          height: "100%",
+                          transition: "all 0.2s",
+                          "&:hover": {
+                            borderColor: "var(--Primary-300)",
+                            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                          },
+                        }}
+                      >
+                        <Box
+                          sx={{
+                            display: "flex",
+                            alignItems: "center",
+                            mb: 1.5,
+                          }}
+                        >
+                          <AccessTime
+                            sx={{ color: "var(--Primary-500)", mr: 1 }}
+                          />
+                          <Typography variant="subtitle1" fontWeight={600}>
+                            Thời Gian
+                          </Typography>
+                        </Box>
+                        <Grid container spacing={2} justifyContent="center">
+                          <Grid
+                            item
+                            xs={6}
+                            sx={{ display: "flex", justifyContent: "center" }}
+                          >
+                            <Box sx={{ width: "100%", maxWidth: 200 }}>
+                              <TimePickerValue
+                                label="Giờ vào sân"
+                                name="startTime"
+                                onChange={handleStartTimeChange}
+                                maxHour={22}
+                                selectedDate={searchData.dayPicked}
+                                value={searchData.startTime}
+                                value2={searchData}
+                                onError={(e: any) =>
+                                  handleTimeError(e, "startTime")
+                                }
+                                isBusy={isBusy || searchData.dayPicked === null}
+                              />
+                            </Box>
+                          </Grid>
+                          <Grid
+                            item
+                            xs={6}
+                            sx={{ display: "flex", justifyContent: "center" }}
+                          >
+                            <TimePickerValue
+                              label="Giờ trả sân"
+                              name="endTime"
+                              onChange={handleEndTimeChange}
+                              maxHour={23}
+                              selectedDate={searchData.dayPicked}
+                              value={searchData.endTime}
+                              value2={searchData}
+                              onError={(e: any) =>
+                                handleTimeError(e, "endTime")
+                              }
+                              isBusy={isBusy}
+                            />
+                          </Grid>
+                        </Grid>
+                      </Paper>
+                    </Grid>
                   </Grid>
 
-                  <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
+                  <Box
+                    sx={{ display: "flex", justifyContent: "center", mt: 1 }}
+                  >
                     <Button
                       variant="contained"
                       startIcon={<Search />}
@@ -692,7 +755,8 @@ export default function SportsFieldBooking() {
                       size="large"
                       onClick={searchSubmit}
                       sx={{
-                        background: "linear-gradient(90deg, var(--Primary-600) 0%, var(--Primary-500) 100%)",
+                        background:
+                          "linear-gradient(90deg, var(--Primary-600) 0%, var(--Primary-500) 100%)",
                         color: "white",
                         px: 4,
                         py: 1.5,
@@ -704,7 +768,8 @@ export default function SportsFieldBooking() {
                         transition: "all 0.3s",
                         "&:hover": {
                           boxShadow: "0 6px 15px rgba(var(--Primary-rgb), 0.4)",
-                          background: "linear-gradient(90deg, var(--Primary-700) 0%, var(--Primary-600) 100%)",
+                          background:
+                            "linear-gradient(90deg, var(--Primary-700) 0%, var(--Primary-600) 100%)",
                         },
                         "&:disabled": {
                           background: "rgba(0, 0, 0, 0.12)",
@@ -720,7 +785,6 @@ export default function SportsFieldBooking() {
               </CardContent>
             </Card>
 
-            
             <Box sx={{ mt: 5, mb: 5 }}>
               {isSearchDone ? (
                 <Box
@@ -748,7 +812,11 @@ export default function SportsFieldBooking() {
                         sx={{ mb: 3 }}
                       >
                         <FilterList sx={{ color: "var(--Primary-500)" }} />
-                        <Typography variant="h5" fontWeight={700} color="var(--Primary-700)">
+                        <Typography
+                          variant="h5"
+                          fontWeight={700}
+                          color="var(--Primary-700)"
+                        >
                           Kết Quả Tìm Kiếm
                         </Typography>
                         <Divider sx={{ flexGrow: 1 }} />
@@ -772,15 +840,15 @@ export default function SportsFieldBooking() {
                         sx={{
                           p: 0.5,
                           borderRadius: "16px",
-                          backgroundColor: alpha(theme.palette.primary.main, 0.05),
+                          backgroundColor: alpha(
+                            theme.palette.primary.main,
+                            0.05
+                          ),
                           border: "1px solid",
                           borderColor: "divider",
                         }}
                       >
-                        <Grid
-                          container
-                          sx={{ p: { xs: 1, sm: 2 } }}
-                        >
+                        <Grid container sx={{ p: { xs: 1, sm: 2 } }}>
                           {data.map((field, index) => (
                             <Grid key={index} xs={12} sm={6} md={4} lg={3}>
                               <SportCard
@@ -788,7 +856,9 @@ export default function SportsFieldBooking() {
                                 resData={resData}
                                 searchData={searchData}
                                 branchInfo={resData.raw.branchs}
-                                onClick={() => handleClickOpen(field, resData.raw.branchs)}
+                                onClick={() =>
+                                  handleClickOpen(field, resData.raw.branchs)
+                                }
                               />
                             </Grid>
                           ))}
@@ -797,54 +867,66 @@ export default function SportsFieldBooking() {
                     </Box>
                   )}
 
-                  {data.length === 0 && !isLoading && searchData.branchValue && (
-                    <Box
-                      sx={{
-                        textAlign: "center",
-                        py: 8,
-                        px: 2,
-                        backgroundColor: "var(--Primary-50)",
-                        borderRadius: "16px",
-                        border: "1px dashed var(--Primary-200)",
-                      }}
-                    >
-                      <SportsSoccer
+                  {data.length === 0 &&
+                    !isLoading &&
+                    searchData.branchValue && (
+                      <Box
                         sx={{
-                          fontSize: 80,
-                          color: "var(--Primary-200)",
-                          mb: 2,
-                          opacity: 0.7,
-                        }}
-                      />
-                      <Typography variant="h5" color="var(--Primary-700)" fontWeight={600} gutterBottom>
-                        Không tìm thấy sân phù hợp
-                      </Typography>
-                      <Typography variant="body1" color="text.secondary" sx={{ maxWidth: "600px", mx: "auto", mb: 3 }}>
-                        Vui lòng thử lại với các tiêu chí tìm kiếm khác hoặc chọn một ngày khác để xem kết quả.
-                      </Typography>
-                      <Button
-                        variant="outlined"
-                        color="primary"
-                        onClick={() => {
-                          setSearchData({
-                            sportValue: null,
-                            branchValue: searchData.branchValue,
-                            dayPicked: null,
-                            startTime: null,
-                            endTime: null,
-                          });
-                          setSelectedDate(null);
-                        }}
-                        sx={{
-                          borderRadius: "8px",
-                          textTransform: "none",
-                          fontWeight: 600,
+                          textAlign: "center",
+                          py: 8,
+                          px: 2,
+                          backgroundColor: "var(--Primary-50)",
+                          borderRadius: "16px",
+                          border: "1px dashed var(--Primary-200)",
                         }}
                       >
-                        Đặt lại tìm kiếm
-                      </Button>
-                    </Box>
-                  )}
+                        <SportsSoccer
+                          sx={{
+                            fontSize: 80,
+                            color: "var(--Primary-200)",
+                            mb: 2,
+                            opacity: 0.7,
+                          }}
+                        />
+                        <Typography
+                          variant="h5"
+                          color="var(--Primary-700)"
+                          fontWeight={600}
+                          gutterBottom
+                        >
+                          Không tìm thấy sân phù hợp
+                        </Typography>
+                        <Typography
+                          variant="body1"
+                          color="text.secondary"
+                          sx={{ maxWidth: "600px", mx: "auto", mb: 3 }}
+                        >
+                          Vui lòng thử lại với các tiêu chí tìm kiếm khác hoặc
+                          chọn một ngày khác để xem kết quả.
+                        </Typography>
+                        <Button
+                          variant="outlined"
+                          color="primary"
+                          onClick={() => {
+                            setSearchData({
+                              sportValue: null,
+                              branchValue: searchData.branchValue,
+                              dayPicked: null,
+                              startTime: null,
+                              endTime: null,
+                            });
+                            setSelectedDate(null);
+                          }}
+                          sx={{
+                            borderRadius: "8px",
+                            textTransform: "none",
+                            fontWeight: 600,
+                          }}
+                        >
+                          Đặt lại tìm kiếm
+                        </Button>
+                      </Box>
+                    )}
                 </>
               )}
             </Box>
@@ -899,3 +981,4 @@ export default function SportsFieldBooking() {
     </UserLayout>
   );
 }
+

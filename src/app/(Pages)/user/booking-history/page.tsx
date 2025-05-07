@@ -1,7 +1,7 @@
-"use client"
-import { useEffect, useState } from "react"
-import UserLayout from "@/app/components/UserLayout"
-import { useUserApiPrivate } from "@/api/user/user"
+"use client";
+import { SetStateAction, useEffect, useState } from "react";
+import UserLayout from "@/app/components/UserLayout";
+import { useUserApiPrivate } from "@/api/user/user";
 import {
   Box,
   Typography,
@@ -17,61 +17,83 @@ import {
   Card,
   CardContent,
   Skeleton,
-} from "@mui/material"
-import { History, Receipt, CalendarMonth, Payments, Circle } from "@mui/icons-material"
+} from "@mui/material";
+import {
+  History,
+  Receipt,
+  CalendarMonth,
+  Payments,
+  Circle,
+} from "@mui/icons-material";
+const allowedColors = [
+  "default",
+  "primary",
+  "secondary",
+  "error",
+  "info",
+  "success",
+  "warning",
+] as const;
 
+type ChipColor = (typeof allowedColors)[number];
+
+function getValidColor(input: string): ChipColor {
+  return allowedColors.includes(input as ChipColor)
+    ? (input as ChipColor)
+    : "default";
+}
 export default function BookingHistory() {
-  const { POST_P } = useUserApiPrivate()
-  const [history, setHistory] = useState([])
-  const [loading, setLoading] = useState(true)
-  const [page, setPage] = useState(0)
-  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const { POST_P } = useUserApiPrivate();
+  const [history, setHistory] = useState<any>([]);
+  const [loading, setLoading] = useState(true);
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
 
   useEffect(() => {
     const getData = async () => {
       try {
-        setLoading(true)
-        const data = await POST_P("/field-bookings/history")
-        setHistory(data.data.items)
+        setLoading(true);
+        const data = await POST_P("/field-bookings/history");
+        setHistory(data.data.items);
       } catch (error) {
-        console.error("Error fetching booking history:", error)
+        console.error("Error fetching booking history:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
-    getData()
-  }, [])
+    };
+    getData();
+  }, []);
 
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage)
-  }
+  const handleChangePage = (event: any, newPage: SetStateAction<number>) => {
+    setPage(newPage);
+  };
 
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(Number.parseInt(event.target.value, 10))
-    setPage(0)
-  }
+  const handleChangeRowsPerPage = (event: any) => {
+    setRowsPerPage(Number.parseInt(event.target.value, 10));
+    setPage(0);
+  };
 
   // Function to determine status chip color
-  const getStatusColor = (status) => {
+  const getStatusColor = (status: string) => {
     switch (status) {
       case "PAID":
-        return { color: "success", label: "Hoàn thành" }
+        return { color: "success", label: "Hoàn thành" };
       case "PENDING":
-        return { color: "warning", label: "Đang xử lý" }
+        return { color: "warning", label: "Đang xử lý" };
       case "REFUND":
-        return { color: "error", label: "Đã hủy" }
+        return { color: "error", label: "Đã hủy" };
       default:
-        return { color: "default", label: status }
+        return { color: "default", label: status };
     }
-  }
+  };
 
   // Format currency
-  const formatCurrency = (amount) => {
+  const formatCurrency = (amount: any) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
-    }).format(amount || 0)
-  }
+    }).format(amount || 0);
+  };
 
   return (
     <UserLayout>
@@ -80,7 +102,6 @@ export default function BookingHistory() {
           width: "97%",
           py: 3,
           px: { xs: 1, md: 2 },
-         
         }}
       >
         <Card
@@ -96,17 +117,21 @@ export default function BookingHistory() {
             sx={{
               p: { xs: 2, md: 3 },
               borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
-              background: "linear-gradient(90deg, var(--Primary-500) 0%, var(--Primary-400) 100%)",
+              background:
+                "linear-gradient(90deg, var(--Primary-500) 0%, var(--Primary-400) 100%)",
               color: "white",
             }}
           >
-            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, }}>
-              <History fontSize="large" sx={{color: "#fff"}} />
-              <Typography variant="h5" fontWeight="700" sx={{color: "#fff"}}>
+            <Box sx={{ display: "flex", alignItems: "center", gap: 1.5 }}>
+              <History fontSize="large" sx={{ color: "#fff" }} />
+              <Typography variant="h5" fontWeight="700" sx={{ color: "#fff" }}>
                 Lịch sử đặt sân
               </Typography>
             </Box>
-            <Typography variant="body2" sx={{ mt: 1, opacity:1,color: "#fff" }}>
+            <Typography
+              variant="body2"
+              sx={{ mt: 1, opacity: 1, color: "#fff" }}
+            >
               Xem lại các đơn đặt sân của bạn và trạng thái của chúng
             </Typography>
           </Box>
@@ -132,7 +157,9 @@ export default function BookingHistory() {
                         borderBottom: "2px solid var(--Primary-200)",
                       }}
                     >
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
                         <Receipt fontSize="small" />
                         Mã đơn
                       </Box>
@@ -145,7 +172,9 @@ export default function BookingHistory() {
                         borderBottom: "2px solid var(--Primary-200)",
                       }}
                     >
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
                         <Receipt fontSize="small" />
                         Chi nhánh - Số sân
                       </Box>
@@ -158,7 +187,9 @@ export default function BookingHistory() {
                         borderBottom: "2px solid var(--Primary-200)",
                       }}
                     >
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
                         <CalendarMonth fontSize="small" />
                         Ngày đặt
                       </Box>
@@ -171,7 +202,9 @@ export default function BookingHistory() {
                         borderBottom: "2px solid var(--Primary-200)",
                       }}
                     >
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
                         <Receipt fontSize="small" />
                         Giờ đặt
                       </Box>
@@ -184,7 +217,9 @@ export default function BookingHistory() {
                         borderBottom: "2px solid var(--Primary-200)",
                       }}
                     >
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
                         <Payments fontSize="small" />
                         Tổng tiền
                       </Box>
@@ -197,7 +232,9 @@ export default function BookingHistory() {
                         borderBottom: "2px solid var(--Primary-200)",
                       }}
                     >
-                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                      <Box
+                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
+                      >
                         <Circle fontSize="small" />
                         Trạng thái
                       </Box>
@@ -225,75 +262,100 @@ export default function BookingHistory() {
                       </TableRow>
                     ))
                   ) : history.length > 0 ? (
-                    history.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => {
-                      
-                      const mockStatus = ["PAID", "PENDING", "REFUND"][Math.floor(Math.random() * 3)]
-                      const statusInfo = getStatusColor(mockStatus)
-
-                      return (
-                        <TableRow
-                          key={index}
-                          hover
-                          sx={{
-                            "&:nth-of-type(odd)": { backgroundColor: "rgba(0, 0, 0, 0.02)" },
-                            transition: "all 0.2s",
-                            "&:hover": {
-                              backgroundColor: "rgba(var(--Primary-rgb), 0.05) !important",
-                              boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
-                            },
-                          }}
-                        >
-                          <TableCell sx={{ py: 2 }}>
-                            <Typography variant="body2" fontWeight={500}>
-                              #{item.id || `ORDER${1000 + index}`}
-                            </Typography>
-                          </TableCell>
-                          <TableCell sx={{ py: 2 }}>
-                            <Typography variant="body2">
-                              {item.branchName} - {item.sportFieldName}
-                            </Typography>
-                          </TableCell>
-                          <TableCell sx={{ py: 2 }}>
-                            <Typography variant="body2">
-                              {item.day || new Date().toLocaleDateString("vi-VN")}
-                            </Typography>
-                          </TableCell>
-                          <TableCell sx={{ py: 2 }}>
-                            <Typography variant="body2">
-                              {item.startTime} - {item.endTime}
-                            </Typography>
-                          </TableCell>
-                          <TableCell sx={{ py: 2 }}>
-                            <Typography variant="body2" fontWeight={500} sx={{ color: "var(--Primary-700)" }}>
-                              {formatCurrency(item.total || Math.floor(Math.random() * 1000000) + 500000)}
-                            </Typography>
-                          </TableCell>
-                          
-
-                          
-                          <TableCell sx={{ py: 2 }}>
-                            <Chip
-                              label={statusInfo.label}
-                              color={statusInfo.color}
-                              size="small"
-                              sx={{
-                                fontWeight: 500,
-                                minWidth: "90px",
-                              }}
-                            />
-                          </TableCell>
-                        </TableRow>
+                    history
+                      .slice(
+                        page * rowsPerPage,
+                        page * rowsPerPage + rowsPerPage
                       )
-                    })
+                      .map((item: any, index: number) => {
+                        const mockStatus = ["PAID", "PENDING", "REFUND"][
+                          Math.floor(Math.random() * 3)
+                        ];
+                        const statusInfo = getStatusColor(mockStatus);
+
+                        return (
+                          <TableRow
+                            key={index}
+                            hover
+                            sx={{
+                              "&:nth-of-type(odd)": {
+                                backgroundColor: "rgba(0, 0, 0, 0.02)",
+                              },
+                              transition: "all 0.2s",
+                              "&:hover": {
+                                backgroundColor:
+                                  "rgba(var(--Primary-rgb), 0.05) !important",
+                                boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
+                              },
+                            }}
+                          >
+                            <TableCell sx={{ py: 2 }}>
+                              <Typography variant="body2" fontWeight={500}>
+                                #{item.id || `ORDER${1000 + index}`}
+                              </Typography>
+                            </TableCell>
+                            <TableCell sx={{ py: 2 }}>
+                              <Typography variant="body2">
+                                {item.branchName} - {item.sportFieldName}
+                              </Typography>
+                            </TableCell>
+                            <TableCell sx={{ py: 2 }}>
+                              <Typography variant="body2">
+                                {item.day ||
+                                  new Date().toLocaleDateString("vi-VN")}
+                              </Typography>
+                            </TableCell>
+                            <TableCell sx={{ py: 2 }}>
+                              <Typography variant="body2">
+                                {item.startTime} - {item.endTime}
+                              </Typography>
+                            </TableCell>
+                            <TableCell sx={{ py: 2 }}>
+                              <Typography
+                                variant="body2"
+                                fontWeight={500}
+                                sx={{ color: "var(--Primary-700)" }}
+                              >
+                                {formatCurrency(
+                                  item.total ||
+                                    Math.floor(Math.random() * 1000000) + 500000
+                                )}
+                              </Typography>
+                            </TableCell>
+
+                            <TableCell sx={{ py: 2 }}>
+                              <Chip
+                                label={statusInfo.label}
+                                color={getValidColor(statusInfo.color)}
+                                size="small"
+                                sx={{
+                                  fontWeight: 500,
+                                  minWidth: "90px",
+                                }}
+                              />
+                            </TableCell>
+                          </TableRow>
+                        );
+                      })
                   ) : (
                     <TableRow>
                       <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
                         <Box sx={{ textAlign: "center", py: 3 }}>
-                          <History sx={{ fontSize: 60, color: "var(--Primary-200)", mb: 2 }} />
+                          <History
+                            sx={{
+                              fontSize: 60,
+                              color: "var(--Primary-200)",
+                              mb: 2,
+                            }}
+                          />
                           <Typography variant="h6" color="text.secondary">
                             Chưa có lịch sử đặt sân
                           </Typography>
-                          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ mt: 1 }}
+                          >
                             Các đơn đặt sân của bạn sẽ xuất hiện ở đây
                           </Typography>
                         </Box>
@@ -312,7 +374,9 @@ export default function BookingHistory() {
               rowsPerPage={rowsPerPage}
               onRowsPerPageChange={handleChangeRowsPerPage}
               labelRowsPerPage="Số hàng mỗi trang:"
-              labelDisplayedRows={({ from, to, count }) => `${from}-${to} của ${count}`}
+              labelDisplayedRows={({ from, to, count }) =>
+                `${from}-${to} của ${count}`
+              }
               sx={{
                 borderTop: "1px solid rgba(0, 0, 0, 0.08)",
                 mt: 2,
@@ -326,5 +390,6 @@ export default function BookingHistory() {
         </Card>
       </Box>
     </UserLayout>
-  )
+  );
 }
+
