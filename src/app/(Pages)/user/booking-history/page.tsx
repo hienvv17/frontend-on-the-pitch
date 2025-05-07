@@ -77,10 +77,10 @@ export default function BookingHistory() {
     <UserLayout>
       <Box
         sx={{
-          width: "100%",
+          width: "97%",
           py: 3,
-          px: { xs: 2, md: 4 },
-          background: ""
+          px: { xs: 1, md: 2 },
+         
         }}
       >
         <Card
@@ -101,12 +101,12 @@ export default function BookingHistory() {
             }}
           >
             <Box sx={{ display: "flex", alignItems: "center", gap: 1.5, }}>
-              <History fontSize="large" />
-              <Typography variant="h5" fontWeight="700">
+              <History fontSize="large" sx={{color: "#fff"}} />
+              <Typography variant="h5" fontWeight="700" sx={{color: "#fff"}}>
                 Lịch sử đặt sân
               </Typography>
             </Box>
-            <Typography variant="body2" sx={{ mt: 1, opacity: 0.9 }}>
+            <Typography variant="body2" sx={{ mt: 1, opacity:1,color: "#fff" }}>
               Xem lại các đơn đặt sân của bạn và trạng thái của chúng
             </Typography>
           </Box>
@@ -146,8 +146,34 @@ export default function BookingHistory() {
                       }}
                     >
                       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Receipt fontSize="small" />
+                        Chi nhánh - Số sân
+                      </Box>
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 600,
+                        backgroundColor: "var(--Primary-50)",
+                        color: "var(--Primary-700)",
+                        borderBottom: "2px solid var(--Primary-200)",
+                      }}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <CalendarMonth fontSize="small" />
                         Ngày đặt
+                      </Box>
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 600,
+                        backgroundColor: "var(--Primary-50)",
+                        color: "var(--Primary-700)",
+                        borderBottom: "2px solid var(--Primary-200)",
+                      }}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Receipt fontSize="small" />
+                        Giờ đặt
                       </Box>
                     </TableCell>
                     <TableCell
@@ -200,8 +226,8 @@ export default function BookingHistory() {
                     ))
                   ) : history.length > 0 ? (
                     history.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((item, index) => {
-                      // For demo purposes, using mock data since the actual data structure is unknown
-                      const mockStatus = ["PAID", "PENDING", "REFUND"]
+                      
+                      const mockStatus = ["PAID", "PENDING", "REFUND"][Math.floor(Math.random() * 3)]
                       const statusInfo = getStatusColor(mockStatus)
 
                       return (
@@ -224,7 +250,17 @@ export default function BookingHistory() {
                           </TableCell>
                           <TableCell sx={{ py: 2 }}>
                             <Typography variant="body2">
+                              {item.branchName} - {item.sportFieldName}
+                            </Typography>
+                          </TableCell>
+                          <TableCell sx={{ py: 2 }}>
+                            <Typography variant="body2">
                               {item.day || new Date().toLocaleDateString("vi-VN")}
+                            </Typography>
+                          </TableCell>
+                          <TableCell sx={{ py: 2 }}>
+                            <Typography variant="body2">
+                              {item.startTime} - {item.endTime}
                             </Typography>
                           </TableCell>
                           <TableCell sx={{ py: 2 }}>
@@ -232,6 +268,9 @@ export default function BookingHistory() {
                               {formatCurrency(item.total || Math.floor(Math.random() * 1000000) + 500000)}
                             </Typography>
                           </TableCell>
+                          
+
+                          
                           <TableCell sx={{ py: 2 }}>
                             <Chip
                               label={statusInfo.label}
