@@ -89,7 +89,6 @@ export default function GoogleLoginBtn() {
     }
   };
 
-<<<<<<< HEAD
   return (
     <Stack direction="row" spacing={2}>
       <Button
@@ -107,10 +106,10 @@ export default function GoogleLoginBtn() {
           height: "46px",
           gap: "10px",
           borderRadius: "8px",
-          minWidth: { xs: "60px", sm: "140px" }, //  Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
+          minWidth: { xs: "100%", sm: "100%" }, //  Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
           display: "inline-flex",
           justifyContent: "center",
-          p: "6px",
+          p: "12px",
           ":hover": {
             boxShadow: "0 0 1px 2px var(--Primary-500)",
           },
@@ -133,55 +132,6 @@ export default function GoogleLoginBtn() {
                 scale: 0.8,
                 // ml: -1.2,
               }}
-=======
-            const response = await POST_LOGIN(idToken);
-
-            if (response.error) {
-                console.log("You are not authorized to access this page", response.error);
-                return;
-            }
-            Cookies.set(ACCESS_TOKEN, idToken);
-
-
-            localStorage.setItem("userAvatar", JSON.stringify(data?.user.photoURL));
-            setUser(response.user);
-            console.log("Login successfully");
-            window.location.reload();
-        } catch (error) {
-            console.error("Login failed", error);
-        } finally {
-            setIsLoading(false);
-        }
-    };
-
-
-    return (
-        <Stack direction="row" spacing={2}>
-            <Button
-                variant="contained"
-                // startIcon={svgIcon}
-                onClick={handleLogin}
-                disabled={isLoading}
-                sx={{
-                    // position: "absolute",
-                    // top: "auto",
-                    // right: 0,
-                    // zIndex: 99,
-                    textTransform: "none",
-                    background: "var(--Primary-50)",
-                    height: "46px",
-                    gap: "10px",
-                    borderRadius: "8px",
-                    minWidth: { xs: "100%", sm: "100%" }, //  Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
-                    display: "inline-flex",
-                    justifyContent: "center",
-                    p: "12px",
-                    ":hover": {
-                        boxShadow: "0 0 1px 2px var(--Primary-500)",
-                    },
-                    ":active": { background: "var(--Primary-50)" },
-                }}
->>>>>>> 5ad2726 (fix: layout booking historys)
             >
               <Image
                 alt="googleIcon"
