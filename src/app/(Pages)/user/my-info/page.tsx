@@ -1,602 +1,770 @@
-"use client";
+"use client"
 
-import * as React from "react";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Divider from "@mui/material/Divider";
-import UserLayout from "@/app/components/UserLayout";
+import { useContext, useEffect, useState } from "react"
+import Image from "next/image"
 import {
-  CircularProgress,
+  Box,
+  Button,
   Container,
-  Grid2 as Grid,
+  Divider,
   IconButton,
   TextField,
   Tooltip,
   Typography,
-} from "@mui/material";
-import BorderColorRoundedIcon from "@mui/icons-material/BorderColorRounded";
-import PersonIcon from "@mui/icons-material/Person";
-import { AppContext } from "@/app/contexts/AppContext";
-import { useContext, useEffect, useState } from "react";
-import Image from "next/image";
-import { useUserApiPrivate } from "@/api/user/user";
-import { UserInfo, UserUpdateData } from "@/types/UserType";
-import AddAPhotoIcon from "@mui/icons-material/AddAPhoto";
-import ClearIcon from "@mui/icons-material/Clear";
-import { msgDetail, ROUTES } from "@/utility/constant";
+  CircularProgress,
+  Paper,
+  Avatar,
+  Card,
+  CardContent,
+  Tabs,
+  Tab,
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  Chip,
+  Grid as MuiGrid,
+  alpha,
+} from "@mui/material"
+import Grid from "@mui/material/Grid2"
+import {
+  Person,
+  BorderColorRounded,
+  AddAPhoto,
+  Clear,
+  Save,
+  LocalOffer,
+  ExpandMore,
+  CalendarMonth,
+  CheckCircle,
+  Info,
+  Edit,
+  PhotoCamera,
+} from "@mui/icons-material"
+import UserLayout from "@/app/components/UserLayout"
+import { AppContext } from "@/app/contexts/AppContext"
+import { useUserApiPrivate } from "@/api/user/user"
+import { UserInfo, UserUpdateData } from "@/types/UserType"
+import { msgDetail, ROUTES } from "@/utility/constant"
+
+// Sample voucher data
+const sampleVouchers = [
+  {
+    id: 1,
+    code: "SUMMER2023",
+    discount: "20%",
+    validUntil: "2023-08-31",
+    description: "Giảm 20% cho tất cả các đặt sân trong mùa hè",
+    status: "active",
+    minBooking: 200000,
+  },
+  {
+    id: 2,
+    code: "WELCOME10",
+    discount: "10%",
+    validUntil: "2023-12-31",
+    description: "Giảm 10% cho lần đặt sân đầu tiên",
+    status: "active",
+    minBooking: 100000,
+  },
+  {
+    id: 3,
+    code: "WEEKEND15",
+    discount: "15%",
+    validUntil: "2023-09-30",
+    description: "Giảm 15% cho đặt sân vào cuối tuần",
+    status: "expired",
+    minBooking: 150000,
+  },
+]
 
 export default function MyInfo() {
-  const { user, setUser, setOpenSnackBar } = useContext(AppContext);
+  const { user, setUser, setOpenSnackBar } = useContext(AppContext)
+  const [activeTab, setActiveTab] = useState(0)
+  const [expandedVoucher, setExpandedVoucher] = useState<number | false>(false)
 
   const [userInfo, setUserInfo] = useState<UserInfo>({
     fullName: "",
     phoneNumber: "",
     image: "",
     email: "",
-  });
+  })
 
   const [updateData, setUpdateData] = useState<UserUpdateData>({
     fullName: "",
     phoneNumber: "",
     image: "",
-  });
+  })
 
-  const [isChange, setIsChange] = useState(true);
+  const [isChange, setIsChange] = useState(true)
+  const [isUpdate, setIsUpdate] = useState(false)
+  const [isDiscard, setIsDiscard] = useState(true)
+  const [isLoading, setIsLoading] = useState(true)
 
-  const [isUpdate, setIsUpdate] = useState(false);
+  const { GET_P, POST_P } = useUserApiPrivate()
 
-  const [isDiscard, setIsDiscard] = useState(true);
-
-  const { GET_P, POST_P } = useUserApiPrivate();
-
-  const userAvatar = JSON.parse(localStorage.getItem("userAvatar") ?? "");
+  const userAvatar = typeof window !== "undefined" ? JSON.parse(localStorage.getItem("userAvatar") ?? "") : ""
 
   useEffect(() => {
     const getData = async () => {
-      const data = await GET_P(ROUTES.USERS + "/profile");
-      // console.log("my-info -> data", data);
-      setUserInfo(data.user);
-      setUpdateData({
-        fullName: data.user.fullName,
-        phoneNumber: data.user.phoneNumber,
-        image: data.user.image ? data.user.image : userAvatar,
-      });
-      setUser((prev: any) => ({
-        ...prev,
-        fullName: data.user.fullName,
-        phoneNumber: data.user.phoneNumber,
-        image: data.user.image ? data.user.image : "",
-      }));
-    };
-    getData();
-  }, [isUpdate]);
-
-  // const [selectedFile, setSelectedFile] = useState<File | null>(null);
-  // const [avatar, setAvatar] = useState<string | null>(null);
+      try {
+        setIsLoading(true)
+        const data = await GET_P(ROUTES.USERS + "/profile")
+        setUserInfo(data.user)
+        setUpdateData({
+          fullName: data.user.fullName,
+          phoneNumber: data.user.phoneNumber,
+          image: data.user.image ? data.user.image : userAvatar,
+        })
+        setUser((prev: any) => ({
+          ...prev,
+          fullName: data.user.fullName,
+          phoneNumber: data.user.phoneNumber,
+          image: data.user.image ? data.user.image : "",
+        }))
+      } catch (error) {
+        console.error("Error fetching user data:", error)
+      } finally {
+        setIsLoading(false)
+      }
+    }
+    getData()
+  }, [isUpdate])
 
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
+    const file = event.target.files?.[0]
     if (file) {
-      const maxSize = 2000 * 1024;
+      const maxSize = 2000 * 1024
       if (file.size > maxSize) {
-        setOpenSnackBar({ isOpen: true, msg: msgDetail[7], type: "error" });
-        return;
+        setOpenSnackBar({ isOpen: true, msg: msgDetail[7], type: "error" })
+        return
       }
 
-      setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: "info" });
+      setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: "info" })
 
-      const reader = new FileReader();
+      const reader = new FileReader()
       reader.onloadend = () => {
-        // setAvatar(reader.result as string); // base64 string
         setUpdateData((prev) => ({
           ...prev,
           image: reader.result as string,
-        }));
-      };
-      reader.readAsDataURL(file);
+        }))
+      }
+      reader.readAsDataURL(file)
 
-      setIsChange(false);
-      setIsDiscard(false);
+      setIsChange(false)
+      setIsDiscard(false)
     }
-  };
+  }
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setIsDiscard(false);
-    const { name, value } = e.target;
-    // console.log("handleChange", name, value);
+    setIsDiscard(false)
+    const { name, value } = e.target
     if (name === "email") {
-      return;
+      return
     }
     setUpdateData((prev) => ({
       ...prev,
       [name]: value,
-    }));
+    }))
     if (name === "phoneNumber") {
-      setIsChange(true);
-      return;
+      setIsChange(true)
+      return
     }
-    setIsChange(false);
-  };
+    setIsChange(false)
+  }
 
   const validatePhone = (value: string) => {
-    const trimValue = value.replaceAll(" ", "");
+    const trimValue = value.replaceAll(" ", "")
 
     if (trimValue === "") {
-      // console.log("2value", value);
-      setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: "info" });
-      return;
+      setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: "info" })
+      return
     }
 
-    // const phoneRegex = /(?:\+84|0084|0)[235789][0-9]{1,2}[0-9]{7}(?:[^\d]+|$)/;  //cho phép cả số máy bàn
     const phoneRegex =
-      /^([+]?84|0)((3[2-9]{1})|(5[2689]{1})|(7[06789]{1})|(8[123458]{1})|(9[01236789]{1}))[0-9]{7}$/; //chỉ cho phép số di động các nhà mạng Việt Nam
+      /^([+]?84|0)((3[2-9]{1})|(5[2689]{1})|(7[06789]{1})|(8[123458]{1})|(9[01236789]{1}))[0-9]{7}$/
     if (!phoneRegex.test(trimValue)) {
-      setOpenSnackBar({ isOpen: true, msg: msgDetail[8], type: "error" });
-      setIsChange(true);
+      setOpenSnackBar({ isOpen: true, msg: msgDetail[8], type: "error" })
+      setIsChange(true)
     } else {
-      setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: "info" });
-      setIsChange(false);
+      setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: "info" })
+      setIsChange(false)
     }
-  };
+  }
 
   const handleBlur = () => {
     if (!updateData.phoneNumber) {
-      return;
+      return
     }
-    validatePhone(updateData.phoneNumber); // Khi blur(nhấp chuột ra khỏi TextField) mới validate
-  };
+    validatePhone(updateData.phoneNumber)
+  }
 
   const handleSave = async () => {
-    //TODO: gửi thông tin cập nhật tới back-end
-    // console.log("SAVE");
-
-    const updateUserData = async () => {
+    try {
+      setIsLoading(true)
       const data = await POST_P(ROUTES.USERS + "/update-profile", {
         fullName: updateData.fullName,
-        phoneNumber: !updateData.phoneNumber
-          ? ""
-          : "0" + updateData.phoneNumber.slice(-9),
+        phoneNumber: !updateData.phoneNumber ? "" : "0" + updateData.phoneNumber.slice(-9),
         image: "",
-      });
-      console.log("status", data.status);
-      setIsUpdate((prev) => !prev);
-      setIsDiscard(true);
-      setIsChange(true);
-      setOpenSnackBar({ isOpen: true, msg: msgDetail[11], type: "info" });
-    };
-    updateUserData();
-  };
+      })
+      setIsUpdate((prev) => !prev)
+      setIsDiscard(true)
+      setIsChange(true)
+      setOpenSnackBar({ isOpen: true, msg: msgDetail[11], type: "info" })
+    } catch (error) {
+      console.error("Error updating profile:", error)
+      setOpenSnackBar({ isOpen: true, msg: "Cập nhật thất bại", type: "error" })
+    } finally {
+      setIsLoading(false)
+    }
+  }
 
   const handleDiscard = () => {
     setUpdateData({
       fullName: userInfo.fullName,
       phoneNumber: userInfo.phoneNumber,
       image: userInfo.image ? userInfo.image : userAvatar,
-    });
-    setOpenSnackBar({ isOpen: true, msg: msgDetail[10], type: "warning" });
-    setIsDiscard(true);
-    setIsChange(true);
-  };
+    })
+    setOpenSnackBar({ isOpen: true, msg: msgDetail[10], type: "warning" })
+    setIsDiscard(true)
+    setIsChange(true)
+  }
+
+  const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
+    setActiveTab(newValue)
+  }
+
+  const handleVoucherExpand = (panel: number) => (event: React.SyntheticEvent, isExpanded: boolean) => {
+    setExpandedVoucher(isExpanded ? panel : false)
+  }
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString)
+    return date.toLocaleDateString("vi-VN", {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    })
+  }
+
+  if (isLoading && !user) {
+    return (
+      <UserLayout>
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "80vh",
+          }}
+        >
+          <CircularProgress
+            size={60}
+            thickness={4}
+            sx={{
+              color: "var(--Primary-500)",
+              mb: 2,
+            }}
+          />
+          <Typography
+            variant="h6"
+            sx={{
+              color: "var(--Primary-700)",
+              fontWeight: 500,
+              animation: "pulse 1.5s infinite",
+              "@keyframes pulse": {
+                "0%": { opacity: 0.6 },
+                "50%": { opacity: 1 },
+                "100%": { opacity: 0.6 },
+              },
+            }}
+          >
+            Đang tải thông tin...
+          </Typography>
+        </Box>
+      </UserLayout>
+    )
+  }
 
   return (
-    <>
-      <UserLayout>
-        {user === null ? (
-          <Grid
-            container
-            direction="row"
-            spacing={5}
+    <UserLayout>
+      <Container maxWidth="lg" sx={{ py: 4 }}>
+        <Card
+          elevation={0}
+          sx={{
+            borderRadius: "16px",
+            overflow: "hidden",
+            border: "1px solid",
+            borderColor: "divider",
+            mb: 4,
+          }}
+        >
+          {/* Header with background */}
+          <Box
             sx={{
-              mt: 10,
-              height: "100vh",
-              justifyContent: "center",
+              position: "relative",
+              height: { xs: 20, md: 50 },
+              bgcolor: "var(--Primary-500)",
+              backgroundImage: "linear-gradient(135deg, var(--Primary-600) 0%, var(--Primary-400) 100%)",
               display: "flex",
+              alignItems: "flex-end",
+              px: 3,
+              pb: 2,
             }}
           >
-            <Grid>
-              <CircularProgress
-                size={"5vw"}
-                color="primary"
-                sx={{ position: "absolute" }}
-              />
-            </Grid>
-            {/* <Grid sx={{ height: "auto" }}>
-                                                <Typography textAlign={"center"}>Loading...</Typography>
-                                            </Grid> */}
-          </Grid>
-        ) : (
-          <Grid
-            container
-            direction={"row"}
+            <Typography variant="h5" fontWeight={700} color="white">
+              Thông tin cá nhân
+            </Typography>
+          </Box>
+
+          {/* Tabs */}
+          <Tabs
+            value={activeTab}
+            onChange={handleTabChange}
+            variant="fullWidth"
             sx={{
-              borderRadius: "20px",
-              height: "fit-content",
-              justifyContent: "center",
-              width: "100%",
-              zIndex: 100,
-              // mt: { xs: "-10vh", sm: "-20vh", md: "-25vh", lg: "-35vh", xl: "-21%" },
+              borderBottom: 1,
+              borderColor: "divider",
+              "& .MuiTab-root": {
+                textTransform: "none",
+                fontWeight: 600,
+                fontSize: "1rem",
+                py: 2,
+              },
+              "& .Mui-selected": {
+                color: "var(--Primary-600)",
+              },
+              "& .MuiTabs-indicator": {
+                backgroundColor: "var(--Primary-500)",
+                height: 3,
+              },
             }}
           >
-            <Box
-              sx={{
-                width: "fit-content",
-                background: { xs: "none", sm: "white" },
-                borderRadius: "inherit",
-              }}
-            >
-              <Container
-                // elevation={5}
-                sx={{
-                  width: "95vw",
-                  mt: 2,
-                  mb: "30px",
-                  border: "2px solid var(--Primary-200)",
-                  position: "relative",
-                  zIndex: 99,
-                  backgroundColor: "var(--Primary-50)",
-                  borderRadius: "20px",
-                  boxShadow: "0px 5px 5.8px 0px rgba(0, 0, 0, 0.10)",
-                  py: { xs: "16px", sm: "24px" },
-                  gap: "60px",
-                }}
-              >
-                <Grid
-                  container
-                  direction={"row"}
-                  justifyContent="flex-start"
-                  alignItems="center"
-                  spacing={2}
-                  sx={{
-                    width: "100%",
-                    // backgroundColor: "var(--Primary-800)",
-                    // padding: "15px 30px",
-                    // borderRadius: "8px 8px 0px 0px",
-                  }}
-                >
-                  <PersonIcon sx={{ color: "var(--Primary-500)" }} />
-                  <Typography
-                    variant="h5"
-                    color="var(--Primary-500)"
-                    sx={{ fontWeight: "bold" }}
-                  >
-                    Thông tin tài khoản
-                  </Typography>
-                </Grid>
+            <Tab
+              icon={<Person sx={{ mr: 1 }} />}
+              iconPosition="start"
+              label="Thông tin tài khoản"
+              sx={{ display: "flex" }}
+            />
+            <Tab
+              icon={<LocalOffer sx={{ mr: 1 }} />}
+              iconPosition="start"
+              label="Voucher của tôi"
+              sx={{ display: "flex" }}
+            />
+          </Tabs>
 
-                <Grid
-                  container
-                  direction={"row"}
-                  justifyContent="center"
-                  alignItems="center"
-                  sx={{ height: "350px" }}
-                >
-                  <Grid
-                    container
-                    size={4}
-                    alignItems="flex-start"
-                    justifyContent="center"
-                    sx={{ height: "100%" }}
-                  >
-                    <Grid
-                      container
-                      justifyContent="center"
-                      alignItems="center"
-                      sx={{ mt: 6 }}
-                    >
-                      {/* <Box
-                                                        sx={{
-                                                            height: 200,
-                                                            width: 200,
-                                                            borderRadius: "50%",
-                                                            border: "2px dashed var(--Primary-200)",
-                                                            overflow: "hidden",
-                                                            display: "flex",
-                                                            alignItems: "center",
-                                                            justifyContent: "center",
-                                                        }}
-                                                    >
-                                                        {userAvatar ? (
-                                                            <Box
-                                                                sx={{
-                                                                    width: 180,
-                                                                    height: 180,
-                                                                    borderRadius: "50%",
-                                                                    overflow: "hidden",
-                                                                }}
-                                                            >
-                                                                <Image
-                                                                    src={userAvatar}
-                                                                    width={180}
-                                                                    height={180}
-                                                                    alt="User avatar"
-                                                                    style={{
-                                                                        objectFit: "cover",
-                                                                        width: "100%",
-                                                                        height: "100%",
-                                                                    }}
-                                                                />
-                                                            </Box>
-                                                        ) : (
-                                                            <Typography>avatar</Typography>
-                                                        )}
-                                                    </Box> */}
-                      <Box
-                        display="flex"
-                        flexDirection="column"
-                        alignItems="center"
-                        width="100%"
-                        // height="340px"
-                        // border="1px solid #eaeaea"
-                        // borderRadius="10px"
-                      >
-                        <Box
-                          display="flex"
-                          alignItems="center"
-                          justifyContent="center"
-                          border="1px dashed grey"
-                          borderRadius="100%"
-                          width={180}
-                          height={180}
-                          // marginTop="20px"
-                        >
-                          <Box
-                            display="flex"
-                            flexDirection="column"
-                            alignItems="center"
-                            justifyContent="center"
-                            bgcolor={
-                              updateData.image ? "transparent" : "#f4f6f8"
-                            }
-                            borderRadius="100%"
-                            padding="10px"
-                            width={160}
-                            height={160}
-                          >
-                            {updateData.image ? (
-                              <Box
-                                sx={{
-                                  width: "100%",
-                                  height: "100%",
-                                  position: "relative",
-                                  border: "1px solid grey",
-                                  borderRadius: "100%",
-                                  overflow: "hidden", // Thêm thuộc tính này để ẩn phần thừa của ảnh
-                                }}
-                              >
-                                <Image
-                                  src={updateData.image}
-                                  // width={50}
-                                  // height={50}
-                                  placeholder="empty"
-                                  style={{
-                                    width: "100%",
-                                    // height: 'auto',
-                                    // objectFit: 'scale-down'
-                                    objectFit: "cover",
-                                  }}
-                                  alt="avatar"
-                                  fill
-                                  sizes="(max-width: 600px) 80vw, 200px" // Kích thước ảnh cho các màn hình khác nhau
-                                  priority={true}
-                                />
+          <CardContent sx={{ p: 0 }}>
+            {/* Profile Tab */}
+            {activeTab === 0 && (
+         <Box sx={{ p: { xs: 2, md: 4 }, display: "flex", justifyContent:"space-between" }}>
+         <Grid container spacing={4} >
+           {/* Avatar Section */}
+           <Grid item xs={12} md={4}>
+             <Paper
+               elevation={0}
+               sx={{
+                 p: 2,
+                 borderRadius: "12px",
+                 border: "1px solid",
+                 borderColor: "divider",
+                 display: "flex",
+                 flexDirection: "column",
+                 alignItems: "center",
+                 height: "100%", // đảm bảo cao bằng với form section nếu muốn
+               }}
+             >
+               <Box
+                 sx={{
+                   position: "relative",
+                   width: 180,
+                   height: 180,
+                   mb: 2,
+                 }}
+               >
+                 <Avatar
+                   src={updateData.image || ""}
+                   alt={userInfo.fullName || "User"}
+                   sx={{
+                     width: "100%",
+                     height: "100%",
+                     border: "4px solid white",
+                     boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+                   }}
+                 />
+                 <Box
+                   sx={{
+                     position: "absolute",
+                     bottom: 0,
+                     right: 0,
+                     bgcolor: "var(--Primary-500)",
+                     borderRadius: "50%",
+                     p: 0.5,
+                     boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+                   }}
+                 >
+                   <input
+                     accept="image/*"
+                     style={{ display: "none" }}
+                     id="change-avatar"
+                     type="file"
+                     onChange={handleFileChange}
+                   />
+                   <Tooltip title="Thay đổi ảnh đại diện" placement="top">
+                     <label htmlFor="change-avatar">
+                       <IconButton
+                         component="span"
+                         size="small"
+                         sx={{
+                           color: "white",
+                           "&:hover": {
+                             bgcolor: alpha("#fff", 0.1),
+                           },
+                         }}
+                       >
+                         <PhotoCamera fontSize="small" />
+                       </IconButton>
+                     </label>
+                   </Tooltip>
+                 </Box>
+               </Box>
+       
+               <Typography variant="h6" fontWeight={600} gutterBottom>
+                 {userInfo.fullName || "Chưa cập nhật"}
+               </Typography>
+       
+               <Typography
+                 variant="body2"
+                 color="text.secondary"
+                 align="center"
+                 sx={{ mb: 2 }}
+               >
+                 Dung lượng ảnh tối đa 2 MB
+                 <br />
+                 Định dạng: JPEG, JPG, PNG
+               </Typography>
+             </Paper>
+           </Grid>
+       
+           {/* Form Section */}
+           <Grid item xs={12} md={7}>
+             <Paper
+               elevation={0}
+               sx={{
+                 p: 2,
+                 borderRadius: "12px",
+                 border: "1px solid",
+                 borderColor: "divider",
+                 height: "100%",
+               }}
+             >
+               <Typography
+                 variant="h6"
+                 fontWeight={600}
+                 sx={{ mb: 3, display: "flex", alignItems: "center" }}
+               >
+                 <Edit sx={{ mr: 1, color: "var(--Primary-500)" }} fontSize="small" />
+                 Chỉnh sửa thông tin
+               </Typography>
+       
+               <Grid container spacing={3}>
+                 <Grid item xs={12}>
+                   <TextField
+                     fullWidth
+                     label="Họ tên"
+                     name="fullName"
+                     value={updateData.fullName || ""}
+                     onChange={handleChange}
+                     variant="outlined"
+                     InputLabelProps={{ shrink: true }}
+                     sx={{
+                       "& .MuiOutlinedInput-root": {
+                         borderRadius: "10px",
+                       },
+                     }}
+                   />
+                 </Grid>
+       
+                 <Grid item xs={12} sm={6}>
+                   <TextField
+                     fullWidth
+                     disabled
+                     label="Email"
+                     name="email"
+                     value={userInfo?.email || ""}
+                     variant="outlined"
+                     InputLabelProps={{ shrink: true }}
+                     sx={{
+                       "& .MuiOutlinedInput-root": {
+                         borderRadius: "10px",
+                       },
+                     }}
+                   />
+                 </Grid>
+       
+                 <Grid item xs={12} sm={6}>
+                   <TextField
+                     fullWidth
+                     label="Số điện thoại"
+                     name="phoneNumber"
+                     value={updateData?.phoneNumber || ""}
+                     onChange={handleChange}
+                     onBlur={handleBlur}
+                     variant="outlined"
+                     InputLabelProps={{ shrink: true }}
+                     sx={{
+                       "& .MuiOutlinedInput-root": {
+                         borderRadius: "10px",
+                       },
+                     }}
+                   />
+                 </Grid>
+               </Grid>
+       
+               <Divider sx={{ my: 4 }} />
+       
+               <Box sx={{ display: "flex", justifyContent: "flex-end", gap: 2 }}>
+                 <Button
+                   variant="outlined"
+                   color="error"
+                   startIcon={<Clear />}
+                   onClick={handleDiscard}
+                   disabled={isDiscard}
+                   sx={{
+                     borderRadius: "10px",
+                     textTransform: "none",
+                     fontWeight: 600,
+                     px: 3,
+                   }}
+                 >
+                   Hủy thay đổi
+                 </Button>
+       
+                 <Button
+                   variant="contained"
+                   startIcon={isLoading ? null : <Save />}
+                   onClick={handleSave}
+                   disabled={isChange || isLoading}
+                   sx={{
+                     borderRadius: "10px",
+                     textTransform: "none",
+                     fontWeight: 600,
+                     px: 3,
+                     background:
+                       "linear-gradient(90deg, var(--Primary-600) 0%, var(--Primary-500) 100%)",
+                     "&:hover": {
+                       background:
+                         "linear-gradient(90deg, var(--Primary-700) 0%, var(--Primary-600) 100%)",
+                     },
+                   }}
+                 >
+                   {isLoading ? (
+                     <CircularProgress size={24} color="inherit" />
+                   ) : (
+                     "Lưu thay đổi"
+                   )}
+                 </Button>
+               </Box>
+             </Paper>
+           </Grid>
+         </Grid>
+       </Box>
+       
+            )}
 
-                                <Box
-                                  sx={{
-                                    position: "absolute",
-                                    top: 0,
-                                    left: 0,
-                                    width: "100%",
-                                    height: "100%",
-                                    display: "flex",
-                                    flexDirection: "column",
-                                    alignItems: "center",
-                                    justifyContent: "center",
-                                    bgcolor: "rgba(0, 0, 0, 0.7)", // Nền đen mờ để làm nổi bật nội dung trên ảnh
-                                    color: "white", // Màu chữ trắng để tương phản với nền
-                                    opacity: 0, // Bắt đầu với opacity = 0 để ẩn nội dung
-                                    "&:hover": {
-                                      opacity: 1, // Hiển thị nội dung khi di chuột qua
-                                    },
-                                  }}
-                                >
-                                  <input
-                                    accept="image/*"
-                                    style={{ display: "none" }}
-                                    id="change-avatar"
-                                    type="file"
-                                    onChange={handleFileChange}
-                                  />
-                                  <Tooltip title="Chọn ảnh" placement="top">
-                                    <label htmlFor="change-avatar">
-                                      <IconButton component="span">
-                                        <AddAPhotoIcon
-                                          sx={{
-                                            fontSize: 25,
-                                            color: "#FFFFFF",
-                                          }}
-                                        />
-                                      </IconButton>
-                                    </label>
-                                  </Tooltip>
-                                  <Typography
-                                    align="center"
-                                    sx={{ fontSize: "14px", color: "#FFFFFF" }}
-                                  >
-                                    Đổi hình đại diện
-                                  </Typography>
-                                </Box>
-                              </Box>
-                            ) : (
-                              <>
-                                <input
-                                  accept="image/*"
-                                  style={{ display: "none" }}
-                                  id="upload-avatar"
-                                  type="file"
-                                  onChange={handleFileChange}
-                                />
-                                <Tooltip title="Chọn ảnh" placement="top">
-                                  <label htmlFor="upload-avatar">
-                                    <IconButton component="span">
-                                      <AddAPhotoIcon sx={{ fontSize: 25 }} />
-                                    </IconButton>
-                                  </label>
-                                </Tooltip>
-                                <Typography
-                                  align="center"
-                                  sx={{ fontSize: "14px", color: "#72808d" }}
-                                >
-                                  Thêm hình đại diện
-                                </Typography>
-                              </>
-                            )}
-                          </Box>
-                        </Box>
-                        <Typography
-                          align="center"
-                          sx={{
-                            marginTop: "20px",
-                            fontSize: "14px",
-                            color: "#72808d",
-                          }}
-                        >
-                          Dung lượng ảnh tối đa 2 MB
-                          <br />
-                          (*.jpeg, *.jpg, *.png.)
-                        </Typography>
-                      </Box>
-                    </Grid>
-                  </Grid>
+            {/* Vouchers Tab */}
+            {activeTab === 1 && (
+              <Box sx={{ p: { xs: 2, md: 4 } }}>
+                <Typography variant="h6" fontWeight={600} sx={{ mb: 3, display: "flex", alignItems: "center" }}>
+                  <LocalOffer sx={{ mr: 1, color: "var(--Primary-500)" }} fontSize="small" />
+                  Voucher của tôi
+                </Typography>
 
-                  <Grid
-                    container
-                    direction="column"
-                    size={8}
-                    sx={{
-                      height: "100%",
-                      // justifyContent: "center",
-                      alignItems: "center",
-                    }}
-                  >
-                    <Grid
-                      container
-                      direction={"row"}
-                      justifyContent="flex-start"
-                      // alignItems="center"
-                      spacing={4}
-                      sx={{
-                        width: "100%",
-                        height: "100%",
-                        // mt: 5,
-                        px: 6,
-                        // gap: 2
-                        // flexGrow: 1
-                      }}
-                    >
-                      <Grid
-                        container
-                        direction={"row"}
-                        justifyContent="center"
-                        alignItems="center"
+                {sampleVouchers.length > 0 ? (
+                  <Box sx={{ mb: 4 }}>
+                    {sampleVouchers.map((voucher) => (
+                      <Accordion
+                        key={voucher.id}
+                        expanded={expandedVoucher === voucher.id}
+                        onChange={handleVoucherExpand(voucher.id)}
                         sx={{
-                          width: "100%",
+                          mb: 2,
+                          borderRadius: "12px !important",
+                          overflow: "hidden",
+                          border: "1px solid",
+                          borderColor: "divider",
+                          "&:before": {
+                            display: "none",
+                          },
+                          boxShadow: "none",
+                          "&.Mui-expanded": {
+                            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                          },
                         }}
                       >
-                        <Grid size={6}>
-                          <TextField
-                            fullWidth
-                            label="Họ tên"
-                            name="fullName"
-                            value={updateData.fullName || ""}
-                            onChange={handleChange}
-                            slotProps={{
-                              inputLabel: { shrink: true },
-                            }}
-                          />
-                        </Grid>
-                        <Grid size={6}>
-                          <TextField
-                            fullWidth
-                            disabled
-                            label="Email"
-                            name="email"
-                            value={userInfo?.email || ""}
-                            slotProps={{
-                              inputLabel: { shrink: true },
-                            }}
-                          />
-                        </Grid>
-                      </Grid>
-                      <Grid size={6}>
-                        <TextField
-                          fullWidth
-                          label="Số điện thoại"
-                          name="phoneNumber"
-                          value={updateData?.phoneNumber || ""}
-                          onChange={handleChange}
-                          onBlur={handleBlur}
-                          slotProps={{
-                            inputLabel: { shrink: true },
+                        <AccordionSummary
+                          expandIcon={<ExpandMore />}
+                          sx={{
+                            backgroundColor: voucher.status === "active" ? alpha("#f5f5f5", 0.5) : alpha("#f5f5f5", 0.8),
+                            borderBottom: "1px solid",
+                            borderColor: "divider",
                           }}
-                        />
-                      </Grid>
-                      {/* {
-                                                        userInfo?.memberPoint &&
-                                                    <Grid size={6}>
-                                                        <TextField fullWidth disabled label="Điểm thành viên" id="memberPoint" value={userInfo?.memberPoint || 0}
-                                                            slotProps={{
-                                                                inputLabel: { shrink: true }
-                                                            }}
-                                                            />
-                                                    </Grid>
-                                                        } */}
-                    </Grid>
-                  </Grid>
-                </Grid>
-                <Box width="95%">
-                  <Divider
-                    orientation="horizontal"
-                    variant="middle"
-                    sx={{ bgcolor: "grey.300" }}
-                  />
-                </Box>
-                <Grid
-                  container
-                  direction="row"
-                  spacing={4}
-                  justifyContent={"center"}
-                  alignItems={"center"}
-                  sx={{
-                    width: "100%",
-                    my: 2,
-                  }}
-                >
-                  <Button
-                    variant="contained"
-                    startIcon={<BorderColorRoundedIcon />}
-                    // sx={{ width: "100%" }}
-                    onClick={handleSave}
-                    disabled={isChange}
-                  >
-                    Cập nhật
-                  </Button>
+                        >
+                          <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
+                            <Box
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                justifyContent: "center",
+                                width: 50,
+                                height: 50,
+                                borderRadius: "50%",
+                                bgcolor: voucher.status === "active" ? "var(--Primary-50)" : "#f5f5f5",
+                                mr: 2,
+                                border: "1px solid",
+                                borderColor: voucher.status === "active" ? "var(--Primary-200)" : "divider",
+                              }}
+                            >
+                              <LocalOffer
+                                sx={{
+                                  color: voucher.status === "active" ? "var(--Primary-500)" : "text.disabled",
+                                }}
+                              />
+                            </Box>
 
-                  <Button
-                    variant="outlined"
-                    startIcon={<ClearIcon />}
-                    // sx={{ backgroundColor: "var(--Primary-500)" }}
-                    color="error"
-                    onClick={handleDiscard}
-                    disabled={isDiscard}
+                            <Box sx={{ flexGrow: 1 }}>
+                              <Typography
+                                variant="subtitle1"
+                                fontWeight={600}
+                                sx={{
+                                  color: voucher.status === "active" ? "text.primary" : "text.disabled",
+                                }}
+                              >
+                                {voucher.code}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                sx={{
+                                  color: voucher.status === "active" ? "text.secondary" : "text.disabled",
+                                }}
+                              >
+                                Giảm {voucher.discount} cho đơn từ {new Intl.NumberFormat("vi-VN").format(voucher.minBooking)}đ
+                              </Typography>
+                            </Box>
+
+                            <Chip
+                              label={voucher.status === "active" ? "Còn hiệu lực" : "Hết hạn"}
+                              color={voucher.status === "active" ? "success" : "default"}
+                              size="small"
+                              sx={{ fontWeight: 500 }}
+                            />
+                          </Box>
+                        </AccordionSummary>
+
+                        <AccordionDetails sx={{ p: 3 }}>
+                          <MuiGrid container spacing={2}>
+                            <MuiGrid item xs={12} sm={8}>
+                              <Typography variant="body1" fontWeight={500} gutterBottom>
+                                {voucher.description}
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary" paragraph>
+                                Áp dụng cho tất cả các đơn đặt sân có giá trị từ{" "}
+                                {new Intl.NumberFormat("vi-VN").format(voucher.minBooking)}đ.
+                              </Typography>
+                              <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
+                                <Button
+                                  variant="outlined"
+                                  size="small"
+                                  disabled={voucher.status !== "active"}
+                                  sx={{
+                                    borderRadius: "8px",
+                                    textTransform: "none",
+                                    fontWeight: 600,
+                                  }}
+                                >
+                                  Sao chép mã
+                                </Button>
+                              </Box>
+                            </MuiGrid>
+
+                            <MuiGrid item xs={12} sm={4}>
+                              <Paper
+                                elevation={0}
+                                sx={{
+                                  p: 2,
+                                  borderRadius: "10px",
+                                  bgcolor: "var(--Primary-50)",
+                                  border: "1px dashed var(--Primary-200)",
+                                }}
+                              >
+                                <Typography variant="body2" color="text.secondary" gutterBottom>
+                                  Thông tin
+                                </Typography>
+                                <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                                  <CalendarMonth
+                                    fontSize="small"
+                                    sx={{ color: "var(--Primary-500)", mr: 1 }}
+                                  />
+                                  <Typography variant="body2">
+                                    HSD: {formatDate(voucher.validUntil)}
+                                  </Typography>
+                                </Box>
+                                <Box sx={{ display: "flex", alignItems: "center" }}>
+                                  <CheckCircle
+                                    fontSize="small"
+                                    sx={{
+                                      color: voucher.status === "active" ? "success.main" : "text.disabled",
+                                      mr: 1,
+                                    }}
+                                  />
+                                  <Typography
+                                    variant="body2"
+                                    sx={{
+                                      color: voucher.status === "active" ? "text.primary" : "text.disabled",
+                                    }}
+                                  >
+                                    {voucher.status === "active" ? "Có thể sử dụng" : "Đã hết hạn"}
+                                  </Typography>
+                                </Box>
+                              </Paper>
+                            </MuiGrid>
+                          </MuiGrid>
+                        </AccordionDetails>
+                      </Accordion>
+                    ))}
+                  </Box>
+                ) : (
+                  <Box
+                    sx={{
+                      textAlign: "center",
+                      py: 6,
+                      px: 2,
+                      backgroundColor: "var(--Primary-50)",
+                      borderRadius: "16px",
+                      border: "1px dashed var(--Primary-200)",
+                    }}
                   >
-                    Hủy
-                  </Button>
-                </Grid>
-              </Container>
-            </Box>
-          </Grid>
-        )}
-      </UserLayout>
-    </>
-  );
+                    <LocalOffer
+                      sx={{
+                        fontSize: 60,
+                        color: "var(--Primary-200)",
+                        mb: 2,
+                        opacity: 0.7,
+                      }}
+                    />
+                    <Typography variant="h6" color="var(--Primary-700)" fontWeight={600} gutterBottom>
+                      Bạn chưa có voucher nào
+                    </Typography>
+                    <Typography variant="body1" color="text.secondary" sx={{ maxWidth: "600px", mx: "auto", mb: 3 }}>
+                      Hãy tham gia các chương trình khuyến mãi hoặc tích điểm để nhận voucher giảm giá.
+                    </Typography>
+                  </Box>
+                )}
+              </Box>
+            )}
+          </CardContent>
+        </Card>
+      </Container>
+    </UserLayout>
+  )
 }

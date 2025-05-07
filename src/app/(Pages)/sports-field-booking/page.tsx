@@ -1,5 +1,7 @@
 "use client";
 
+import { useContext, useEffect, useState } from "react";
+import moment, { Moment } from "moment";
 import {
   Typography,
   Button,
@@ -8,15 +10,26 @@ import {
   Divider,
   Stack,
   CircularProgress,
-  Grid2,
+  Paper,
+  Card,
+  CardContent,
+  alpha,
+  useTheme,
+  useMediaQuery,
+  Grid
 } from "@mui/material";
-import Grid from "@mui/material/Grid2";
-import SearchIcon from "@mui/icons-material/Search";
+
+import {
+  Search,
+  SportsSoccer,
+  CalendarMonth,
+  LocationOn,
+  AccessTime,
+  FilterList,
+} from "@mui/icons-material";
 import UserLayout from "@/app/components/UserLayout";
-import { Key, useContext, useEffect, useState } from "react";
 import SportCard from "@/app/components/SportCard";
 import SelectBox from "@/app/components/SelectBox";
-import moment, { Moment } from "moment";
 import TimePickerValue from "@/app/components/TimePicker";
 import { useBookingApi } from "@/api/booking/booking";
 import { msgDetail, ROUTES } from "@/utility/constant";
@@ -29,21 +42,16 @@ import CustomDatePicker from "@/app/components/DatePicker";
 import PaymentPopUp from "@/app/components/PaymentPopUp";
 
 export default function SportsFieldBooking() {
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
   const { setOpenSnackBar } = useContext(AppContext);
 
-  // const data = demoData;                          //gọi API => data từ backend trả về
   const [data, setData] = useState<SportField[]>([]);
-
   const { GET_OPTIONS, POST_SEARCH_FIELDS } = useBookingApi();
-
   const [isLoading, setIsLoading] = useState(true);
-
   const [isBusy, setIsBusy] = useState(false);
-
   const [isSearchDone, setIsSearchDone] = useState(false);
-
   const [isSearchDisable, setIsSearchDisable] = useState(false);
-
   const [selectedDate, setSelectedDate] = useState<Moment | null>(null);
 
   const [searchData, setSearchData] = useState<{
@@ -70,12 +78,9 @@ export default function SportsFieldBooking() {
   });
 
   const [openDialog, setOpenDialog] = useState(false);
-
   const [dialogData, setDialogData] = useState<any>();
-
   const [bookingData, setBookingData] = useState({
     sportFieldId: 0,
-    // userId: 0,   đã đăng nhập thì mới có
     email: "",
     bookingDate: "",
     startTime: "",
@@ -84,21 +89,11 @@ export default function SportsFieldBooking() {
   });
 
   const [tempEmail, setTempEemail] = useState("");
-
   const [selectedSlots, setSelectedSlots] = useState<Date[]>([]);
   const [startSlot, setStartSlot] = useState<Date | null>(null);
-
   const [openDialog2, setOpenDialog2] = useState(false);
   const handleOpenDialog2 = () => setOpenDialog2(true);
   const handleCloseDialog2 = () => setOpenDialog2(false);
-
-  // fix hydrate
-  // useEffect(() => {
-  //     setSearchData(prev => ({
-  //         ...prev,
-  //         dayPicked: moment(),
-  //     }))
-  // }, []);
 
   useEffect(() => {
     setData([]);
@@ -150,7 +145,6 @@ export default function SportsFieldBooking() {
   }, []);
 
   const handleStartTimeChange = (e: moment.Moment) => {
-    // console.log("e", e)
     setSearchData((prev) => ({
       ...prev,
       startTime: e ? moment(e, "HH:mm") : null,
@@ -159,7 +153,6 @@ export default function SportsFieldBooking() {
   };
 
   const handleEndTimeChange = (e: moment.Moment) => {
-    // console.log("e", e)
     setSearchData((prev) => ({
       ...prev,
       endTime: e ? moment(e, "HH:mm") : null,
@@ -167,7 +160,6 @@ export default function SportsFieldBooking() {
   };
 
   const handleSelectChange = (e: any, name: string) => {
-    // console.log("e", e)
     setSearchData((prev) => ({
       ...prev,
       [name]: e ? e.value : e,
@@ -176,7 +168,6 @@ export default function SportsFieldBooking() {
   };
 
   const handleDateChange = (e: any) => {
-    // console.log("handleDateChange ->e", e);
     const value = e === null ? e : moment(e, "YYYY-MM-DD");
     setSelectedDate(value);
     setSearchData((prev) => ({
@@ -188,7 +179,6 @@ export default function SportsFieldBooking() {
   };
 
   const searchSubmit = async () => {
-    //TODO: xử lý dữ liệu trước khi gọi API
     const requestBody = {
       sportCategoryId: Number(searchData.sportValue),
       branchId: Number(searchData.branchValue),
@@ -199,8 +189,6 @@ export default function SportsFieldBooking() {
       startTime: formatTime(searchData.startTime) as string,
       endTime: formatTime(searchData.endTime) as string,
     };
-
-    // console.log("searchSubmit -> requestBody", requestBody);
 
     if (requestBody.branchId === 0) {
       setOpenSnackBar({ isOpen: true, msg: msgDetail[1], type: "error" });
@@ -219,7 +207,6 @@ export default function SportsFieldBooking() {
             response = await GET_OPTIONS(
               ROUTES.SPORT_FIELDS + `/${requestBody.branchId}`,
             );
-            // console.log("GET_OPTIONS response", response);
           } else {
             setOpenSnackBar({
               isOpen: false,
@@ -272,7 +259,6 @@ export default function SportsFieldBooking() {
                 const isValidDuration =
                   searchData.endTime.diff(searchData.startTime, "minutes") >=
                   60;
-                // console.log("isValidDuration", isValidDuration);
                 if (!isValidDuration) {
                   setOpenSnackBar({
                     isOpen: true,
@@ -284,16 +270,13 @@ export default function SportsFieldBooking() {
               }
             }
 
-            //TODO: gọi API để gửi dữ liệu tới back-end
             setIsSearchDone(true);
             setIsSearchDisable(true);
             setIsBusy(true);
-            // console.log("requestBody", requestBody);
             response = await POST_SEARCH_FIELDS(
               ROUTES.SPORT_FIELDS + "/available",
               requestBody,
             );
-            // console.log("POST_SEARCH_FIELDS requestBody", response);
           }
 
           setBookingData((prev) => ({
@@ -305,12 +288,10 @@ export default function SportsFieldBooking() {
           }));
 
           if (response.status === 201) {
-            // console.log(response);
             setData(response.data.items);
             setOpenSnackBar({ isOpen: true, msg: msgDetail[2], type: "info" });
             return;
           } else if (response.message === "Success") {
-            // console.log(response);
             setData(response.items);
             setOpenSnackBar({ isOpen: true, msg: msgDetail[2], type: "info" });
             return;
@@ -321,9 +302,7 @@ export default function SportsFieldBooking() {
             type: "error",
           });
         } catch (error) {
-          // const message = error || 'Unidentified';
           console.log("error", error);
-          // setOpenSnackBar({ isOpen: true, msg: `Error1: ${error}`, type: 'error' });
           setData([]);
         } finally {
           setIsSearchDone(false);
@@ -344,7 +323,6 @@ export default function SportsFieldBooking() {
   }, [timePickerErrorNum]);
 
   const handleTimeError = (e: any, name: string) => {
-    // console.log('e', e);
     setData([]);
     if (name === "startTime") {
       setOpenSnackBar(
@@ -371,9 +349,6 @@ export default function SportsFieldBooking() {
   };
 
   const handleClickOpen = (field: any, branch: any) => {
-    // console.log("->field", field);
-    // console.log("->branch", branch);
-    // console.log("->bookingData", bookingData);
     setDialogData({
       field,
       branch,
@@ -393,26 +368,7 @@ export default function SportsFieldBooking() {
 
   const [confirmOrder, setConfirmOrder] = useState(false);
 
-  // useEffect(() => {
-  //     const createOrder = async () => {
-  //         console.log("created");
-  //     };
-
-  //     if (confirmOrder) {
-  //         console.log("bookingData", bookingData);
-  //         //TODO: gọi API đặt sân
-  //         createOrder();
-  //     }
-
-  //     // setConfirmOrder(false);
-  // }, [confirmOrder]);
-
   const handleConfirmOrder = () => {
-    // console.log("confirmOder", bookingData);
-    // console.log("tempEmail", tempEmail);
-    // console.log("selectedSlots", selectedSlots);
-    // console.log("startSlot", startSlot);
-
     setBookingData((prev) => ({
       ...prev,
       email: tempEmail,
@@ -421,393 +377,525 @@ export default function SportsFieldBooking() {
   };
 
   const handleClosePayment = () => {
-    // console.log("confirmOder", bookingData);
     setConfirmOrder(false);
   };
 
   return (
-    <>
-      <UserLayout>
-        {isLoading ? (
-          <Grid
-            container
-            direction="row"
-            spacing={5}
+    <UserLayout>
+      {isLoading ? (
+        <Box
+          sx={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            justifyContent: "center",
+            height: "80vh",
+          }}
+        >
+          <CircularProgress
+            size={60}
+            thickness={4}
             sx={{
-              mt: 10,
-              height: "100vh",
-              justifyContent: "center",
-              display: "flex",
+              color: "var(--Primary-500)",
+              mb: 2,
+            }}
+          />
+          <Typography
+            variant="h6"
+            sx={{
+              color: "var(--Primary-700)",
+              fontWeight: 500,
+              animation: "pulse 1.5s infinite",
+              "@keyframes pulse": {
+                "0%": { opacity: 0.6 },
+                "50%": { opacity: 1 },
+                "100%": { opacity: 0.6 },
+              },
             }}
           >
-            <Grid>
-              <CircularProgress
-                size={"5vw"}
-                color="primary"
-                sx={{ position: "absolute" }}
-              />
-            </Grid>
-            {/* <Grid sx={{ height: "auto" }}>
-                            <Typography textAlign={"center"}>Loading...</Typography>
-                        </Grid> */}
-          </Grid>
-        ) : (
-          <>
+            Đang tải thông tin...
+          </Typography>
+        </Box>
+      ) : (
+        <>
+          <Box
+            sx={{
+              position: "relative",
+              width: "100%",
+              height: { xs: "200px", sm: "300px", md: "400px" },
+              backgroundImage: "url('/image/image_11.png')",
+              backgroundSize: "cover",
+              backgroundPosition: "center",
+              "&::before": {
+                content: '""',
+                position: "absolute",
+                top: 0,
+                left: 0,
+                right: 0,
+                bottom: 0,
+                backgroundColor: "rgba(0,0,0,0.3)",
+                zIndex: 1,
+              },
+              display: "flex",
+              flexDirection: "column",
+              justifyContent: "center",
+              alignItems: "center",
+              color: "white",
+              textAlign: "center",
+              zIndex: 0,
+            }}
+          >
             <Box
               sx={{
                 position: "relative",
-                p: "1em",
-                flexDirection: "column",
-                alignItems: "flex-start",
-                gap: 10,
-                backgroundImage: "url('/image/image_11.png')", // Đường dẫn ảnh
-                backgroundSize: "cover", // Tỷ lệ ảnh
-                backgroundRepeat: "no-repeat", // Không lặp lại ảnh
-                backgroundPosition: "center", // Căn giữa ảnh
-                aspectRatio: 1920 / 500,
-                zIndex: 1,
-              }}
-            />
-
-            <Grid2
-              container
-              direction={"row"}
-              sx={{
-                borderRadius: "20px",
-                height: "fit-content",
-                justifyContent: "center",
-                width: "95vw",
-                zIndex: 100,
-                // mt: { xs: "-15vh", sm: "-30vh", md: "-30vh", lg: "-35vh", xl: "-21%" },
-                mt: "-23%",
-                //     top: "-200px",
-                mx: "auto",
+                zIndex: 2,
+                px: 3,
+                maxWidth: "800px",
               }}
             >
-              <Box
+              <Typography
+                variant="h3"
+                component="h1"
                 sx={{
-                  width: "fit-content",
-                  background: "white",
-                  borderRadius: "inherit",
+                  fontWeight: 800,
+                  mb: 2,
+                  textShadow: "0 2px 4px rgba(0,0,0,0.5)",
+                  fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
+                  color: "#fff"
                 }}
               >
-                <Container
+                Đặt Sân Thể Thao Trực Tuyến
+              </Typography>
+              <Typography
+                variant="h6"
+                sx={{
+                  fontWeight: 400,
+                  opacity: 0.9,
+                  maxWidth: "600px",
+                  mx: "auto",
+                  textShadow: "0 1px 2px rgba(0,0,0,0.5)",
+                  fontSize: { xs: "1rem", sm: "1.1rem", md: "1.25rem" },
+                   color: "#fff"
+                }}
+              >
+                Tìm và đặt sân thể thao một cách nhanh chóng, dễ dàng với hệ thống đặt sân trực tuyến của chúng tôi
+              </Typography>
+            </Box>
+          </Box>
+
+          <Container maxWidth="xl" sx={{ mt: { xs: -5, sm: -7, md: -8 }, mb: 8, position: "relative", zIndex: 10 }}>
+            <Card
+              elevation={8}
+              sx={{
+                borderRadius: "16px",
+                overflow: "visible",
+                background: "linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)",
+                border: "1px solid rgba(0, 0, 0, 0.05)",
+              }}
+            >
+              <CardContent sx={{ p: { xs: 1, sm: 2, md: 3 } }}>
+                <Box sx={{ mb: 5 }}>
+                  <Typography
+                    variant="h5"
+                    sx={{
+                      fontWeight: 700,
+                      color: "var(--Primary-700)",
+                      mb: 1,
+                      display: "flex",
+                      alignItems: "center",
+                      gap: 1,
+                    }}
+                  >
+                    <SportsSoccer sx={{ color: "var(--Primary-500)" }} />
+                    Tìm Kiếm Sân Thể Thao
+                  </Typography>
+                  <Typography
+                    variant="body1"
+                    sx={{
+                      color: "text.secondary",
+                    }}
+                  >
+                    Điền thông tin để tìm sân phù hợp với lịch của bạn
+                  </Typography>
+                </Box>
+
+                <Box
                   sx={{
-                    width: "100%",
-                    // mt: { xs: "-10vh", sm: "-20vh", md: "-25vh", lg: "-35vh" },
-                    mb: "30px",
-                    // border: "2px solid var(--Primary-200)",
-                    position: "relative",
-                    zIndex: 99,
-                    backgroundColor: "var(--Primary-50)",
-                    borderRadius: "20px",
-                    // boxShadow: "0px 5px 5.8px 0px rgba(0, 0, 0, 0.10)",
-                    py: { xs: "16px", sm: "24px" },
-                    gap: "60px",
+                    display: "flex",
+                    flexDirection: "column",
+                    justifyContent:"center",
+                    gap: 3,
                   }}
                 >
-                  <Grid
-                    container
-                    direction="row"
-                    spacing={4}
-                    alignItems="center"
-                    justifyContent="center"
-                  >
-                    <Grid
-                      container
-                      direction="column"
-                      spacing={2}
-                      sx={{ width: "100%" }}
-                    >
-                      <Grid>
-                        <Typography
-                          variant="h5"
-                          sx={{
-                            fontWeight: 700,
-                            lineHeight: "normal",
-                            color: "var(--Primary-500)",
-                          }}
-                        >
-                          Đặt sân thể thao
-                        </Typography>
-                      </Grid>
-                      <Typography
+                  <Grid container spacing={2} alignItems="center" gap={3} justifyContent={"center"}>
+                    <Grid xs={12} md={5}>
+                      <Paper
+                        elevation={0}
                         sx={{
-                          lineHeight: "normal",
-                          width: "inherit",
+                          p: 2,
+                          borderRadius: "12px",
+                          border: "1px solid",
+                          borderColor: "divider",
+                          height: "100%",
+                          transition: "all 0.2s",
+                          "&:hover": {
+                            borderColor: "var(--Primary-300)",
+                            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                          },
                         }}
                       >
-                        Hãy chọn lịch của bạn
-                      </Typography>
+                        <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
+                          <LocationOn sx={{ color: "var(--Primary-500)", mr: 1 }} />
+                          <Typography variant="subtitle1" fontWeight={600}>
+                            Cụm Sân
+                          </Typography>
+                        </Box>
+                        <SelectBox
+                          icon="Room"
+                          titleValue="Chọn cụm sân"
+                          name="sportBranchId"
+                          options={resData.branchs}
+                          onChange={(e: any) => handleSelectChange(e, "branchValue")}
+                          isBusy={isBusy}
+                        />
+                      </Paper>
                     </Grid>
 
-                    <Grid
-                      container
-                      direction="row"
-                      sx={{ justifyContent: "center", width: "100%" }}
-                    >
-                      <Grid
-                        container
-                        direction="row"
-                        columns={24}
-                        sx={{ justifyContent: "space-evenly", width: "100%" }}
+                    <Grid xs={12} md={5}>
+                      <Paper
+                        elevation={0}
+                        sx={{
+                          p: 2,
+                          borderRadius: "12px",
+                          border: "1px solid",
+                          borderColor: "divider",
+                          height: "100%",
+                          transition: "all 0.2s",
+                          "&:hover": {
+                            borderColor: "var(--Primary-300)",
+                            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                          },
+                        }}
                       >
-                        <Grid size={{ xs: 24, md: 6 }} sx={{ width: "100%" }}>
-                          <SelectBox
-                            icon="Room"
-                            titleValue="Chọn cụm sân"
-                            name="sportBranchId"
-                            options={resData.branchs}
-                            // value={searchData.branchValue}
-                            onChange={(e: any) =>
-                              handleSelectChange(e, "branchValue")
-                            }
-                            isBusy={isBusy}
-                          />
-                        </Grid>
-                        <Grid size={{ xs: 24, md: 7 }}>
-                          <SelectBox
-                            icon="SportsSoccer"
-                            titleValue="Chọn môn thể thao"
-                            name="sportId"
-                            options={resData.sportFields}
-                            // value={searchData.sportValue}
-                            onChange={(e: any) =>
-                              handleSelectChange(e, "sportValue")
-                            }
-                            isBusy={isBusy}
-                          />
-                        </Grid>
-                        <Grid size={{ xs: 24, md: 4 }}>
-                          <CustomDatePicker
-                            label="Chọn ngày"
-                            name="bookingDate"
-                            value={selectedDate}
-                            // setSelectedDate={setSelectedDate}
-                            onChange={handleDateChange}
-                            isBusy={isBusy}
-                          />
-                        </Grid>
-                        <Grid
-                          container
-                          direction="row"
-                          size={{ xs: 24, md: 7 }}
-                        >
-                          <Grid size={{ xs: 12, md: 12 }}>
-                            {/* <TextField fullWidth
-                                            label="Bắt đầu"
-                                            type="time"
-                                            name="startTime"
-                                            slotProps={{ inputLabel: { shrink: true } }}
-                                            onChange={handleSearchChange}
-                                        /> */}
-                            <TimePickerValue
-                              label="Giờ vào sân"
-                              name="startTime"
-                              onChange={handleStartTimeChange}
-                              maxHour={22}
-                              selectedDate={searchData.dayPicked}
-                              value={searchData.startTime}
-                              value2={searchData}
-                              onError={(e: any) =>
-                                handleTimeError(e, "startTime")
-                              }
-                              // slotProps={{ inputLabel: { shrink: true } }}
-                              isBusy={isBusy || searchData.dayPicked === null}
-                            />
-                          </Grid>
-                          <Grid size={{ xs: 12, md: 12 }}>
-                            <TimePickerValue
-                              label="Giờ trả sân"
-                              name="endTime"
-                              onChange={handleEndTimeChange}
-                              maxHour={23}
-                              selectedDate={searchData.dayPicked}
-                              value={searchData.endTime}
-                              value2={searchData}
-                              onError={(e: any) =>
-                                handleTimeError(e, "endTime")
-                              }
-                              isBusy={isBusy}
-                            />
-                          </Grid>
-                        </Grid>
-                      </Grid>
-                      <Grid
-                        container
-                        size={{ xs: 24, sm: 6, md: 4 }}
-                        sx={{ display: "flex", justifyContent: "center" }}
-                      >
-                        <Button
-                          variant="contained"
-                          startIcon={<SearchIcon />}
-                          fullWidth
-                          disabled={isSearchDisable}
-                          size="large"
-                          sx={{
-                            background: "var(--Primary-500)",
-                            height: "46px",
-                          }}
-                          onClick={searchSubmit}
-                        >
-                          Tìm kiếm
-                        </Button>
-                      </Grid>
+                        <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
+                          <SportsSoccer sx={{ color: "var(--Primary-500)", mr: 1 }} />
+                          <Typography variant="subtitle1" fontWeight={600}>
+                            Môn Thể Thao
+                          </Typography>
+                        </Box>
+                        <SelectBox
+                          icon="SportsSoccer"
+                          titleValue="Chọn môn thể thao"
+                          name="sportId"
+                          options={resData.sportFields}
+                          onChange={(e: any) => handleSelectChange(e, "sportValue")}
+                          isBusy={isBusy}
+                        />
+                      </Paper>
                     </Grid>
+
+                    <Grid xs={12} md={5}>
+                      <Paper
+                        elevation={0}
+                        sx={{
+                          p: 2,
+                          borderRadius: "12px",
+                          border: "1px solid",
+                          borderColor: "divider",
+                          height: "100%",
+                          transition: "all 0.2s",
+                          "&:hover": {
+                            borderColor: "var(--Primary-300)",
+                            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                          },
+                        }}
+                      >
+                        <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
+                          <CalendarMonth sx={{ color: "var(--Primary-500)", mr: 1 }} />
+                          <Typography variant="subtitle1" fontWeight={600}>
+                            Ngày
+                          </Typography>
+                        </Box>
+                        <CustomDatePicker
+                          label="Chọn ngày"
+                          name="bookingDate"
+                          value={selectedDate}
+                          onChange={handleDateChange}
+                          isBusy={isBusy}
+                        />
+                      </Paper>
+                    </Grid>
+
+                    <Grid xs={12} md={5}>
+  <Paper
+    elevation={0}
+    sx={{
+      p: 2,
+      borderRadius: "12px",
+      border: "1px solid",
+      borderColor: "divider",
+      height: "100%",
+      transition: "all 0.2s",
+      "&:hover": {
+        borderColor: "var(--Primary-300)",
+        boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+      },
+    }}
+  >
+    <Box sx={{ display: "flex", alignItems: "center", mb: 1.5 }}>
+      <AccessTime sx={{ color: "var(--Primary-500)", mr: 1 }} />
+      <Typography variant="subtitle1" fontWeight={600}>
+        Thời Gian
+      </Typography>
+    </Box>
+    <Grid container spacing={2} justifyContent="center">
+      <Grid item xs={6} sx={{ display: "flex", justifyContent: "center" }}>
+        <Box sx={{ width: "100%", maxWidth: 200 }}>
+          <TimePickerValue
+            label="Giờ vào sân"
+            name="startTime"
+            onChange={handleStartTimeChange}
+            maxHour={22}
+            selectedDate={searchData.dayPicked}
+            value={searchData.startTime}
+            value2={searchData}
+            onError={(e: any) => handleTimeError(e, "startTime")}
+            isBusy={isBusy || searchData.dayPicked === null}
+          />
+        </Box>
+      </Grid>
+      <Grid item xs={6} sx={{ display: "flex", justifyContent: "center" }}>
+       
+          <TimePickerValue
+            label="Giờ trả sân"
+            name="endTime"
+            onChange={handleEndTimeChange}
+            maxHour={23}
+            selectedDate={searchData.dayPicked}
+            value={searchData.endTime}
+            value2={searchData}
+            onError={(e: any) => handleTimeError(e, "endTime")}
+            isBusy={isBusy}
+          />
+      </Grid>
+    </Grid>
+  </Paper>
+</Grid>
+
                   </Grid>
-                </Container>
 
-                <Container
-                  sx={{
-                    px: "1px",
-                    boxSizing: "border-box",
-                    mb: 10,
-                    minHeight: "370px",
-                    zIndex: 99,
-                  }}
-                >
-                  {isSearchDone ? (
-                    <Grid
-                      container
-                      direction="row"
-                      spacing={5}
+                  <Box sx={{ display: "flex", justifyContent: "center", mt: 1 }}>
+                    <Button
+                      variant="contained"
+                      startIcon={<Search />}
+                      disabled={isSearchDisable}
+                      size="large"
+                      onClick={searchSubmit}
                       sx={{
-                        mt: 10,
-                        minHeight: "25vh",
-                        justifyContent: "center",
-                        display: "flex",
+                        background: "linear-gradient(90deg, var(--Primary-600) 0%, var(--Primary-500) 100%)",
+                        color: "white",
+                        px: 4,
+                        py: 1.5,
+                        borderRadius: "12px",
+                        fontWeight: 600,
+                        textTransform: "none",
+                        fontSize: "1rem",
+                        boxShadow: "0 4px 10px rgba(var(--Primary-rgb), 0.3)",
+                        transition: "all 0.3s",
+                        "&:hover": {
+                          boxShadow: "0 6px 15px rgba(var(--Primary-rgb), 0.4)",
+                          background: "linear-gradient(90deg, var(--Primary-700) 0%, var(--Primary-600) 100%)",
+                        },
+                        "&:disabled": {
+                          background: "rgba(0, 0, 0, 0.12)",
+                          color: "rgba(0, 0, 0, 0.26)",
+                          boxShadow: "none",
+                        },
                       }}
                     >
-                      <Grid>
-                        <CircularProgress
-                          size={"5vw"}
-                          color="primary"
-                          sx={{ position: "absolute" }}
-                        />
-                      </Grid>
-                    </Grid>
-                  ) : (
-                    <>
-                      <Grid
-                        container
-                        direction={"row"}
-                        justifyContent="flex-start"
+                      Tìm Kiếm Sân
+                    </Button>
+                  </Box>
+                </Box>
+              </CardContent>
+            </Card>
+
+            
+            <Box sx={{ mt: 5, mb: 5 }}>
+              {isSearchDone ? (
+                <Box
+                  sx={{
+                    display: "flex",
+                    justifyContent: "center",
+                    alignItems: "center",
+                    minHeight: "300px",
+                  }}
+                >
+                  <CircularProgress
+                    size={60}
+                    thickness={4}
+                    sx={{ color: "var(--Primary-500)" }}
+                  />
+                </Box>
+              ) : (
+                <>
+                  {data.length > 0 && (
+                    <Box sx={{ mb: 2 }}>
+                      <Stack
+                        direction="row"
+                        alignItems="center"
+                        spacing={2}
+                        sx={{ mb: 3 }}
+                      >
+                        <FilterList sx={{ color: "var(--Primary-500)" }} />
+                        <Typography variant="h5" fontWeight={700} color="var(--Primary-700)">
+                          Kết Quả Tìm Kiếm
+                        </Typography>
+                        <Divider sx={{ flexGrow: 1 }} />
+                        <Box
+                          sx={{
+                            backgroundColor: "var(--Primary-50)",
+                            color: "var(--Primary-700)",
+                            px: 2,
+                            py: 0.5,
+                            borderRadius: "20px",
+                            fontWeight: 600,
+                            border: "1px solid var(--Primary-200)",
+                          }}
+                        >
+                          {data.length} sân
+                        </Box>
+                      </Stack>
+
+                      <Card
+                        elevation={0}
                         sx={{
-                          alignItems: "center",
-                          gap: 1,
-                          mb: 2,
+                          p: 0.5,
+                          borderRadius: "16px",
+                          backgroundColor: alpha(theme.palette.primary.main, 0.05),
+                          border: "1px solid",
+                          borderColor: "divider",
                         }}
                       >
-                        <Stack
-                          direction="row"
-                          alignItems="center"
-                          spacing={1}
-                          sx={{ width: "100%", mx: 3 }}
-                        >
-                          <Divider sx={{ flexGrow: 1 }} />
-                          {data.length > 0 && (
-                            <Typography variant="body1">
-                              {" "}
-                              Có{" "}
-                              <b>
-                                {data.length.toString().padStart(2, "0")}
-                              </b>{" "}
-                              sân thỏa tìm kiếm
-                            </Typography>
-                          )}
-                          <Divider sx={{ flexGrow: 1 }} />
-                        </Stack>
-                      </Grid>
-                      {
                         <Grid
                           container
-                          direction="row"
-                          rowSpacing={{ xs: 3, sm: 5, md: 5 }}
-                          columnSpacing={{ xs: 1, sm: 2, md: 3 }}
-                          justifyContent="start"
+                          sx={{ p: { xs: 1, sm: 2 } }}
                         >
-                          {data &&
-                            data.map((field: SportField, index: Key) => (
-                              <Grid
-                                size={{
-                                  xs: 12 / 2,
-                                  sm: 12 / 3,
-                                  md: 12 / 4,
-                                  lg: 12 / 5,
-                                }}
-                                key={index}
-                                sx={{
-                                  display: "flex",
-                                  justifyContent: "center",
-                                }}
-                              >
-                                <SportCard
-                                  data={field}
-                                  resData={resData}
-                                  searchData={searchData}
-                                  branchInfo={resData.raw.branchs}
-                                  onClick={() =>
-                                    handleClickOpen(field, resData.raw.branchs)
-                                  }
-                                />
-                              </Grid>
-                            ))}
+                          {data.map((field, index) => (
+                            <Grid key={index} xs={12} sm={6} md={4} lg={3}>
+                              <SportCard
+                                data={field}
+                                resData={resData}
+                                searchData={searchData}
+                                branchInfo={resData.raw.branchs}
+                                onClick={() => handleClickOpen(field, resData.raw.branchs)}
+                              />
+                            </Grid>
+                          ))}
                         </Grid>
-                      }
-                    </>
+                      </Card>
+                    </Box>
                   )}
-                </Container>
-              </Box>
-            </Grid2>
-          </>
-        )}
 
-        <TimeSlotSelector
-          title="Chọn thời gian thuê sân"
-          open={openDialog2}
-          setOpenDialog1={setOpenDialog}
-          onClose={handleCloseDialog2}
-          selectedSlots={selectedSlots}
-          setSelectedSlots={setSelectedSlots}
-          startSlot={startSlot}
-          setStartSlot={setStartSlot}
-          bookingData={bookingData}
-          setBookingData={setBookingData}
-          selectedDate={selectedDate}
-          setSelectedDate={setSelectedDate}
-          searchData={searchData}
-          // orderInfo={bookingData}
-          // setBookingData={setBookingData}
-        />
+                  {data.length === 0 && !isLoading && searchData.branchValue && (
+                    <Box
+                      sx={{
+                        textAlign: "center",
+                        py: 8,
+                        px: 2,
+                        backgroundColor: "var(--Primary-50)",
+                        borderRadius: "16px",
+                        border: "1px dashed var(--Primary-200)",
+                      }}
+                    >
+                      <SportsSoccer
+                        sx={{
+                          fontSize: 80,
+                          color: "var(--Primary-200)",
+                          mb: 2,
+                          opacity: 0.7,
+                        }}
+                      />
+                      <Typography variant="h5" color="var(--Primary-700)" fontWeight={600} gutterBottom>
+                        Không tìm thấy sân phù hợp
+                      </Typography>
+                      <Typography variant="body1" color="text.secondary" sx={{ maxWidth: "600px", mx: "auto", mb: 3 }}>
+                        Vui lòng thử lại với các tiêu chí tìm kiếm khác hoặc chọn một ngày khác để xem kết quả.
+                      </Typography>
+                      <Button
+                        variant="outlined"
+                        color="primary"
+                        onClick={() => {
+                          setSearchData({
+                            sportValue: null,
+                            branchValue: searchData.branchValue,
+                            dayPicked: null,
+                            startTime: null,
+                            endTime: null,
+                          });
+                          setSelectedDate(null);
+                        }}
+                        sx={{
+                          borderRadius: "8px",
+                          textTransform: "none",
+                          fontWeight: 600,
+                        }}
+                      >
+                        Đặt lại tìm kiếm
+                      </Button>
+                    </Box>
+                  )}
+                </>
+              )}
+            </Box>
+          </Container>
+        </>
+      )}
 
-        <OrderPopUp
-          name="email"
-          label="Email"
-          title="Xác nhận đặt sân"
-          open={openDialog}
-          setOpen={setOpenDialog}
-          onClose={handleClose}
-          email={bookingData.email}
-          orderInfo={bookingData}
-          setBookingData={setBookingData}
-          data={dialogData}
-          handleConfirmOrder={handleConfirmOrder}
-          selectedSlots={selectedSlots}
-          setSelectedSlots={setSelectedSlots}
-          startSlot={startSlot}
-          setStartSlot={setStartSlot}
-          handleOpenDialog2={handleOpenDialog2}
-          setTempEemail={setTempEemail}
-          setSelectedDate={setSelectedDate}
-          searchData={searchData}
-        />
-        <PaymentPopUp
-          title="Quét mã thanh toán"
-          open={confirmOrder}
-          onClose={handleClosePayment}
-          bookingData={bookingData}
-        />
-      </UserLayout>
-    </>
+      <TimeSlotSelector
+        title="Chọn thời gian thuê sân"
+        open={openDialog2}
+        setOpenDialog1={setOpenDialog}
+        onClose={handleCloseDialog2}
+        selectedSlots={selectedSlots}
+        setSelectedSlots={setSelectedSlots}
+        startSlot={startSlot}
+        setStartSlot={setStartSlot}
+        bookingData={bookingData}
+        setBookingData={setBookingData}
+        selectedDate={selectedDate}
+        setSelectedDate={setSelectedDate}
+        searchData={searchData}
+      />
+
+      <OrderPopUp
+        name="email"
+        label="Email"
+        title="Xác nhận đặt sân"
+        open={openDialog}
+        setOpen={setOpenDialog}
+        onClose={handleClose}
+        email={bookingData.email}
+        orderInfo={bookingData}
+        setBookingData={setBookingData}
+        data={dialogData}
+        handleConfirmOrder={handleConfirmOrder}
+        selectedSlots={selectedSlots}
+        setSelectedSlots={setSelectedSlots}
+        startSlot={startSlot}
+        setStartSlot={setStartSlot}
+        handleOpenDialog2={handleOpenDialog2}
+        setTempEemail={setTempEemail}
+        setSelectedDate={setSelectedDate}
+        searchData={searchData}
+      />
+
+      <PaymentPopUp
+        title="Quét mã thanh toán"
+        open={confirmOrder}
+        onClose={handleClosePayment}
+        bookingData={bookingData}
+      />
+    </UserLayout>
   );
 }

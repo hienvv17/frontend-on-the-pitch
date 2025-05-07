@@ -30,7 +30,7 @@ export default function SportCard(props: SportCardProps) {
         <CssVarsProvider>
           <Card
             sx={{
-              width: 130,
+              width: 260,
               boxShadow: "lg",
               ":hover": {
                 boxShadow: "0 0 8px 2px var(--Primary-500)",
