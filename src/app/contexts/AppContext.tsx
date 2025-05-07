@@ -21,23 +21,27 @@ interface AppContextType {
   handleLogout: () => void;
   openSnackbar: SnackbarState;
   setOpenSnackBar: React.Dispatch<React.SetStateAction<SnackbarState>>;
+  sportName: string,
+  setSportName: React.Dispatch<React.SetStateAction<string>>;
 }
 
 export const AppContext = createContext<AppContextType>({
   isChange: false,
-  setIsChange: () => {},
+  setIsChange: () => { },
   user: null,
-  setUser: () => {},
-  handleLogout: () => {},
+  setUser: () => { },
+  handleLogout: () => { },
   openSnackbar: { isOpen: false, msg: "", type: "info" },
-  setOpenSnackBar: () => {},
+  setOpenSnackBar: () => { },
+  sportName: '',
+  setSportName: () => { }
 });
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [isChange, setIsChange] = useState(false);
   const [user, setUser] = useState(null);
   const [isClient, setIsClient] = useState(false);
-
+  const [sportName, setSportName] = useState('');
   // for snackbar
   const [openSnackbar, setOpenSnackBar] = useState<SnackbarState>({
     isOpen: false,
@@ -88,6 +92,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         handleLogout,
         openSnackbar,
         setOpenSnackBar,
+        sportName,
+        setSportName
       }}
     >
       {children}

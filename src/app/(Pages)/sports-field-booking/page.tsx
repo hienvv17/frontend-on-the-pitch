@@ -44,8 +44,8 @@ import PaymentPopUp from "@/app/components/PaymentPopUp";
 export default function SportsFieldBooking() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const { setOpenSnackBar } = useContext(AppContext);
-
+  const { setOpenSnackBar, sportName } = useContext(AppContext);
+  // console.log("sportName", sportName);
   const [data, setData] = useState<SportField[]>([]);
   const { GET_OPTIONS, POST_SEARCH_FIELDS } = useBookingApi();
   const [isLoading, setIsLoading] = useState(true);
@@ -56,13 +56,17 @@ export default function SportsFieldBooking() {
 
   const [searchData, setSearchData] = useState<{
     sportValue: string | null;
+    sportOption: any | null;
     branchValue: string | null;
+    branchOption: any | null;
     dayPicked: moment.Moment | string | null;
     startTime: moment.Moment | null;
     endTime: moment.Moment | null;
   }>({
     sportValue: null,
+    sportOption: null,
     branchValue: null,
+    branchOption: null,
     dayPicked: null,
     startTime: null,
     endTime: null,
@@ -135,6 +139,18 @@ export default function SportsFieldBooking() {
             sportFields: sportCatRes.items,
           },
         });
+
+        if (sportName !== '') {
+          const temp = reformattedData2.find((item: any) => {
+            return item.label.trim().toLowerCase() === sportName.trim().toLowerCase();
+          });
+
+          setSearchData((prev: any) => ({
+            ...prev,
+            sportOption: temp
+          }));
+        }
+
       } catch (err) {
         console.log("Lỗi khi gọi API: ", err);
       } finally {
@@ -160,10 +176,20 @@ export default function SportsFieldBooking() {
   };
 
   const handleSelectChange = (e: any, name: string) => {
-    setSearchData((prev) => ({
-      ...prev,
-      [name]: e ? e.value : e,
-    }));
+    if (name === "sportValue") {
+      setSearchData((prev) => ({
+        ...prev,
+        [name]: e ? e.value : e,
+        sportOption: e
+      }));
+    } else {
+      setSearchData((prev) => ({
+        ...prev,
+        [name]: e ? e.value : e,
+        branchOption: e,
+        // sportOption: null
+      }));
+    }
     setData([]);
   };
 
@@ -578,6 +604,7 @@ export default function SportsFieldBooking() {
                           titleValue="Chọn cụm sân"
                           name="sportBranchId"
                           options={resData.branchs}
+                          value={searchData.branchOption}
                           onChange={(e: any) =>
                             handleSelectChange(e, "branchValue")
                           }
@@ -621,6 +648,7 @@ export default function SportsFieldBooking() {
                           titleValue="Chọn môn thể thao"
                           name="sportId"
                           options={resData.sportFields}
+                          value={searchData.sportOption}
                           onChange={(e: any) =>
                             handleSelectChange(e, "sportValue")
                           }
@@ -908,13 +936,14 @@ export default function SportsFieldBooking() {
                           variant="outlined"
                           color="primary"
                           onClick={() => {
-                            setSearchData({
+                            setSearchData((prev: any) => ({
+                              ...prev,
                               sportValue: null,
                               branchValue: searchData.branchValue,
                               dayPicked: null,
                               startTime: null,
                               endTime: null,
-                            });
+                            }));
                             setSelectedDate(null);
                           }}
                           sx={{
