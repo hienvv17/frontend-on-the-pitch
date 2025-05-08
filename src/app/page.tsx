@@ -63,9 +63,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ScrollToTopBtn from "./components/ScrollToTopBtn";
 import Footer from "./components/Footer";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { publicApi } from "@/api/base";
 import { AppContext } from "./contexts/AppContext";
+import Image from "./components/Image";
 
 const HeroVideo = styled("video")({
   position: "absolute",
@@ -160,13 +161,13 @@ export default function HomePage() {
 
   const toBooking = () => {
     if (sportTab === 0) {
-      setSportName('Bóng đá');
+      setSportName("Bóng đá");
     }
     router.push("/dat-san");
   };
 
   const gotoBookingPage = () => {
-    setSportName('');
+    setSportName("");
     router.push("/dat-san");
   };
 
@@ -180,7 +181,7 @@ export default function HomePage() {
       } catch (error) {
         setBranchData([]);
       }
-    }
+    };
     getData();
     // setSportName('Bóng đá');
   }, []);
@@ -1253,75 +1254,99 @@ export default function HomePage() {
           </motion.div>
 
           <Grid container spacing={3}>
-            {branchData.map((item: any, index) => (
-              <Grid item xs={12} sm={6} md={4} key={index}>
-                <motion.div
-                  style={{ height: '100%' }}
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5, delay: index * 0.1 }}
-                >
-                  <Card
-                    sx={{
-                      display: "flex",
-                      flexDirection: "column",
-                      height: "100%",
-                    }}
-                  >
-                    <CardMedia
+            {branchData.map(
+              (item: any, index) => (
+                console.log(item),
+                (
+                  <Grid item xs={12} sm={6} md={4} key={index}>
+                    <motion.div
+                      style={{ height: "100%" }}
+                      initial={{ opacity: 0, y: 20 }}
+                      whileInView={{ opacity: 1, y: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                    >
+                      <Card
+                        sx={{
+                          display: "flex",
+                          flexDirection: "column",
+                          height: "100%",
+                        }}
+                      >
+                        {/* <CardMedia
                       component="img"
                       height="160"
                       image={item.image ? item.image : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`}
                       alt={`Branch ${index + 1}`}
-                    />
-                    <CardContent sx={{ flexGrow: 1 }}>
-                      <Typography
-                        gutterBottom
-                        variant="h6"
-                        component="div"
-                        sx={{ fontWeight: 600 }}
-                      >
-                        {item.name}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ mb: 1, height: "50px" }}
-                      >
-                        {item.street + ", " + item.ward + ", " + item.district + ", " + item.city}
-                      </Typography>
-                      <Typography
-                        variant="body2"
-                        color="text.secondary"
-                        sx={{ mb: 2 }}
-                      >
-                        {`Mở cửa: ${item.openTime} - ${item.closeTime}`}
-                      </Typography>
-                      {
-                        item.sport_categories.map((e: any) => (
-                          <Box key={e.id}
-                            sx={{ display: "flex", alignItems: "center", mb: 1 }}
+                    /> */}
+                        <Image
+                          alt="QR-code"
+                          src={
+                            item.images[0] ??
+                            "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png"
+                          }
+                          width={400}
+                          height={240}
+                          style={{
+                            objectFit: "fill",
+                          }}
+                        />
+                        <CardContent sx={{ flexGrow: 1 }}>
+                          <Typography
+                            gutterBottom
+                            variant="h6"
+                            component="div"
+                            sx={{ fontWeight: 600 }}
                           >
-                            <CheckCircle
-                              sx={{ color: "green", mr: 1, fontSize: 16 }}
-                            />
-                            <Typography variant="body2">
-                              {e.name}
-                            </Typography>
-                          </Box>
-                        ))
-                      }
-                    </CardContent>
-                    <Box sx={{ p: 2, pt: 0 }}>
-                      <Button variant="contained" color="primary" fullWidth>
-                        Xem
-                      </Button>
-                    </Box>
-                  </Card>
-                </motion.div>
-              </Grid>
-            ))}
+                            {item.name}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ mb: 1, height: "50px" }}
+                          >
+                            {item.street +
+                              ", " +
+                              item.ward +
+                              ", " +
+                              item.district +
+                              ", " +
+                              item.city}
+                          </Typography>
+                          <Typography
+                            variant="body2"
+                            color="text.secondary"
+                            sx={{ mb: 2 }}
+                          >
+                            {`Mở cửa: ${item.openTime} - ${item.closeTime}`}
+                          </Typography>
+                          {item.sport_categories.map((e: any) => (
+                            <Box
+                              key={e.id}
+                              sx={{
+                                display: "flex",
+                                alignItems: "center",
+                                mb: 1,
+                              }}
+                            >
+                              <CheckCircle
+                                sx={{ color: "green", mr: 1, fontSize: 16 }}
+                              />
+                              <Typography variant="body2">{e.name}</Typography>
+                            </Box>
+                          ))}
+                        </CardContent>
+                        <Box sx={{ p: 2, pt: 0 }}>
+                          <Button variant="contained" color="primary" fullWidth>
+                            Xem
+                          </Button>
+                        </Box>
+                      </Card>
+                    </motion.div>
+                  </Grid>
+                )
+              )
+            )}
           </Grid>
         </Container>
       </Box>
