@@ -280,19 +280,3 @@ export default function ContactPage() {
         </UserLayout>
     );
 }
-// </content>
-// </create_file>
-
-// <attempt_completion>
-// Tôi đã tạo sẵn một trang Liên hệ hiện đại, responsive, sử dụng Next.js, React và Material-UI với đầy đủ các nội dung bằng tiếng Việt mà bạn mong muốn:
-
-// - Hiển thị thông tin liên hệ (SĐT, email, địa chỉ, giờ làm việc)
-// - Mẫu form liên hệ với các trường hợp lệ và thông báo lỗi rõ ràng
-// - Liên kết mạng xã hội Facebook, Instagram, Zalo
-// - Bản đồ vị trí Google Maps nhúng sẵn
-// - Thiết kế thân thiện với người dùng trên thiết bị di động, vừa vặn không cần cuộn màn hình quá nhiều.
-
-// Bạn có thể lưu file này với tên `pages/contact.js` trong dự án Next.js của bạn và chạy dev server (`npm run dev` hoặc `yarn dev`) để xem kết quả.
-
-// Nếu bạn muốn tôi hỗ trợ thêm về backend gửi form hoặc cải tiến giao diện, bạn cứ nói nhé!
-// </attempt_completion>
