@@ -305,10 +305,10 @@ function ResponsiveAppBar() {
                         height: "46px",
                         gap: "10px",
                         borderRadius: "8px",
-                        minWidth: { xs: "60px", sm: "246px" }, //  Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
+                        minWidth: { xs: "100%", sm: "100%" }, //  Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
                         display: "inline-flex",
                         justifyContent: "center",
-                        p: "6px",
+                        p: "12px",
                         ":hover": {
                           boxShadow: "0 0 1px 2px var(--Primary-500)",
                         },
@@ -353,7 +353,7 @@ function ResponsiveAppBar() {
                         whiteSpace="pre-line"
                         textOverflow="ellipsis"
                         color="var(--Primary-500)"
-                        width="150px"
+                        width="100%"
                         // height={60}
                         sx={{
                           fontWeight: 500,

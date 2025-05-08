@@ -53,7 +53,7 @@ import ResponsiveAppBar from "./components/ResponsiveAppBar";
 import { grey } from "@mui/material/colors";
 import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
 // import WhatshotIcon from '@mui/icons-material/Whatshot';
-import React, { useEffect, useRef, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
 import { CardNews2 } from "./components/CardNews2";
 import * as demoData from "@/utility/demoData";
@@ -63,6 +63,10 @@ import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
 import ScrollToTopBtn from "./components/ScrollToTopBtn";
 import Footer from "./components/Footer";
+import { useRouter } from 'next/navigation';
+import { publicApi } from "@/api/base";
+import { AppContext } from "./contexts/AppContext";
+
 const HeroVideo = styled("video")({
   position: "absolute",
   width: "100%",
@@ -134,6 +138,8 @@ const CustomSlider = styled(Slider)`
 `;
 
 export default function HomePage() {
+  const router = useRouter();
+  const { setSportName } = useContext(AppContext);
   const [sportTab, setSportTab] = useState(0);
   const [branch, setBranch] = useState("");
   const [sport, setSport] = useState("");
@@ -141,17 +147,43 @@ export default function HomePage() {
   const [courtType, setCourtType] = useState("");
   const bookingFormRef = useRef<HTMLDivElement>(null);
   const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const [branchData, setBranchData] = useState([]);
 
   const handleSportTabChange = (
     event: any,
     newValue: React.SetStateAction<number>
   ) => {
+    // console.log("event:" + event.target.textContent);
     setSportTab(newValue);
+    setSportName(event.target.textContent);
   };
 
-  const scrollToBooking = () => {
-    bookingFormRef.current?.scrollIntoView({ behavior: "smooth" });
+  const toBooking = () => {
+    if (sportTab === 0) {
+      setSportName('Bóng đá');
+    }
+    router.push("/dat-san");
   };
+
+  const gotoBookingPage = () => {
+    setSportName('');
+    router.push("/dat-san");
+  };
+
+  useEffect(() => {
+    const getData = async () => {
+      try {
+        const configApi = publicApi("");
+        const result = await configApi.get("/branches");
+        // console.log("result.data.items", result.data.items);
+        setBranchData(result.data.items);
+      } catch (error) {
+        setBranchData([]);
+      }
+    }
+    getData();
+    // setSportName('Bóng đá');
+  }, []);
 
   const featuredSliderSettings = {
     dots: true,
@@ -584,27 +616,6 @@ export default function HomePage() {
               <motion.div
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.5, delay: 0.6 }}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                <Button
-                  variant="contained"
-                  color="primary"
-                  size="large"
-                  // startIcon={<Search />}
-                  sx={{
-                    fontSize: { xs: "0.7rem", md: "0.8rem" },
-                    py: { xs: 1.5, md: 2 },
-                  }}
-                >
-                  🔍 Tìm sân gần bạn
-                </Button>
-              </motion.div>
-
-              <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
                 transition={{ duration: 0.5, delay: 0.8 }}
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
@@ -614,7 +625,7 @@ export default function HomePage() {
                   color="secondary"
                   size="large"
                   // startIcon={<CalendarMonth />}
-                  onClick={scrollToBooking}
+                  onClick={gotoBookingPage}
                   sx={{
                     fontSize: { xs: "0.7rem", md: "0.8rem" },
                     py: { xs: 1.5, md: 2 },
@@ -980,7 +991,7 @@ export default function HomePage() {
                 iconPosition="start"
               />
               <Tab
-                label=" Tennis"
+                label=" Tenis"
                 icon={<SportsTennis />}
                 iconPosition="start"
               />
@@ -1048,6 +1059,7 @@ export default function HomePage() {
                               color="primary"
                               size="small"
                               sx={{ flex: 1 }}
+                              onClick={toBooking}
                             >
                               Đặt lịch ngay
                             </Button>
@@ -1120,6 +1132,7 @@ export default function HomePage() {
                               color="primary"
                               size="small"
                               sx={{ flex: 1 }}
+                              onClick={toBooking}
                             >
                               Đặt lịch ngay
                             </Button>
@@ -1192,6 +1205,7 @@ export default function HomePage() {
                               color="primary"
                               size="small"
                               sx={{ flex: 1 }}
+                              onClick={toBooking}
                             >
                               Đặt lịch ngay
                             </Button>
@@ -1239,9 +1253,10 @@ export default function HomePage() {
           </motion.div>
 
           <Grid container spacing={3}>
-            {[1, 2, 3].map((item, index) => (
+            {branchData.map((item: any, index) => (
               <Grid item xs={12} sm={6} md={4} key={index}>
                 <motion.div
+                  style={{ height: '100%' }}
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ once: true }}
@@ -1257,7 +1272,7 @@ export default function HomePage() {
                     <CardMedia
                       component="img"
                       height="160"
-                      image={`https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`}
+                      image={item.image ? item.image : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`}
                       alt={`Branch ${index + 1}`}
                     />
                     <CardContent sx={{ flexGrow: 1 }}>
@@ -1267,42 +1282,36 @@ export default function HomePage() {
                         component="div"
                         sx={{ fontWeight: 600 }}
                       >
-                        {branches[index + 1]}
+                        {item.name}
                       </Typography>
                       <Typography
                         variant="body2"
                         color="text.secondary"
-                        sx={{ mb: 1 }}
+                        sx={{ mb: 1, height: "50px" }}
                       >
-                        {address[index + 1]}
+                        {item.street + ", " + item.ward + ", " + item.district + ", " + item.city}
                       </Typography>
                       <Typography
                         variant="body2"
                         color="text.secondary"
                         sx={{ mb: 2 }}
                       >
-                        Mở cửa: 6:00 AM - 11:00 PM
+                        {`Mở cửa: ${item.openTime} - ${item.closeTime}`}
                       </Typography>
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", mb: 1 }}
-                      >
-                        <CheckCircle
-                          sx={{ color: "green", mr: 1, fontSize: 16 }}
-                        />
-                        <Typography variant="body2">
-                          {index % 2 === 0 ? "Bóng đá" : "Tennis "}
-                        </Typography>
-                      </Box>
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", mb: 1 }}
-                      >
-                        <CheckCircle
-                          sx={{ color: "green", mr: 1, fontSize: 16 }}
-                        />
-                        <Typography variant="body2">
-                          {index % 2 === 0 ? "Tennis " : "Cầu lông"}
-                        </Typography>
-                      </Box>
+                      {
+                        item.sport_categories.map((e: any) => (
+                          <Box key={e.id}
+                            sx={{ display: "flex", alignItems: "center", mb: 1 }}
+                          >
+                            <CheckCircle
+                              sx={{ color: "green", mr: 1, fontSize: 16 }}
+                            />
+                            <Typography variant="body2">
+                              {e.name}
+                            </Typography>
+                          </Box>
+                        ))
+                      }
                     </CardContent>
                     <Box sx={{ p: 2, pt: 0 }}>
                       <Button variant="contained" color="primary" fullWidth>

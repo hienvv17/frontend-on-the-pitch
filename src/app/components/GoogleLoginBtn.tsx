@@ -106,10 +106,10 @@ export default function GoogleLoginBtn() {
           height: "46px",
           gap: "10px",
           borderRadius: "8px",
-          minWidth: { xs: "60px", sm: "140px" }, //  Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
+          minWidth: { xs: "100%", sm: "100%" }, //  Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
           display: "inline-flex",
           justifyContent: "center",
-          p: "6px",
+          p: "12px",
           ":hover": {
             boxShadow: "0 0 1px 2px var(--Primary-500)",
           },
