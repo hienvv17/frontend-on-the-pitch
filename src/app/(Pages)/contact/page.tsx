@@ -178,7 +178,7 @@ export default function ContactPage() {
                             <Grid item xs={12} md={7}>
                                 <Paper elevation={3} sx={{ p: 3, bgcolor: 'background.paper', height: '100%' }}>
                                     <Typography variant="h6" sx={{ mb: 2, fontWeight: 600 }}>
-                                        Mẫu liên hệ nhanh
+                                        Biểu mẫu liên hệ
                                     </Typography>
                                     <Typography variant="body2" sx={{ mb: 2 }}>
                                         Vui lòng điền thông tin bên dưới, chúng tôi sẽ phản hồi bạn trong thời gian sớm nhất.
@@ -269,11 +269,11 @@ export default function ContactPage() {
                             </Box>
                         </Box>
 
-                        <Box sx={{ mt: 4, textAlign: 'center', color: 'text.secondary' }}>
+                        {/* <Box sx={{ mt: 4, textAlign: 'center', color: 'text.secondary' }}>
                             <Typography variant="body2">
                                 Nếu bạn cần hỗ trợ khẩn cấp, hãy gọi ngay số điện thoại trên hoặc nhắn tin để được trợ giúp nhanh nhất.
                             </Typography>
-                        </Box>
+                        </Box> */}
                     </Container>
                 </Card>
             </Container>
