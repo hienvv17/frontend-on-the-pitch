@@ -1,7 +1,7 @@
-"use client";
-import { SetStateAction, useEffect, useState } from "react";
-import UserLayout from "@/app/components/UserLayout";
-import { useUserApiPrivate } from "@/api/user/user";
+"use client"
+import { type SetStateAction, useEffect, useState } from "react"
+import UserLayout from "@/app/components/UserLayout"
+import { useUserApiPrivate } from "@/api/user/user"
 import {
   Box,
   Typography,
@@ -17,83 +17,94 @@ import {
   Card,
   CardContent,
   Skeleton,
-} from "@mui/material";
-import {
-  History,
-  Receipt,
-  CalendarMonth,
-  Payments,
-  Circle,
-} from "@mui/icons-material";
-const allowedColors = [
-  "default",
-  "primary",
-  "secondary",
-  "error",
-  "info",
-  "success",
-  "warning",
-] as const;
+  Button,
+} from "@mui/material"
+import { History, Receipt, CalendarMonth, Payments, Circle, Star, StarBorder } from "@mui/icons-material"
+import AddRatingModal from "@/app/components/rating/AddRatingModal"
+import ViewRatingModal from "@/app/components/rating/ViewRatingModal"
 
-type ChipColor = (typeof allowedColors)[number];
+const allowedColors = ["default", "primary", "secondary", "error", "info", "success", "warning"] as const
+
+type ChipColor = (typeof allowedColors)[number]
 
 function getValidColor(input: string): ChipColor {
-  return allowedColors.includes(input as ChipColor)
-    ? (input as ChipColor)
-    : "default";
+  return allowedColors.includes(input as ChipColor) ? (input as ChipColor) : "default"
 }
 export default function BookingHistory() {
-  const { POST_P } = useUserApiPrivate();
-  const [history, setHistory] = useState<any>([]);
-  const [loading, setLoading] = useState(true);
-  const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const { POST_P } = useUserApiPrivate()
+  const [history, setHistory] = useState<any>([])
+  const [loading, setLoading] = useState(true)
+  const [page, setPage] = useState(0)
+  const [rowsPerPage, setRowsPerPage] = useState(10)
+  const [ratingModalOpen, setRatingModalOpen] = useState(false)
+  const [viewRatingModalOpen, setViewRatingModalOpen] = useState(false)
+  const [currentBooking, setCurrentBooking] = useState<any>(null)
 
   useEffect(() => {
     const getData = async () => {
       try {
-        setLoading(true);
-        const data = await POST_P("/field-bookings/history");
-        setHistory(data.data.items);
+        setLoading(true)
+        const data = await POST_P("/field-bookings/history")
+        setHistory(data.data.items)
       } catch (error) {
-        console.error("Error fetching booking history:", error);
+        console.error("Error fetching booking history:", error)
       } finally {
-        setLoading(false);
+        setLoading(false)
       }
-    };
-    getData();
-  }, []);
+    }
+    getData()
+  }, [])
 
   const handleChangePage = (event: any, newPage: SetStateAction<number>) => {
-    setPage(newPage);
-  };
+    setPage(newPage)
+  }
 
   const handleChangeRowsPerPage = (event: any) => {
-    setRowsPerPage(Number.parseInt(event.target.value, 10));
-    setPage(0);
-  };
+    setRowsPerPage(Number.parseInt(event.target.value, 10))
+    setPage(0)
+  }
 
   // Function to determine status chip color
   const getStatusColor = (status: string) => {
     switch (status) {
       case "PAID":
-        return { color: "success", label: "Hoàn thành" };
+        return { color: "success", label: "Hoàn thành" }
       case "PENDING":
-        return { color: "warning", label: "Đang xử lý" };
+        return { color: "warning", label: "Đang xử lý" }
       case "REFUND":
-        return { color: "error", label: "Đã hủy" };
+        return { color: "error", label: "Đã hủy" }
       default:
-        return { color: "default", label: status };
+        return { color: "default", label: status }
     }
-  };
+  }
 
   // Format currency
   const formatCurrency = (amount: any) => {
     return new Intl.NumberFormat("vi-VN", {
       style: "currency",
       currency: "VND",
-    }).format(amount || 0);
-  };
+    }).format(amount || 0)
+  }
+
+  const handleOpenRatingModal = (booking: any) => {
+    setCurrentBooking(booking)
+    setRatingModalOpen(true)
+  }
+
+  const handleOpenViewRatingModal = (booking: any) => {
+    setCurrentBooking(booking)
+    setViewRatingModalOpen(true)
+  }
+
+  const handleCloseRatingModal = () => {
+    setRatingModalOpen(false)
+    setCurrentBooking(null)
+  }
+
+  const handleCloseViewRatingModal = () => {
+    setViewRatingModalOpen(false)
+    setCurrentBooking(null)
+  }
 
   return (
     <UserLayout>
@@ -117,8 +128,7 @@ export default function BookingHistory() {
             sx={{
               p: { xs: 2, md: 3 },
               borderBottom: "1px solid rgba(0, 0, 0, 0.08)",
-              background:
-                "linear-gradient(90deg, var(--Primary-500) 0%, var(--Primary-400) 100%)",
+              background: "linear-gradient(90deg, var(--Primary-500) 0%, var(--Primary-400) 100%)",
               color: "white",
             }}
           >
@@ -128,10 +138,7 @@ export default function BookingHistory() {
                 Lịch sử đặt sân
               </Typography>
             </Box>
-            <Typography
-              variant="body2"
-              sx={{ mt: 1, opacity: 1, color: "#fff" }}
-            >
+            <Typography variant="body2" sx={{ mt: 1, opacity: 1, color: "#fff" }}>
               Xem lại các đơn đặt sân của bạn và trạng thái của chúng
             </Typography>
           </Box>
@@ -157,9 +164,7 @@ export default function BookingHistory() {
                         borderBottom: "2px solid var(--Primary-200)",
                       }}
                     >
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                      >
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <Receipt fontSize="small" />
                         Mã đơn
                       </Box>
@@ -172,9 +177,7 @@ export default function BookingHistory() {
                         borderBottom: "2px solid var(--Primary-200)",
                       }}
                     >
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                      >
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <Receipt fontSize="small" />
                         Chi nhánh - Số sân
                       </Box>
@@ -187,9 +190,7 @@ export default function BookingHistory() {
                         borderBottom: "2px solid var(--Primary-200)",
                       }}
                     >
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                      >
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <CalendarMonth fontSize="small" />
                         Ngày đặt
                       </Box>
@@ -202,9 +203,7 @@ export default function BookingHistory() {
                         borderBottom: "2px solid var(--Primary-200)",
                       }}
                     >
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                      >
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <Receipt fontSize="small" />
                         Giờ đặt
                       </Box>
@@ -217,9 +216,7 @@ export default function BookingHistory() {
                         borderBottom: "2px solid var(--Primary-200)",
                       }}
                     >
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                      >
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <Payments fontSize="small" />
                         Tổng tiền
                       </Box>
@@ -232,11 +229,22 @@ export default function BookingHistory() {
                         borderBottom: "2px solid var(--Primary-200)",
                       }}
                     >
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", gap: 1 }}
-                      >
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <Circle fontSize="small" />
                         Trạng thái
+                      </Box>
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 600,
+                        backgroundColor: "var(--Primary-50)",
+                        color: "var(--Primary-700)",
+                        borderBottom: "2px solid var(--Primary-200)",
+                      }}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <Star fontSize="small" />
+                        Đánh giá
                       </Box>
                     </TableCell>
                   </TableRow>
@@ -263,15 +271,10 @@ export default function BookingHistory() {
                     ))
                   ) : history.length > 0 ? (
                     history
-                      .slice(
-                        page * rowsPerPage,
-                        page * rowsPerPage + rowsPerPage
-                      )
+                      .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                       .map((item: any, index: number) => {
-                        const mockStatus = ["PAID", "PENDING", "REFUND"][
-                          Math.floor(Math.random() * 3)
-                        ];
-                        const statusInfo = getStatusColor(mockStatus);
+                        
+                        const statusInfo = getStatusColor(item.status)
 
                         return (
                           <TableRow
@@ -283,8 +286,7 @@ export default function BookingHistory() {
                               },
                               transition: "all 0.2s",
                               "&:hover": {
-                                backgroundColor:
-                                  "rgba(var(--Primary-rgb), 0.05) !important",
+                                backgroundColor: "rgba(var(--Primary-rgb), 0.05) !important",
                                 boxShadow: "0 4px 8px rgba(0,0,0,0.05)",
                               },
                             }}
@@ -301,8 +303,7 @@ export default function BookingHistory() {
                             </TableCell>
                             <TableCell sx={{ py: 2 }}>
                               <Typography variant="body2">
-                                {item.day ||
-                                  new Date().toLocaleDateString("vi-VN")}
+                                {item.day || new Date().toLocaleDateString("vi-VN")}
                               </Typography>
                             </TableCell>
                             <TableCell sx={{ py: 2 }}>
@@ -311,15 +312,8 @@ export default function BookingHistory() {
                               </Typography>
                             </TableCell>
                             <TableCell sx={{ py: 2 }}>
-                              <Typography
-                                variant="body2"
-                                fontWeight={500}
-                                sx={{ color: "var(--Primary-700)" }}
-                              >
-                                {formatCurrency(
-                                  item.total ||
-                                    Math.floor(Math.random() * 1000000) + 500000
-                                )}
+                              <Typography variant="body2" fontWeight={500} sx={{ color: "var(--Primary-700)" }}>
+                                {formatCurrency(item.total || Math.floor(Math.random() * 1000000) + 500000)}
                               </Typography>
                             </TableCell>
 
@@ -334,12 +328,41 @@ export default function BookingHistory() {
                                 }}
                               />
                             </TableCell>
+                            <TableCell sx={{ py: 2 }}>
+                              {item.status === "PAID" && (
+                                <>
+                                  {item.rating ? (
+                                    <Button
+                                      variant="outlined"
+                                      size="small"
+                                      color="primary"
+                                      onClick={() => handleOpenViewRatingModal(item)}
+                                      startIcon={<Star />}
+                                      sx={{ textTransform: "none" }}
+                                    >
+                                      Xem đánh giá
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      variant="contained"
+                                      size="small"
+                                      color="primary"
+                                      onClick={() => handleOpenRatingModal(item)}
+                                      startIcon={<StarBorder />}
+                                      sx={{ textTransform: "none" }}
+                                    >
+                                      Đánh giá
+                                    </Button>
+                                  )}
+                                </>
+                              )}
+                            </TableCell>
                           </TableRow>
-                        );
+                        )
                       })
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={4} align="center" sx={{ py: 4 }}>
+                      <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
                         <Box sx={{ textAlign: "center", py: 3 }}>
                           <History
                             sx={{
@@ -351,11 +374,7 @@ export default function BookingHistory() {
                           <Typography variant="h6" color="text.secondary">
                             Chưa có lịch sử đặt sân
                           </Typography>
-                          <Typography
-                            variant="body2"
-                            color="text.secondary"
-                            sx={{ mt: 1 }}
-                          >
+                          <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
                             Các đơn đặt sân của bạn sẽ xuất hiện ở đây
                           </Typography>
                         </Box>
@@ -374,9 +393,7 @@ export default function BookingHistory() {
               rowsPerPage={rowsPerPage}
               onRowsPerPageChange={handleChangeRowsPerPage}
               labelRowsPerPage="Số hàng mỗi trang:"
-              labelDisplayedRows={({ from, to, count }) =>
-                `${from}-${to} của ${count}`
-              }
+              labelDisplayedRows={({ from, to, count }) => `${from}-${to} của ${count}`}
               sx={{
                 borderTop: "1px solid rgba(0, 0, 0, 0.08)",
                 mt: 2,
@@ -389,7 +406,31 @@ export default function BookingHistory() {
           </CardContent>
         </Card>
       </Box>
-    </UserLayout>
-  );
-}
+      <AddRatingModal
+        open={ratingModalOpen}
+        onClose={handleCloseRatingModal}
+        booking={currentBooking}
+        onSubmit={(stars, comment) => {
+          if (currentBooking) {
+            const updatedHistory = history.map((item: any) => {
+              if (item.id === currentBooking.id) {
+                return {
+                  ...item,
+                  rating: {
+                    stars,
+                    comment,
+                  },
+                }
+              }
+              return item
+            })
+            setHistory(updatedHistory)
+            handleCloseRatingModal()
+          }
+        }}
+      />
 
+      <ViewRatingModal open={viewRatingModalOpen} onClose={handleCloseViewRatingModal} booking={currentBooking} />
+    </UserLayout>
+  )
+}
