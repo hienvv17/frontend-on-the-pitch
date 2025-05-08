@@ -75,11 +75,6 @@ const settings = [
     icon: <AssignmentIcon sx={{ color: "var(--Primary-500)" }} />,
   },
   {
-    title: "Đánh giá của tôi",
-    page: "/khach-hang/danh-gia-cua-toi",
-    icon: <EditNoteIcon sx={{ color: "var(--Primary-500)" }} />,
-  },
-  {
     title: "Đăng xuất",
     page: "logout",
     icon: <LogoutIcon sx={{ color: "red" }} />,
