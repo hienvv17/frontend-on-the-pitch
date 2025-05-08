@@ -53,6 +53,14 @@ const pages2 = [
     title: "Đặt sân",
     url: "/dat-san",
   },
+  {
+    title: "Liên hệ",
+    url: "/lien-he",
+  },
+  {
+    title: "Chính sách hoàn tiền",
+    url: "/chinh-sach-hoan-tien",
+  },
 ];
 
 const settings = [

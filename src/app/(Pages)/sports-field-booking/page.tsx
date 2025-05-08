@@ -147,7 +147,8 @@ export default function SportsFieldBooking() {
 
           setSearchData((prev: any) => ({
             ...prev,
-            sportOption: temp
+            sportOption: temp,
+            sportValue: temp.value
           }));
         }
 
@@ -943,6 +944,8 @@ export default function SportsFieldBooking() {
                               dayPicked: null,
                               startTime: null,
                               endTime: null,
+                              sportOption: null,
+                              branchOption: null
                             }));
                             setSelectedDate(null);
                           }}
