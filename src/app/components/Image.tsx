@@ -18,7 +18,11 @@ const nextImageUrl = (firebaseImageUrl: string) => {
 };
 const imagekitLoader = ({ src, width, quality }: ImageLoaderProps) => {
   const params = [`w-${width}`];
-  !!quality ? params.push(`q-${quality}`) : params.push("q-75");
+  if (quality) {
+    params.push(`q-${quality}`);
+  } else {
+    params.push("q-75");
+  }
   const paramsString = params.join(",");
   // firebase
   let imageSrc = "";
