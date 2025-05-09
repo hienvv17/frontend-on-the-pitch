@@ -23,6 +23,7 @@ import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PersonIcon from "@mui/icons-material/Person";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import LogoutIcon from "@mui/icons-material/Logout";
+import EditNoteIcon from '@mui/icons-material/EditNote';
 
 //định nghĩa white là loại color mới
 // Augment the palette to include an ochre color
@@ -51,6 +52,14 @@ const pages2 = [
   {
     title: "Đặt sân",
     url: "/dat-san",
+  },
+  {
+    title: "Liên hệ",
+    url: "/lien-he",
+  },
+  {
+    title: "Chính sách hoàn tiền",
+    url: "/chinh-sach-hoan-tien",
   },
 ];
 

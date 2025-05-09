@@ -1,7 +1,7 @@
 "use client";
 
 import { ACCESS_TOKEN } from "@/utility/constant";
-import { createContext, useState, ReactNode, useEffect } from "react";
+import { createContext, useState, ReactNode, useEffect, Dispatch, SetStateAction } from "react";
 import Cookies from "js-cookie";
 
 type SnackbarType = "success" | "error" | "info" | "warning";
@@ -23,6 +23,13 @@ interface AppContextType {
   setOpenSnackBar: React.Dispatch<React.SetStateAction<SnackbarState>>;
   sportName: string,
   setSportName: React.Dispatch<React.SetStateAction<string>>;
+  branchOption: any,
+  setBranchOption: Dispatch<SetStateAction<{
+    value: number;
+    label: string;
+  }>>
+  orderInfo: any,
+  setOrderInfo: Dispatch<any>
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -34,7 +41,11 @@ export const AppContext = createContext<AppContextType>({
   openSnackbar: { isOpen: false, msg: "", type: "info" },
   setOpenSnackBar: () => { },
   sportName: '',
-  setSportName: () => { }
+  setSportName: () => { },
+  branchOption: { value: 0, label: '' },
+  setBranchOption: () => { },
+  orderInfo: {},
+  setOrderInfo: () => { },
 });
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
@@ -42,12 +53,15 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState(null);
   const [isClient, setIsClient] = useState(false);
   const [sportName, setSportName] = useState('');
+  const [branchOption, setBranchOption] = useState({ value: 0, label: '' });
   // for snackbar
   const [openSnackbar, setOpenSnackBar] = useState<SnackbarState>({
     isOpen: false,
     msg: "",
     type: "info",
   });
+
+  const [orderInfo, setOrderInfo] = useState<any>();
 
   useEffect(() => {
     setIsClient(true);
@@ -93,7 +107,11 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         openSnackbar,
         setOpenSnackBar,
         sportName,
-        setSportName
+        setSportName,
+        branchOption,
+        setBranchOption,
+        orderInfo,
+        setOrderInfo
       }}
     >
       {children}

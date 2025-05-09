@@ -7,18 +7,42 @@ import CardOverflow from "@mui/joy/CardOverflow";
 import Typography from "@mui/joy/Typography";
 import { StyledEngineProvider, CssVarsProvider } from "@mui/joy/styles";
 import { Box, Grid2 } from "@mui/material";
-import Image from "next/legacy/image";
+import Image from "./Image";
 // import StarIcon from "@mui/icons-material/Star";
 import RoomIcon from "@mui/icons-material/Room";
-import { DEFAULT_IMG } from "@/utility/constant";
+import { ALTER_IMG, DEFAULT_IMG } from "@/utility/constant";
 
 interface SportCardProps {
   [key: string]: any; // Cho phép các props khác
 }
 export default function SportCard(props: SportCardProps) {
-  // console.log("SportCard -> props", props)
+  // console.log("SportCard -> props", props);
+  // console.log("SportCard -> props.data.sportCategoryName", props.data.sportCategoryName)
+  // console.log("SportCard -> props.searchData.sportOption.label", props.searchData.sportOption?.label)
 
-  const defaultImg = DEFAULT_IMG;
+  let defaultImg = '';
+  const sportType = props.data.sportCategoryName || props.searchData.sportOption.label;
+  // console.log("sportType", sportType);
+  switch (sportType) {
+    case 'Bóng đá':
+      defaultImg = ALTER_IMG[0];
+      break;
+    case 'Tenis':
+      defaultImg = ALTER_IMG[1];
+      break;
+    case 'Cầu lông':
+      defaultImg = ALTER_IMG[2];
+      break;
+    case 'Pickle ball':
+      defaultImg = ALTER_IMG[3];
+      break;
+    default:
+      defaultImg = ALTER_IMG[0];
+      break;
+  }
+
+  const branchData = props.branchInfo.find((item: any) => item.id === props.searchData.branchValue);
+  // console.log("branchData", branchData);
 
   const sportName = props.resData.sportFields.find(
     (item: any) => item.value === props.searchData.sportValue,
@@ -45,9 +69,13 @@ export default function SportCard(props: SportCardProps) {
             <CardOverflow>
               <AspectRatio variant="outlined" ratio="16/9" objectFit="cover">
                 <Image
-                  alt="img"
-                  src={props.data.image ? props.data.image : defaultImg}
-                  layout="fill"
+                  alt="imgSportCard"
+                  src={props.data.images !== null ? props.data.images[0] : defaultImg}
+                  width={400}
+                  height={240}
+                  style={{
+                    objectFit: "fill",
+                  }}
                 />
               </AspectRatio>
             </CardOverflow>
@@ -83,10 +111,10 @@ export default function SportCard(props: SportCardProps) {
                 >
                   {/* <RoomIcon color="primary" fontSize="small" /> */}
                   <Typography fontSize="12px" sx={{ width: "100%" }}>
-                    Môn {!sportName ? props.data.sportCategoryName : sportName}
+                    {!sportName ? props.data.sportCategoryName : sportName}
                   </Typography>
                 </Box>
-                {props.branchInfo?.[0]?.district && (
+                {branchData.id && (
                   <Box
                     display="flex"
                     alignItems="center"
@@ -103,7 +131,7 @@ export default function SportCard(props: SportCardProps) {
                   >
                     <RoomIcon sx={{ color: "#FFD700" }} fontSize="small" />
                     <Typography sx={{ color: "#FFD700" }} fontSize="12px">
-                      {props.branchInfo[0].district}
+                      {branchData.district}
                     </Typography>
                   </Box>
                 )}

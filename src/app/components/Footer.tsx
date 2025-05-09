@@ -1,5 +1,6 @@
 import { Divider, IconButton, Typography, Grid } from "@mui/material";
 import { Box, Container } from "@mui/system";
+import { useRouter } from "next/navigation";
 
 export default function Footer() {
   const branches = [
@@ -8,6 +9,8 @@ export default function Footer() {
     "Hoàng Gia Tenis Club",
     "Sân cỏ nhân tạo Star",
   ];
+  const router = useRouter();
+
   return (
     <>
       <Box sx={{ bgcolor: "#000", color: "white", py: 6 }}>
@@ -157,6 +160,7 @@ export default function Footer() {
                     color: "rgba(255, 255, 255, 0.7)",
                     "&:hover": { color: "white", cursor: "pointer" },
                   }}
+                  onClick={() => router.push("/about")}
                 >
                   Về chúng tôi
                 </Typography>
@@ -166,6 +170,7 @@ export default function Footer() {
                     color: "rgba(255,255,255,0.7)",
                     "&:hover": { color: "white", cursor: "pointer" },
                   }}
+                  onClick={() => router.push("/lien-he")}
                 >
                   Liên hệ
                 </Typography>
@@ -222,6 +227,7 @@ export default function Footer() {
                     color: "rgba(255,255,255,0.7)",
                     "&:hover": { color: "white", cursor: "pointer" },
                   }}
+                  onClick={() => router.push("/chinh-sach-hoan-tien")}
                 >
                   Chính sách hoàn tiền
                 </Typography>
@@ -259,6 +265,7 @@ export default function Footer() {
                   color: "rgba(255,255,255,0.7)",
                   "&:hover": { color: "white", cursor: "pointer" },
                 }}
+                onClick={() => router.push("/faq")}
               >
                 FAQ
               </Typography>

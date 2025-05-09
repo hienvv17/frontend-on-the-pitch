@@ -11,8 +11,13 @@ export const ROUTES = {
 export const publicRoutes = [ROUTES.LOGIN];
 export const ACCESS_TOKEN = "accessToken";
 export const USERNAME = "username";
-export const DEFAULT_IMG =
-  "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743151739/image_12_ub4gfu.png";
+export const DEFAULT_IMG = "/image/defaultPicture.png";
+export const ALTER_IMG = [
+  "https://ik.imagekit.io/onthepitch/football-alter.jpg?updatedAt=1746764599468",
+  "https://ik.imagekit.io/onthepitch/tennis-alter.jpg?updatedAt=1746764599532",
+  "https://ik.imagekit.io/onthepitch/PICKLEBALL-alter.jpg?updatedAt=1746764599545",
+  "https://ik.imagekit.io/onthepitch/badminton-alter.png?updatedAt=1746764599644",
+];
 
 export const msgDetail = [
   "Vui lòng chọn môn thể thao",
@@ -32,6 +37,7 @@ export const msgDetail = [
   "Vui lòng chọn thời gian thuê sân ít nhất 1 giờ",
   "Vui lòng chọn ngày",
   "Đang xử lý...",
+  "Đã đặt sân thành công.",
 ];
 
 export const openTime = "05:00";
