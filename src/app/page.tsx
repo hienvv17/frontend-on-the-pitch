@@ -433,7 +433,7 @@ export default function HomePage() {
       <Box sx={{ position: "relative", height: "100vh", overflow: "hidden" }}>
         <HeroVideo autoPlay muted loop>
           <source
-            src="https://ik.imagekit.io/onthepitch/demo-video.mp4?tr=orig&updatedAt=1746544473360"
+            src="https://videos.pexels.com/video-files/5489581/5489581-hd_1920_1080_25fps.mp4"
             type="video/mp4"
           />
           Your browser does not support the video tag.
