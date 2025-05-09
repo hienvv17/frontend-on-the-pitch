@@ -78,7 +78,7 @@ export default function GoogleLoginBtn() {
       }
       Cookies.set(ACCESS_TOKEN, idToken);
 
-      localStorage.setItem("userAvatar", JSON.stringify(data?.user.photoURL));
+      localStorage.setItem("userAvatar", JSON.stringify(response.user.image));
       setUser(response.user);
       console.log("Login successfully");
       window.location.reload();
@@ -164,3 +164,4 @@ export default function GoogleLoginBtn() {
     </Stack>
   );
 }
+
