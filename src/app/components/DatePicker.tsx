@@ -62,7 +62,7 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
             error: false,
             inputRef,
             InputProps:
-              value && moment.isMoment(value) && value.isValid() || rest.selectedDate === null
+              (!rest.isBusy && value)
                 ? {
                   endAdornment: (
                     <InputAdornment position="end">

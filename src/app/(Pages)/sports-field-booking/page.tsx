@@ -41,11 +41,14 @@ import TimeSlotSelector from "@/app/components/TimeSlotSelector";
 import CustomDatePicker from "@/app/components/DatePicker";
 import PaymentPopUp from "@/app/components/PaymentPopUp";
 import { getSportFieldsByBranch } from "@/utility/getSportCategory";
+import { publicApi } from "@/api/base";
+import { useRouter } from "next/navigation";
 
 export default function SportsFieldBooking() {
   const theme = useTheme();
+  const router = useRouter();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const { setOpenSnackBar, sportName, setSportName, branchOption } = useContext(AppContext);
+  const { setOpenSnackBar, sportName, setSportName, branchOption, setBranchOption, setOrderInfo } = useContext(AppContext);
   // console.log("sportName", sportName);
   const [data, setData] = useState<SportField[]>([]);
   const { GET_OPTIONS, POST_SEARCH_FIELDS } = useBookingApi();
@@ -112,6 +115,7 @@ export default function SportsFieldBooking() {
   useEffect(() => {
     if (!isFirstChange) {
       setSportName('');
+      setBranchOption({ value: 0, label: '' });
     }
   }, [isFirstChange]);
 
@@ -302,6 +306,21 @@ export default function SportsFieldBooking() {
     setData([]);
   };
 
+  const [branchFilter, setBranchFilter] = useState({});
+
+  useEffect(() => {
+    console.log("resData", resData.raw.branchs);
+    console.log("searchData.branchOption", searchData.branchOption);
+    console.log("typeof branchs =", typeof resData?.raw?.branchs);
+    const branchsObject = resData?.raw?.branchs;
+    const branchsArray = Object.values(branchsObject);
+    // const branchs = resData?.raw?.branchs as any[];
+    const filteredBranches = branchsArray.find((branch: any) => branch.name === searchData.branchOption.label);
+    console.log("filteredBranches", filteredBranches);
+    setBranchFilter(filteredBranches as any);
+
+  }, [searchData.branchOption]);
+
   const handleDateChange = (e: any) => {
     const value = e === null ? e : moment(e, "YYYY-MM-DD");
     setSelectedDate(value);
@@ -325,94 +344,83 @@ export default function SportsFieldBooking() {
       endTime: formatTime(searchData.endTime) as string,
     };
 
+    console.log("searchSubmit->requestBody", requestBody);
+    // Nếu không chọn cụm sân, báo lỗi yêu cầu chọn cụm sân
     if (requestBody.branchId === 0) {
       setOpenSnackBar({ isOpen: true, msg: msgDetail[1], type: "error" });
       setData([]);
       return;
     } else {
       const getData = async (requestBody: any) => {
+        const requestBodyCopy = { ...requestBody };
+        if (requestBodyCopy.sportCategoryId === 0) {
+          delete requestBodyCopy.sportCategoryId;
+        }
+        console.log("requestBody", requestBody);
+        console.log("requestBodyCopy", requestBodyCopy);
+
         let response;
         try {
-          if (
-            !requestBody.date &&
-            !requestBody.sportCategoryId &&
-            !requestBody.startTime &&
-            !requestBody.endTime
-          ) {
-            response = await GET_OPTIONS(
-              ROUTES.SPORT_FIELDS + `/${requestBody.branchId}`
-            );
-          } else {
+          setOpenSnackBar({
+            isOpen: false,
+            msg: msgDetail[16],
+            type: "info",
+          });
+
+          if (requestBody.date === null) {
             setOpenSnackBar({
-              isOpen: false,
-              msg: msgDetail[16],
-              type: "info",
+              isOpen: true,
+              msg: msgDetail[15],
+              type: "error",
             });
+            setData([]);
+            return;
+          }
 
-            if (requestBody.sportCategoryId === 0) {
+          if (requestBody.endTime > "23:00") {
+            setOpenSnackBar({
+              isOpen: true,
+              msg: msgDetail[5],
+              type: "error",
+            });
+            setIsSearchDisable(true);
+            return;
+          }
+
+          if (searchData.startTime === null) {
+            if (searchData.endTime !== null) {
               setOpenSnackBar({
                 isOpen: true,
-                msg: msgDetail[0],
-                type: "error",
-              });
-              setData([]);
-              return;
-            }
-
-            if (requestBody.date === null) {
-              setOpenSnackBar({
-                isOpen: true,
-                msg: msgDetail[15],
-                type: "error",
-              });
-              setData([]);
-              return;
-            }
-
-            if (requestBody.endTime > "23:00") {
-              setOpenSnackBar({
-                isOpen: true,
-                msg: msgDetail[5],
+                msg: msgDetail[4],
                 type: "error",
               });
               setIsSearchDisable(true);
               return;
             }
-
-            if (searchData.startTime === null) {
-              if (searchData.endTime !== null) {
+          } else {
+            if (searchData.endTime !== null) {
+              const isValidDuration =
+                searchData.endTime.diff(searchData.startTime, "minutes") >=
+                60;
+              if (!isValidDuration) {
                 setOpenSnackBar({
                   isOpen: true,
-                  msg: msgDetail[4],
+                  msg: msgDetail[3],
                   type: "error",
                 });
-                setIsSearchDisable(true);
                 return;
               }
-            } else {
-              if (searchData.endTime !== null) {
-                const isValidDuration =
-                  searchData.endTime.diff(searchData.startTime, "minutes") >=
-                  60;
-                if (!isValidDuration) {
-                  setOpenSnackBar({
-                    isOpen: true,
-                    msg: msgDetail[3],
-                    type: "error",
-                  });
-                  return;
-                }
-              }
             }
-
-            setIsSearchDone(true);
-            setIsSearchDisable(true);
-            setIsBusy(true);
-            response = await POST_SEARCH_FIELDS(
-              ROUTES.SPORT_FIELDS + "/available",
-              requestBody
-            );
           }
+
+          setIsSearchDone(true);
+          setIsSearchDisable(true);
+          setIsBusy(true);
+          response = await POST_SEARCH_FIELDS(
+            ROUTES.SPORT_FIELDS + "/available",
+            requestBody.sportCategoryId === 0 ? requestBodyCopy : requestBody
+          );
+
 
           setBookingData((prev) => ({
             ...prev,
@@ -423,19 +431,22 @@ export default function SportsFieldBooking() {
           }));
 
           if (response.status === 201) {
+            console.log("response", response);
             setData(response.data.items);
             setOpenSnackBar({ isOpen: true, msg: msgDetail[2], type: "info" });
             return;
-          } else if (response.message === "Success") {
-            setData(response.items);
-            setOpenSnackBar({ isOpen: true, msg: msgDetail[2], type: "info" });
-            return;
           }
+          // else if (response.message === "Success") {
+          //   setData(response.items as any);
+          //   setOpenSnackBar({ isOpen: true, msg: msgDetail[2], type: "info" });
+          //   return;
+          // }
           setOpenSnackBar({
             isOpen: true,
             msg: `Error2: ${response.data.message}`,
             type: "error",
           });
+
         } catch (error) {
           console.log("error", error);
           setData([]);
@@ -494,6 +505,8 @@ export default function SportsFieldBooking() {
       sportFieldId: field.id,
     }));
 
+    setStartTime(searchData.startTime !== null ? searchData.startTime.format("HH:mm") : '');
+    setEndTime(searchData.endTime !== null ? searchData.endTime.format("HH:mm") : '');
     setOpenDialog2(true);
   };
 
@@ -504,16 +517,33 @@ export default function SportsFieldBooking() {
   const [confirmOrder, setConfirmOrder] = useState(false);
 
   const handleConfirmOrder = () => {
-    setBookingData((prev) => ({
-      ...prev,
-      email: tempEmail,
-    }));
-    setConfirmOrder(true);
+
+    const senBooking = async () => {
+      try {
+        const configApi = publicApi('');
+        const response = await configApi.post(ROUTES.FILED_BOOKINGS + '/new', bookingData);
+        console.log("response", response);
+        setOrderInfo(response.data.bookingData);
+        console.log("DONE");
+      } catch (err) {
+        console.log("err", err);
+      }
+    }
+
+    senBooking();
+    setOpenSnackBar({ isOpen: true, msg: msgDetail[17], type: "info" });
+    setOpenDialog2(false);
+    setOpenDialog(false);
+
+    router.push("/payment");
   };
 
   const handleClosePayment = () => {
     setConfirmOrder(false);
   };
+
+  const [startTime, setStartTime] = useState('');
+  const [endTime, setEndTime] = useState('');
 
   return (
     <UserLayout>
@@ -797,7 +827,7 @@ export default function SportsFieldBooking() {
                           </Typography>
                         </Box>
                         <CustomDatePicker
-                          shouldFocus={sportName !== ''}
+                          shouldFocus={sportName !== '' || branchOption.label !== ''}
                           label="Chọn ngày"
                           name="bookingDate"
                           value={selectedDate}
@@ -1089,6 +1119,12 @@ export default function SportsFieldBooking() {
         selectedDate={selectedDate}
         setSelectedDate={setSelectedDate}
         searchData={searchData}
+        dialogData={dialogData}
+        startTime={startTime}
+        endTime={endTime}
+        setStartTime={setStartTime}
+        setEndTime={setEndTime}
+
       />
 
       <OrderPopUp
@@ -1111,6 +1147,8 @@ export default function SportsFieldBooking() {
         setTempEemail={setTempEemail}
         setSelectedDate={setSelectedDate}
         searchData={searchData}
+        setOpenDialog2={setOpenDialog2}
+        branchFilter={branchFilter}
       />
 
       <PaymentPopUp

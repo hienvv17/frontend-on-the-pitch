@@ -15,7 +15,7 @@ import { Grid } from "@mui/system";
 import ClearIcon from "@mui/icons-material/Clear";
 import CheckIcon from "@mui/icons-material/Check";
 import { emailRegex, msgDetail } from "@/utility/constant";
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AppContext } from "../contexts/AppContext";
 import moment from "moment";
 import BookingInfoTable from "./BookingInfoTable";
@@ -37,18 +37,20 @@ export default function OrderPopUp(props: any) {
 
   const [isDisableBtn, setIsDisableBtn] = useState(true);
 
-  // console.log("OrderPopUp -> props", props);
+  console.log("OrderPopUp -> props", props);
 
   // const unitPrice = props.startSlot && getPricePerHour(props.startSlot.getHours());
   // console.log("OrderPopUp -> unitPrice", unitPrice);
 
-  const data = props.data;
+  // const data = props.data;
 
   const selectedSlots = props.selectedSlots;
 
   const { setOpenSnackBar } = useContext(AppContext);
 
   const [email, setEmail] = useState("");
+
+  const [filteredBranches, setFilteredBranches] = useState<any[]>([]);
 
   const validateEmail = (value: string) => {
     setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: "info" });
@@ -73,12 +75,23 @@ export default function OrderPopUp(props: any) {
       setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: "info" });
       setIsDisableBtn(false);
       props.setTempEemail(trimValue);
+      props.setBookingData((prev: any) => ({
+        ...prev,
+        email: value.trim(),
+      }));
+
+
+      console.log("email", trimValue);
     }
   };
 
   // useEffect(() => {
-  //     console.log("OrderPopUp nhận orderInfo mới:", props.orderInfo);
-  // }, [props.orderInfo]);
+  //   // console.log("OrderPopUp nhận orderInfo mới:", props.orderInfo);
+  //   const filteredBranches = props.data.branch.filter((branch: any) => branch.name === props.data.field.branchName);
+  //   console.log("filteredBranches", filteredBranches);
+  //   setFilteredBranches(filteredBranches);
+
+  // }, [props.openDialog]);
 
   const handleBlur = () => {
     validateEmail(email);
@@ -104,12 +117,14 @@ export default function OrderPopUp(props: any) {
     props.setSelectedSlots([]);
     props.setStartSlot(null);
     props.setOpen(false);
+    props.setOpenDialog2(false);
   };
 
   const handleBack = () => {
     props.onClose();
     props.handleOpenDialog2();
   };
+
 
   return (
     <>
@@ -241,11 +256,11 @@ export default function OrderPopUp(props: any) {
                     </Grid>
                     <Grid size={8}>
                       <Typography fontSize="0.75rem">
-                        {props.data.branch[0].street +
+                        {props.branchFilter.street +
                           ", " +
-                          props.data.branch[0].district +
+                          props.branchFilter.district +
                           ", " +
-                          props.data.branch[0].city}
+                          props.branchFilter.city}
                       </Typography>
                     </Grid>
                   </Grid>
@@ -259,7 +274,7 @@ export default function OrderPopUp(props: any) {
                 sx={{ width: "100%" }}
               >
                 <BookingInfoTable
-                  data={data}
+                  data={props.data}
                   hourCount={selectedSlots}
                   orderInfo={props.orderInfo}
                   setBookingData={props.setBookingData}
@@ -328,7 +343,7 @@ export default function OrderPopUp(props: any) {
                 sx={{ textTransform: "none" }}
                 color="error"
                 onClick={handleClose}
-                // disabled={isDiscard}
+              // disabled={isDiscard}
               >
                 Hủy
               </Button>

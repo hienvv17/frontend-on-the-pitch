@@ -28,6 +28,8 @@ interface AppContextType {
     value: number;
     label: string;
   }>>
+  orderInfo: any,
+  setOrderInfo: Dispatch<any>
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -41,7 +43,9 @@ export const AppContext = createContext<AppContextType>({
   sportName: '',
   setSportName: () => { },
   branchOption: { value: 0, label: '' },
-  setBranchOption: () => { }
+  setBranchOption: () => { },
+  orderInfo: {},
+  setOrderInfo: () => { },
 });
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
@@ -56,6 +60,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
     msg: "",
     type: "info",
   });
+
+  const [orderInfo, setOrderInfo] = useState<any>();
 
   useEffect(() => {
     setIsClient(true);
@@ -103,7 +109,9 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         sportName,
         setSportName,
         branchOption,
-        setBranchOption
+        setBranchOption,
+        orderInfo,
+        setOrderInfo
       }}
     >
       {children}

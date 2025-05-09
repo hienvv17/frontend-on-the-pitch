@@ -10,10 +10,10 @@ import { DesktopTimePicker } from "@mui/x-date-pickers/DesktopTimePicker";
 moment.locale("vi");
 
 export default function TimePickerValue(props: any) {
+  console.log("TimePickerValue -> props", props)
   // const now = moment('2025-04-27 19:25');
   const now = moment();
   const isToday = props.selectedDate && props.selectedDate.isSame(now, "day");
-  // console.log("TimePickerValue -> props", props)
   return (
     <LocalizationProvider
       dateAdapter={AdapterMoment}
