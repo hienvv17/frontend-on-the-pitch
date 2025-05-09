@@ -1,6 +1,6 @@
 "use client";
 
-import { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useRef, useState } from "react";
 import moment, { Moment } from "moment";
 import {
   Typography,
@@ -100,6 +100,14 @@ export default function SportsFieldBooking() {
   const handleOpenDialog2 = () => setOpenDialog2(true);
   const handleCloseDialog2 = () => setOpenDialog2(false);
   const [isFirstChange, setIsFirstChange] = useState(true);
+
+  // const datePickerRef = useRef(null); // Create a ref for the CustomDatePicker
+  // useEffect(() => {
+  //   // Focus the date picker when the component mounts
+  //   if (datePickerRef.current) {
+  //     datePickerRef.current.focus();
+  //   }
+  // }, []);
 
   useEffect(() => {
     if (!isFirstChange) {
@@ -201,6 +209,7 @@ export default function SportsFieldBooking() {
         startTime: null,
         endTime: null,
       }));
+      setSelectedDate(null);
       //       const reformattedData2 = resData.raw.sportFields.map((data: any) => {
       //   return {
       //     value: data.id,
@@ -788,6 +797,7 @@ export default function SportsFieldBooking() {
                           </Typography>
                         </Box>
                         <CustomDatePicker
+                          shouldFocus={sportName !== ''}
                           label="Chọn ngày"
                           name="bookingDate"
                           value={selectedDate}

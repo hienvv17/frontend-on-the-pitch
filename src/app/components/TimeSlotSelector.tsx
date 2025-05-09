@@ -10,6 +10,8 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
+  Paper,
+  Grid2,
 } from "@mui/material";
 import { format, addMinutes, isEqual } from "date-fns";
 import Grid from "@mui/material/Grid2";
@@ -20,6 +22,8 @@ import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { blueBlurDialogSlotProps } from "@/utility/dialogSlotProps";
 import CustomDatePicker from "./DatePicker";
 import moment from "moment";
+import { AccessTime } from "@mui/icons-material";
+import TimePickerValue from "./TimePicker";
 
 const startTime = new Date();
 startTime.setHours(5, 0, 0, 0);
@@ -241,36 +245,80 @@ export default function TimeSlotSelector({
                 value={rest.selectedDate}
                 // setSelectedDate={setSelectedDate}
                 onChange={handleDateChange}
-                isBusy={false}
+                isBusy={rest.selectedDate !== null}
               />
             </Grid>
             <Grid container spacing={1}>
-              {timeSlots.map((slot, index) => {
-                const disabled = isSlotDisabled(slot);
-                const selected = isSlotSelected(slot);
-
-                return (
-                  <Grid size={12} key={index}>
-                    <Button
-                      variant={selected ? "contained" : "outlined"}
-                      color={
-                        disabled
-                          ? "inherit"
-                          : rest.startSlot && isEqual(slot, rest.startSlot)
-                            ? "secondary"
-                            : selected
-                              ? "primary"
-                              : "primary"
-                      }
-                      fullWidth
-                      disabled={disabled}
-                      onClick={() => toggleSlot(slot)}
-                    >
-                      {format(slot, "HH:mm")}
-                    </Button>
-                  </Grid>
-                );
-              })}
+              {/* <Paper
+                elevation={0}
+                sx={{
+                  p: 2,
+                  borderRadius: "12px",
+                  border: "1px solid",
+                  borderColor: "divider",
+                  height: "100%",
+                  transition: "all 0.2s",
+                  "&:hover": {
+                    borderColor: "var(--Primary-300)",
+                    boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                  },
+                }}
+              >
+                <Box
+                  sx={{
+                    display: "flex",
+                    alignItems: "center",
+                    mb: 1.5,
+                  }}
+                >
+                  <AccessTime
+                    sx={{ color: "var(--Primary-500)", mr: 1 }}
+                  />
+                  <Typography variant="subtitle1" fontWeight={600}>
+                    Thời Gian
+                  </Typography>
+                </Box>
+                <Grid container spacing={2} justifyContent="center">
+                  <Grid2
+                    size={{ xs: 6 }}
+                    sx={{ display: "flex", justifyContent: "center" }}
+                  >
+                    <Box sx={{ width: "100%", maxWidth: 200 }}>
+                      <TimePickerValue
+                        label="Giờ vào sân"
+                        name="startTime"
+                        // onChange={handleStartTimeChange}
+                        maxHour={22}
+                      // selectedDate={searchData.dayPicked}
+                      // value={searchData.startTime}
+                      // value2={searchData}
+                      // onError={(e: any) =>
+                      //   handleTimeError(e, "startTime")
+                      // }
+                      // isBusy={isBusy || searchData.dayPicked === null}
+                      />
+                    </Box>
+                  </Grid2>
+                  <Grid2
+                    size={{ xs: 6 }}
+                    sx={{ display: "flex", justifyContent: "center" }}
+                  >
+                    <TimePickerValue
+                      label="Giờ trả sân"
+                      name="endTime"
+                      // onChange={handleEndTimeChange}
+                      maxHour={23}
+                    // selectedDate={searchData.dayPicked}
+                    // value={searchData.endTime}
+                    // value2={searchData}
+                    // onError={(e: any) =>
+                    //   handleTimeError(e, "endTime")
+                    // }
+                    // isBusy={isBusy}
+                    />
+                  </Grid2>
+                </Grid>
+              </Paper> */}
             </Grid>
           </Grid>
         </DialogContent>

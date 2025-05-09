@@ -11,8 +11,7 @@ export const ROUTES = {
 export const publicRoutes = [ROUTES.LOGIN];
 export const ACCESS_TOKEN = "accessToken";
 export const USERNAME = "username";
-export const DEFAULT_IMG =
-  "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743151739/image_12_ub4gfu.png";
+export const DEFAULT_IMG = "/image/defaultPicture.png";
 
 export const msgDetail = [
   "Vui lòng chọn môn thể thao",

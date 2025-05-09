@@ -16,7 +16,7 @@ interface SportCardProps {
   [key: string]: any; // Cho phép các props khác
 }
 export default function SportCard(props: SportCardProps) {
-  // console.log("SportCard -> props", props)
+  console.log("SportCard -> props", props)
 
   const defaultImg = DEFAULT_IMG;
 
@@ -46,7 +46,7 @@ export default function SportCard(props: SportCardProps) {
               <AspectRatio variant="outlined" ratio="16/9" objectFit="cover">
                 <Image
                   alt="img"
-                  src={props.data.image ? props.data.image : defaultImg}
+                  src={props.data.images !== null ? props.data.images[0] : defaultImg}
                   layout="fill"
                 />
               </AspectRatio>
@@ -101,10 +101,10 @@ export default function SportCard(props: SportCardProps) {
                       padding: "2px 6px", // Thêm padding để dễ nhìn
                     }}
                   >
-                    <RoomIcon sx={{ color: "#FFD700" }} fontSize="small" />
+                    {/* <RoomIcon sx={{ color: "#FFD700" }} fontSize="small" />
                     <Typography sx={{ color: "#FFD700" }} fontSize="12px">
                       {props.branchInfo[0].district}
-                    </Typography>
+                    </Typography> */}
                   </Box>
                 )}
               </Grid2>

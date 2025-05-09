@@ -183,6 +183,16 @@ export default function HomePage() {
     router.push("/dat-san");
   };
 
+  const gotoBookingPageWithBranch = (item: any) => {
+    setSportName('');
+    console.log("item", item);
+    setBranchOption({
+      value: item.id,
+      label: item.name
+    });
+    router.push("/dat-san");
+  };
+
   function filterBySportName(data: any, sportName = "Bóng đá") {
     return data.filter((branch: any) =>
       branch.sport_categories.some((category: any) => category.name === sportName)
@@ -197,6 +207,10 @@ export default function HomePage() {
   // const [tab5, setTab5] = useState<any[]>([]);
 
   useEffect(() => {
+
+    setSportName('');
+    setBranchOption({ value: 0, label: '' });
+
     const getData = async () => {
       try {
         const configApi = publicApi("");
@@ -1199,7 +1213,7 @@ export default function HomePage() {
                             {/* <Button variant="outlined" color="primary" fullWidth>
                             Xem chi tiết
                           </Button> */}
-                            <Button variant="contained" color="primary" fullWidth>
+                            <Button variant="contained" color="primary" fullWidth onClick={() => gotoBookingPageWithBranch(item)}>
                               Đặt sân ngay
                             </Button>
 

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { forwardRef, useEffect, useRef } from "react";
 import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { AdapterMoment } from "@mui/x-date-pickers/AdapterMoment";
 import { LocalizationProvider } from "@mui/x-date-pickers";
@@ -13,6 +13,7 @@ type CustomDatePickerProps = {
   name?: string;
   value: Moment | null;
   onChange: (value: Moment | null) => void;
+  shouldFocus?: boolean;
   [key: string]: any;
 };
 
@@ -21,8 +22,18 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
   name,
   value,
   onChange,
+  shouldFocus = false,
   ...rest
 }) => {
+
+  const inputRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (shouldFocus && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [shouldFocus]);
+
   return (
     <LocalizationProvider
       dateAdapter={AdapterMoment}
@@ -49,24 +60,25 @@ const CustomDatePicker: React.FC<CustomDatePickerProps> = ({
           textField: {
             fullWidth: true,
             error: false,
+            inputRef,
             InputProps:
-              value && moment.isMoment(value) && value.isValid()
+              value && moment.isMoment(value) && value.isValid() || rest.selectedDate === null
                 ? {
-                    endAdornment: (
-                      <InputAdornment position="end">
-                        <IconButton
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            onChange(null);
-                          }}
-                          size="small"
-                          edge="end"
-                        >
-                          <ClearIcon fontSize="small" />
-                        </IconButton>
-                      </InputAdornment>
-                    ),
-                  }
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onChange(null);
+                        }}
+                        size="small"
+                        edge="end"
+                      >
+                        <ClearIcon fontSize="small" />
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }
                 : undefined,
           },
         }}
