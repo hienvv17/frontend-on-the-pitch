@@ -1,7 +1,8 @@
 "use client";
 
 import { useContext, useEffect, useState } from "react";
-import Image from "next/image";
+import ImageKit from "imagekit-javascript";
+
 import {
   Box,
   Button,
@@ -45,6 +46,8 @@ import { AppContext } from "@/app/contexts/AppContext";
 import { useUserApiPrivate } from "@/api/user/user";
 import { UserInfo, UserUpdateData } from "@/types/UserType";
 import { msgDetail, ROUTES } from "@/utility/constant";
+import { useUploadAuthApi } from "@/api/auth/upload-auth";
+import Image from "@/app/components/Image";
 
 // Sample voucher data
 const sampleVouchers = [
@@ -81,6 +84,8 @@ export default function MyInfo() {
   const { user, setUser, setOpenSnackBar } = useContext(AppContext);
   const [activeTab, setActiveTab] = useState(0);
   const [expandedVoucher, setExpandedVoucher] = useState<number | false>(false);
+  const { GET_UPLOAD_AUTH } = useUploadAuthApi();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   const [userInfo, setUserInfo] = useState<UserInfo>({
     fullName: "",
@@ -152,7 +157,7 @@ export default function MyInfo() {
         }));
       };
       reader.readAsDataURL(file);
-
+      setSelectedFile(file);
       setIsChange(false);
       setIsDiscard(false);
     }
@@ -204,12 +209,31 @@ export default function MyInfo() {
   const handleSave = async () => {
     try {
       setIsLoading(true);
-      const data = await POST_P(ROUTES.USERS + "/update-profile", {
+
+      let urlImage = "";
+      if (selectedFile) {
+        const data = await GET_UPLOAD_AUTH();
+        const { signature, expire, token, publicKey } = data;
+        const imagekit = new ImageKit({
+          urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT!,
+          publicKey,
+        });
+
+        const uploadResponse = await imagekit.upload({
+          file: selectedFile, // can be file object or base64 string
+          fileName: selectedFile.name,
+          token,
+          expire,
+          signature,
+        });
+        urlImage = uploadResponse.url;
+      }
+      await POST_P(ROUTES.USERS + "/update-profile", {
         fullName: updateData.fullName,
         phoneNumber: !updateData.phoneNumber
           ? ""
           : "0" + updateData.phoneNumber.slice(-9),
-        image: "",
+        image: urlImage || "",
       });
       setIsUpdate((prev) => !prev);
       setIsDiscard(true);
@@ -399,12 +423,13 @@ export default function MyInfo() {
                           mb: 2,
                         }}
                       >
-                        <Avatar
+                        <Image
                           src={updateData.image || ""}
                           alt={userInfo.fullName || "User"}
-                          sx={{
-                            width: "100%",
-                            height: "100%",
+                          fill
+                          style={{
+                            objectFit: "cover",
+                            borderRadius: "50%",
                             border: "4px solid white",
                             boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
                           }}

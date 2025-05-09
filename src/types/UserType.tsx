@@ -14,6 +14,7 @@ interface Info extends BaseUser {
 //     picture: string | null;
 // }
 
-export type UserUpdateData = BaseUser;
+export type UserUpdateData = Partial<BaseUser>;
 
 export type UserInfo = Info;
+

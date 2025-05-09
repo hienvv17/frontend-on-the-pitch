@@ -72,7 +72,7 @@ export default function GoogleLoginBtn() {
       if (response.error) {
         console.log(
           "You are not authorized to access this page",
-          response.error,
+          response.error
         );
         return;
       }
