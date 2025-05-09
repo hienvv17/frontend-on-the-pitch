@@ -16,7 +16,7 @@ import { formatPrice } from "@/utility/formatPrice";
 
 export default function PaymentPopUp(props: any) {
   // const data = props.data;
-  console.log("bookingData", props.bookingData);
+  // console.log("bookingData", props.bookingData);
 
   return (
     <>

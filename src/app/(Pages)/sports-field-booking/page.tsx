@@ -40,11 +40,12 @@ import OrderPopUp from "@/app/components/OrderPopUp";
 import TimeSlotSelector from "@/app/components/TimeSlotSelector";
 import CustomDatePicker from "@/app/components/DatePicker";
 import PaymentPopUp from "@/app/components/PaymentPopUp";
+import { getSportFieldsByBranch } from "@/utility/getSportCategory";
 
 export default function SportsFieldBooking() {
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const { setOpenSnackBar, sportName } = useContext(AppContext);
+  const { setOpenSnackBar, sportName, setSportName, branchOption } = useContext(AppContext);
   // console.log("sportName", sportName);
   const [data, setData] = useState<SportField[]>([]);
   const { GET_OPTIONS, POST_SEARCH_FIELDS } = useBookingApi();
@@ -98,6 +99,13 @@ export default function SportsFieldBooking() {
   const [openDialog2, setOpenDialog2] = useState(false);
   const handleOpenDialog2 = () => setOpenDialog2(true);
   const handleCloseDialog2 = () => setOpenDialog2(false);
+  const [isFirstChange, setIsFirstChange] = useState(true);
+
+  useEffect(() => {
+    if (!isFirstChange) {
+      setSportName('');
+    }
+  }, [isFirstChange]);
 
   useEffect(() => {
     setData([]);
@@ -140,15 +148,32 @@ export default function SportsFieldBooking() {
           },
         });
 
+        console.log("sportName", sportName);
+
         if (sportName !== '') {
           const temp = reformattedData2.find((item: any) => {
             return item.label.trim().toLowerCase() === sportName.trim().toLowerCase();
           });
-
+          console.log("temp", temp);
           setSearchData((prev: any) => ({
             ...prev,
             sportOption: temp,
             sportValue: temp.value
+          }));
+        }
+
+        console.log("branchOption", branchOption);
+        if (branchOption.value !== 0) {
+          setSearchData((prev: any) => ({
+            ...prev,
+            branchOption: branchOption,
+            branchValue: branchOption.value
+          }));
+        } else {
+          setSearchData((prev: any) => ({
+            ...prev,
+            branchOption: null,
+            branchValue: null
           }));
         }
 
@@ -160,6 +185,80 @@ export default function SportsFieldBooking() {
     };
     getData();
   }, []);
+
+
+  useEffect(() => {
+    // console.log("searchData.branchValue", searchData.branchValue);
+    // console.log("resData", resData);
+    // const ttt = resData.sportFields;s
+
+    if (searchData.branchValue === null) {
+      setSearchData((prev: any) => ({
+        ...prev,
+        sportValue: null,
+        sportOption: null,
+        dayPicked: null,
+        startTime: null,
+        endTime: null,
+      }));
+      //       const reformattedData2 = resData.raw.sportFields.map((data: any) => {
+      //   return {
+      //     value: data.id,
+      //     label: data.name,
+      //   };
+      // });
+      // setResData({
+      //   branchs: reformattedData,
+      //   sportFields: reformattedData2,
+      //   raw: {
+      //     branchs: branchRes.items,
+      //     sportFields: sportCatRes.items,
+      //   },
+      // });
+      return;
+    }
+
+    const reformattedData2 = getSportFieldsByBranch(searchData.branchValue, resData);
+    // console.log("reformattedData2", reformattedData2);
+
+    setResData((prevData: any) => ({
+      ...prevData,
+      sportFields: reformattedData2
+    }));
+
+
+    if (reformattedData2.length === 1) {
+      setSearchData((prev: any) => ({
+        ...prev,
+        sportOption: reformattedData2[0],
+        sportValue: reformattedData2[0].value
+      }));
+    } else if (reformattedData2.length > 1) {
+      // console.log("sportName", sportName);
+      if (sportName !== '') {
+        console.log("sportName", sportName);
+        console.log("reformattedData2", reformattedData2);
+        const temp = reformattedData2.find((item: any) => {
+          return item.label.trim().toLowerCase() === sportName.trim().toLowerCase();
+        });
+        console.log("temp22", temp);
+        setSearchData((prev: any) => ({
+          ...prev,
+          sportOption: temp,
+          sportValue: temp.value
+        }));
+
+      } else {
+        setSearchData((prev: any) => ({
+          ...prev,
+          sportOption: null,
+          sportValue: null
+        }));
+      }
+    }
+    setIsFirstChange(false);
+  }, [searchData.branchValue]);
+
 
   const handleStartTimeChange = (e: moment.Moment) => {
     setSearchData((prev) => ({

@@ -69,6 +69,7 @@ import Footer from "./components/Footer";
 import { useRouter } from 'next/navigation';
 import { publicApi } from "@/api/base";
 import { AppContext } from "./contexts/AppContext";
+import Image from "./components/Image";
 
 const HeroVideo = styled("video")({
   position: "absolute",
@@ -144,7 +145,7 @@ const tabIcon = [<SportsSoccer key={0} />, <SportsCricket key={1} />, <SportsTen
 
 export default function HomePage() {
   const router = useRouter();
-  const { setSportName } = useContext(AppContext);
+  const { setSportName, setBranchOption } = useContext(AppContext);
   const [sportTab, setSportTab] = useState(0);
   const [branch, setBranch] = useState("");
   const [sport, setSport] = useState("");
@@ -160,15 +161,20 @@ export default function HomePage() {
     event: any,
     newValue: React.SetStateAction<number>
   ) => {
-    // console.log("event:" + event.target.textContent);
+    console.log("event:" + event.target.textContent);
     setSportTab(newValue);
     setSportName(event.target.textContent);
   };
 
-  const toBooking = () => {
+  const toBooking = (item: any) => {
     if (sportTab === 0) {
       setSportName('Bóng đá');
     }
+    console.log("item", item);
+    setBranchOption({
+      value: item.id,
+      label: item.name
+    });
     router.push("/dat-san");
   };
 
@@ -222,7 +228,7 @@ export default function HomePage() {
     }
     getData();
     // setSportName('Bóng đá');
-    console.log("tabData", tabData);
+    // console.log("tabData", tabData);
   }, []);
 
   const featuredSliderSettings = {
@@ -773,11 +779,20 @@ export default function HomePage() {
                                 height: "100%",
                               }}
                             >
-                              <CardMedia
+                              {/* <CardMedia
                                 component="img"
                                 height="160"
                                 image={item.images ? item.images[Math.floor(Math.random() * item.images.length)] : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`}
                                 alt={`Branch ${index + 1}`}
+                              /> */}
+                              <Image
+                                alt="QR-code"
+                                src={item.images ? item.images[Math.floor(Math.random() * item.images.length)] : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`}
+                                width={400}
+                                height={240}
+                                style={{
+                                  objectFit: "fill",
+                                }}
                               />
                               <CardContent sx={{ flexGrow: 1 }}>
                                 <Typography
@@ -808,7 +823,7 @@ export default function HomePage() {
                                 {/* <Button variant="outlined" color="primary" fullWidth>
                           Xem chi tiết
                         </Button> */}
-                                <Button variant="contained" color="primary" fullWidth onClick={gotoBookingPage}>
+                                <Button variant="contained" color="primary" fullWidth onClick={() => toBooking(item)}>
                                   Đặt sân ngay
                                 </Button>
                               </Box>
@@ -848,11 +863,14 @@ export default function HomePage() {
                                 height: "100%",
                               }}
                             >
-                              <CardMedia
-                                component="img"
-                                height="160"
-                                image={item.images ? item.images[Math.floor(Math.random() * item.images.length)] : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`}
-                                alt={`Branch ${index + 1}`}
+                              <Image
+                                alt="QR-code"
+                                src={item.images ? item.images[Math.floor(Math.random() * item.images.length)] : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`}
+                                width={400}
+                                height={240}
+                                style={{
+                                  objectFit: "fill",
+                                }}
                               />
                               <CardContent sx={{ flexGrow: 1 }}>
                                 <Typography
@@ -883,7 +901,7 @@ export default function HomePage() {
                                 {/* <Button variant="outlined" color="primary" fullWidth>
                           Xem chi tiết
                         </Button> */}
-                                <Button variant="contained" color="primary" fullWidth onClick={gotoBookingPage}>
+                                <Button variant="contained" color="primary" fullWidth onClick={() => toBooking(item)}>
                                   Đặt sân ngay
                                 </Button>
                               </Box>
@@ -923,11 +941,14 @@ export default function HomePage() {
                                 height: "100%",
                               }}
                             >
-                              <CardMedia
-                                component="img"
-                                height="160"
-                                image={item.images ? item.images[Math.floor(Math.random() * item.images.length)] : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`}
-                                alt={`Branch ${index + 1}`}
+                              <Image
+                                alt="QR-code"
+                                src={item.images ? item.images[Math.floor(Math.random() * item.images.length)] : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`}
+                                width={400}
+                                height={240}
+                                style={{
+                                  objectFit: "fill",
+                                }}
                               />
                               <CardContent sx={{ flexGrow: 1 }}>
                                 <Typography
@@ -958,7 +979,7 @@ export default function HomePage() {
                                 {/* <Button variant="outlined" color="primary" fullWidth>
                           Xem chi tiết
                         </Button> */}
-                                <Button variant="contained" color="primary" fullWidth onClick={gotoBookingPage}>
+                                <Button variant="contained" color="primary" fullWidth onClick={() => toBooking(item)}>
                                   Đặt sân ngay
                                 </Button>
                               </Box>
@@ -998,11 +1019,14 @@ export default function HomePage() {
                                 height: "100%",
                               }}
                             >
-                              <CardMedia
-                                component="img"
-                                height="160"
-                                image={item.images ? item.images[Math.floor(Math.random() * item.images.length)] : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`}
-                                alt={`Branch ${index + 1}`}
+                              <Image
+                                alt="QR-code"
+                                src={item.images ? item.images[Math.floor(Math.random() * item.images.length)] : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`}
+                                width={400}
+                                height={240}
+                                style={{
+                                  objectFit: "fill",
+                                }}
                               />
                               <CardContent sx={{ flexGrow: 1 }}>
                                 <Typography
@@ -1033,7 +1057,7 @@ export default function HomePage() {
                                 {/* <Button variant="outlined" color="primary" fullWidth>
                           Xem chi tiết
                         </Button> */}
-                                <Button variant="contained" color="primary" fullWidth onClick={gotoBookingPage}>
+                                <Button variant="contained" color="primary" fullWidth onClick={() => toBooking(item)}>
                                   Đặt sân ngay
                                 </Button>
                               </Box>
