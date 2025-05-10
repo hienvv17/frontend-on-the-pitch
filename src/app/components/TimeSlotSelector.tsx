@@ -42,7 +42,7 @@ export default function TimeSlotSelector({
   ...rest
 }: TimeSlotSelectorProps) {
 
-  console.log("TimeSlotSelector ->rest", rest);
+  // console.log("TimeSlotSelector ->rest", rest);
 
   const { setOpenSnackBar } = useContext(AppContext);
 
@@ -83,8 +83,8 @@ export default function TimeSlotSelector({
   };
 
   const handleContinue = () => {
-    console.log("rest.startTime", rest.startTime);
-    console.log("rest.endTime", rest.endTime);
+    // console.log("rest.startTime", rest.startTime);
+    // console.log("rest.endTime", rest.endTime);
 
     if (rest.startTime === '' || rest.endTime === '') {
       setTimeout(() => {
@@ -120,15 +120,15 @@ export default function TimeSlotSelector({
       return;
     }
     const [hours, minutes] = rest.startTime.split(":").map(Number);
-    console.log("hours", hours, minutes);
+    // console.log("hours", hours, minutes);
     const temp = generateTimeSlots2((hours + 1 + ":" + minutes).toString(), "23:00", []);
 
     setTimeSlotsEnd(temp);
   }, [rest.startTime]);
 
   const handleChangeStartTime = (event: SelectChangeEvent<typeof rest.startTime>) => {
-    console.log("event.target.value", event.target);
-    console.log("rest.startTime", rest.startTime);
+    // console.log("event.target.value", event.target);
+    // console.log("rest.startTime", rest.startTime);
     rest.setStartTime(event.target.value as string);
   };
 

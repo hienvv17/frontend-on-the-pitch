@@ -160,13 +160,13 @@ export default function SportsFieldBooking() {
           },
         });
 
-        console.log("sportName", sportName);
+        // console.log("sportName", sportName);
 
         if (sportName !== '') {
           const temp = reformattedData2.find((item: any) => {
             return item.label.trim().toLowerCase() === sportName.trim().toLowerCase();
           });
-          console.log("temp", temp);
+          // console.log("temp", temp);
           setSearchData((prev: any) => ({
             ...prev,
             sportOption: temp,
@@ -174,7 +174,7 @@ export default function SportsFieldBooking() {
           }));
         }
 
-        console.log("branchOption", branchOption);
+        // console.log("branchOption", branchOption);
         if (branchOption.value !== 0) {
           setSearchData((prev: any) => ({
             ...prev,
@@ -249,12 +249,12 @@ export default function SportsFieldBooking() {
     } else if (reformattedData2.length > 1) {
       // console.log("sportName", sportName);
       if (sportName !== '') {
-        console.log("sportName", sportName);
-        console.log("reformattedData2", reformattedData2);
+        // console.log("sportName", sportName);
+        // console.log("reformattedData2", reformattedData2);
         const temp = reformattedData2.find((item: any) => {
           return item.label.trim().toLowerCase() === sportName.trim().toLowerCase();
         });
-        console.log("temp22", temp);
+        // console.log("temp22", temp);
         setSearchData((prev: any) => ({
           ...prev,
           sportOption: temp,
@@ -309,14 +309,18 @@ export default function SportsFieldBooking() {
   const [branchFilter, setBranchFilter] = useState({});
 
   useEffect(() => {
-    console.log("resData", resData.raw.branchs);
-    console.log("searchData.branchOption", searchData.branchOption);
-    console.log("typeof branchs =", typeof resData?.raw?.branchs);
+    // console.log("resData", resData.raw.branchs);
+    // console.log("searchData", searchData);
+    // console.log("typeof branchs =", typeof resData?.raw?.branchs);
+    if (searchData.branchOption === null) {
+      setBranchFilter({});
+      return
+    }
     const branchsObject = resData?.raw?.branchs;
     const branchsArray = Object.values(branchsObject);
     // const branchs = resData?.raw?.branchs as any[];
     const filteredBranches = branchsArray.find((branch: any) => branch.name === searchData.branchOption.label);
-    console.log("filteredBranches", filteredBranches);
+    // console.log("filteredBranches", filteredBranches);
     setBranchFilter(filteredBranches as any);
 
   }, [searchData.branchOption]);
@@ -344,7 +348,7 @@ export default function SportsFieldBooking() {
       endTime: formatTime(searchData.endTime) as string,
     };
 
-    console.log("searchSubmit->requestBody", requestBody);
+    // console.log("searchSubmit->requestBody", requestBody);
     // Nếu không chọn cụm sân, báo lỗi yêu cầu chọn cụm sân
     if (requestBody.branchId === 0) {
       setOpenSnackBar({ isOpen: true, msg: msgDetail[1], type: "error" });
@@ -356,8 +360,8 @@ export default function SportsFieldBooking() {
         if (requestBodyCopy.sportCategoryId === 0) {
           delete requestBodyCopy.sportCategoryId;
         }
-        console.log("requestBody", requestBody);
-        console.log("requestBodyCopy", requestBodyCopy);
+        // console.log("requestBody", requestBody);
+        // console.log("requestBodyCopy", requestBodyCopy);
 
         let response;
         try {
@@ -431,7 +435,7 @@ export default function SportsFieldBooking() {
           }));
 
           if (response.status === 201) {
-            console.log("response", response);
+            // console.log("response", response);
             setData(response.data.items);
             setOpenSnackBar({ isOpen: true, msg: msgDetail[2], type: "info" });
             return;
@@ -448,7 +452,7 @@ export default function SportsFieldBooking() {
           });
 
         } catch (error) {
-          console.log("error", error);
+          // console.log("error", error);
           setData([]);
         } finally {
           setIsSearchDone(false);
@@ -522,12 +526,12 @@ export default function SportsFieldBooking() {
       try {
         const configApi = publicApi('');
         const response = await configApi.post(ROUTES.FILED_BOOKINGS + '/new', bookingData);
-        console.log("response", response);
+        // console.log("response", response);
         setOrderInfo(response.data.bookingData);
         setOpenSnackBar({ isOpen: true, msg: msgDetail[17], type: "info" });
         console.log("DONE");
       } catch (err) {
-        console.log("err", err);
+        // console.log("err", err);
       }
     }
 
@@ -874,7 +878,7 @@ export default function SportsFieldBooking() {
                             xs={6}
                             sx={{ display: "flex", justifyContent: "center" }}
                           >
-                            <Box sx={{ width: "100%", maxWidth: 200 }}>
+                            <Box sx={{ width: "100%" }}>
                               <TimePickerValue
                                 label="Giờ vào sân"
                                 name="startTime"

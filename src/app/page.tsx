@@ -161,7 +161,7 @@ export default function HomePage() {
     event: any,
     newValue: React.SetStateAction<number>
   ) => {
-    console.log("event:" + event.target.textContent);
+    // console.log("event:" + event.target.textContent);
     setSportTab(newValue);
     setSportName(event.target.textContent);
   };
@@ -170,7 +170,7 @@ export default function HomePage() {
     if (sportTab === 0) {
       setSportName('Bóng đá');
     }
-    console.log("item", item);
+    // console.log("item", item);
     setBranchOption({
       value: item.id,
       label: item.name
@@ -185,7 +185,7 @@ export default function HomePage() {
 
   const gotoBookingPageWithBranch = (item: any) => {
     setSportName('');
-    console.log("item", item);
+    // console.log("item", item);
     setBranchOption({
       value: item.id,
       label: item.name
@@ -217,7 +217,7 @@ export default function HomePage() {
         const result = await configApi.get("/branches");
         const sportCatigories = await configApi.get("/sport-categories");
         setBranchData(result.data.items);
-        console.log("result.data.items", result.data.items);
+        // console.log("result.data.items", result.data.items);
         setSportCategoriesData(sportCatigories.data.items);
 
         // sportCatigories.data.items.forEach((item: any) => {

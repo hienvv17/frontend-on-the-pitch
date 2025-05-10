@@ -1,5 +1,5 @@
 export function getSportFieldsByBranch(branchId: any, data: any) {
-    console.log(!branchId);
+    // console.log(!branchId);
 
     if (!branchId) return [];
 

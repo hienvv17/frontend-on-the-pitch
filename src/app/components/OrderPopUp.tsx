@@ -37,7 +37,7 @@ export default function OrderPopUp(props: any) {
 
   const [isDisableBtn, setIsDisableBtn] = useState(true);
 
-  console.log("OrderPopUp -> props", props);
+  // console.log("OrderPopUp -> props", props);
 
   // const unitPrice = props.startSlot && getPricePerHour(props.startSlot.getHours());
   // console.log("OrderPopUp -> unitPrice", unitPrice);
@@ -81,7 +81,7 @@ export default function OrderPopUp(props: any) {
       }));
 
 
-      console.log("email", trimValue);
+      // console.log("email", trimValue);
     }
   };
 
