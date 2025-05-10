@@ -5,18 +5,9 @@ import type { ImageLoaderProps } from "next/image";
 
 import React from "react";
 import NextImage from "next/image";
-const baseImageEndpoint = "https://ik.imagekit.io/onthepitch";
-const nextImageUrl = (firebaseImageUrl: string) => {
-  return (
-    "/_next/image?" +
-    new URLSearchParams({
-      url: firebaseImageUrl || "",
-      w: "480",
-      q: "75",
-    }).toString()
-  );
-};
+
 const imagekitLoader = ({ src, width, quality }: ImageLoaderProps) => {
+  console.log("src", src);
   const params = [`w-${width}`];
   if (quality) {
     params.push(`q-${quality}`);
@@ -25,14 +16,12 @@ const imagekitLoader = ({ src, width, quality }: ImageLoaderProps) => {
   }
   const paramsString = params.join(",");
   // firebase
-  let imageSrc = "";
+  let imageSrc = src;
   if (src.includes("ik.imagekit.io/onthepitch")) {
     imageSrc = src.replace(
       "ik.imagekit.io/onthepitch",
       `ik.imagekit.io/onthepitch/tr:${paramsString}`
     );
-  } else {
-    imageSrc = nextImageUrl(src);
   }
   return imageSrc;
 };

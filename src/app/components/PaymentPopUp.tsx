@@ -11,8 +11,8 @@ import {
 } from "@mui/material";
 import { Grid } from "@mui/system";
 import ClearIcon from "@mui/icons-material/Clear";
-import Image from "next/legacy/image";
 import { formatPrice } from "@/utility/formatPrice";
+import Image from "./Image";
 
 export default function PaymentPopUp(props: any) {
   // const data = props.data;
@@ -241,7 +241,7 @@ export default function PaymentPopUp(props: any) {
                 sx={{ textTransform: "none" }}
                 color="error"
                 onClick={props.onClose}
-              // disabled={isDiscard}
+                // disabled={isDiscard}
               >
                 Hủy
               </Button>
@@ -252,3 +252,4 @@ export default function PaymentPopUp(props: any) {
     </>
   );
 }
+

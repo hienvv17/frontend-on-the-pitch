@@ -16,24 +16,21 @@ interface SportCardProps {
   [key: string]: any; // Cho phép các props khác
 }
 export default function SportCard(props: SportCardProps) {
-  // console.log("SportCard -> props", props);
-  // console.log("SportCard -> props.data.sportCategoryName", props.data.sportCategoryName)
-  // console.log("SportCard -> props.searchData.sportOption.label", props.searchData.sportOption?.label)
-
-  let defaultImg = '';
-  const sportType = props.data.sportCategoryName || props.searchData.sportOption.label;
+  let defaultImg = "";
+  const sportType =
+    props.data.sportCategoryName || props.searchData.sportOption.label;
   // console.log("sportType", sportType);
   switch (sportType) {
-    case 'Bóng đá':
+    case "Bóng đá":
       defaultImg = ALTER_IMG[0];
       break;
-    case 'Tenis':
+    case "Tenis":
       defaultImg = ALTER_IMG[1];
       break;
-    case 'Cầu lông':
+    case "Cầu lông":
       defaultImg = ALTER_IMG[2];
       break;
-    case 'Pickle ball':
+    case "Pickle ball":
       defaultImg = ALTER_IMG[3];
       break;
     default:
@@ -41,11 +38,13 @@ export default function SportCard(props: SportCardProps) {
       break;
   }
 
-  const branchData = props.branchInfo.find((item: any) => item.id === props.searchData.branchValue);
+  const branchData = props.branchInfo.find(
+    (item: any) => item.id === props.searchData.branchValue
+  );
   // console.log("branchData", branchData);
 
   const sportName = props.resData.sportFields.find(
-    (item: any) => item.value === props.searchData.sportValue,
+    (item: any) => item.value === props.searchData.sportValue
   )?.label;
 
   return (
@@ -70,7 +69,11 @@ export default function SportCard(props: SportCardProps) {
               <AspectRatio variant="outlined" ratio="16/9" objectFit="cover">
                 <Image
                   alt="imgSportCard"
-                  src={props.data.images !== null ? props.data.images[0] : defaultImg}
+                  src={
+                    props.data.images !== null
+                      ? props.data.images[0]
+                      : defaultImg
+                  }
                   width={400}
                   height={240}
                   style={{
@@ -153,3 +156,4 @@ export default function SportCard(props: SportCardProps) {
     </>
   );
 }
+

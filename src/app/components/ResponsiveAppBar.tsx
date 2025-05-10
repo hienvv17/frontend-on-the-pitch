@@ -18,12 +18,12 @@ import { usePathname, useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { AppContext } from "@/app/contexts/AppContext";
 import GoogleLoginBtn from "./GoogleLoginBtn";
-import Image from "next/image";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
 import PersonIcon from "@mui/icons-material/Person";
 import AssignmentIcon from "@mui/icons-material/Assignment";
 import LogoutIcon from "@mui/icons-material/Logout";
-import EditNoteIcon from '@mui/icons-material/EditNote';
+import EditNoteIcon from "@mui/icons-material/EditNote";
+import Image from "./Image";
 
 //định nghĩa white là loại color mới
 // Augment the palette to include an ochre color
@@ -98,10 +98,10 @@ function ResponsiveAppBar() {
   }, [isChange]);
   // console.log(userAvatar);
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null,
+    null
   );
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null,
+    null
   );
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
@@ -325,7 +325,7 @@ function ResponsiveAppBar() {
                           height={32}
                           alt="User avatar"
                           style={{
-                            objectFit: "contain",
+                            objectFit: "fill",
                             borderRadius: 50,
                             aspectRatio: 1 / 1,
                           }}
@@ -410,3 +410,4 @@ function ResponsiveAppBar() {
   );
 }
 export default ResponsiveAppBar;
+
