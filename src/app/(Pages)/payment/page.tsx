@@ -27,8 +27,23 @@ import LocalConvenienceStoreIcon from '@mui/icons-material/LocalConvenienceStore
 
 export default function PaymentDonePage() {
 
-    const { orderInfo } = useContext(AppContext);
-    console.log("orderInfo", orderInfo);
+    // const { orderInfo } = useContext(AppContext);
+    const orderInfo = {
+        code: "OTP-CD85F03D",
+        userId: 9,
+        sportFieldId: 10,
+        bookingDate: "2025-05-12",
+        startTime: "20:00",
+        endTime: "21:00",
+        totalPrice: 350000,
+        status: "PAID",
+        discountAmount: null,
+        voucherCode: null,
+        id: 21,
+        createdAt: "2025-05-09T15:53:12.450Z",
+        updatedAt: "2025-05-09T15:53:12.450Z"
+    }
+    // console.log("orderInfo", orderInfo);
     return (
         <UserLayout>
             <Container maxWidth="lg" sx={{ py: 4 }}>
@@ -97,13 +112,31 @@ export default function PaymentDonePage() {
                                                         </Typography>
                                                     </Grid2>
                                                     <Grid2 size={{ xs: 12, sm: 10 }}>
-                                                        <Chip label={orderInfo.status} color="primary" variant="filled" sx={{ ml: 2 }} />
+                                                        {orderInfo.status === "PAID" && (
+                                                            <Chip label="Đã thanh toán" color="primary" variant="filled" sx={{ ml: 0 }} />
+                                                        )}
                                                     </Grid2>
                                                 </Grid2>
                                             </Box>
 
-                                            <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
+                                            {/* <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1 }}>
                                                 <PaymentIcon color="primary" sx={{ mr: 1 }} />
+                                                <Grid2 container spacing={1} sx={{ justifyItems: "center", width: "100%" }}>
+                                                    <Grid2 size={{ xs: 12, sm: 2 }}>
+                                                        <Typography variant="body1">
+                                                            <strong>Tổng cộng:</strong>
+                                                        </Typography>
+                                                    </Grid2>
+                                                    <Grid2 size={{ xs: 12, sm: 10 }}>
+                                                        <Typography>
+                                                            {formatPrice(orderInfo.totalPrice)}
+                                                        </Typography>
+                                                    </Grid2>
+                                                </Grid2>
+                                            </Box> */}
+
+                                            <Box sx={{ display: 'flex', alignItems: 'flex-start', mb: 1, width: "100%" }}>
+                                                <TodayIcon color="primary" sx={{ mr: 1 }} />
                                                 <Grid2 container spacing={1} sx={{ justifyItems: "center", width: "100%" }}>
                                                     <Grid2 size={{ xs: 12, sm: 2 }}>
                                                         <Typography variant="body1">
