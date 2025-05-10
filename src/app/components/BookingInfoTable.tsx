@@ -51,8 +51,8 @@ export default function BookingInfoTable(props: any) {
     props.data.field.timsSlots,
     props.orderInfo.startTime,
     props.orderInfo.endTime,
-    Number(props.data.field.defaultPrice / 1000),
-  ); // nếu be có update thì xóa /1000
+    Number(props.data.field.defaultPrice),
+  );
   // console.log("result", result);
 
   // số giờ thuê

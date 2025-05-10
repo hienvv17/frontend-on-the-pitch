@@ -524,6 +524,7 @@ export default function SportsFieldBooking() {
         const response = await configApi.post(ROUTES.FILED_BOOKINGS + '/new', bookingData);
         console.log("response", response);
         setOrderInfo(response.data.bookingData);
+        setOpenSnackBar({ isOpen: true, msg: msgDetail[17], type: "info" });
         console.log("DONE");
       } catch (err) {
         console.log("err", err);
@@ -531,7 +532,7 @@ export default function SportsFieldBooking() {
     }
 
     senBooking();
-    setOpenSnackBar({ isOpen: true, msg: msgDetail[17], type: "info" });
+
     setOpenDialog2(false);
     setOpenDialog(false);
 

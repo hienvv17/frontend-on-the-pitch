@@ -184,6 +184,13 @@ export default function TimeSlotSelector({
                       value={rest.startTime}
                       label="startTime"
                       onChange={handleChangeStartTime}
+                      MenuProps={{
+                        PaperProps: {
+                          style: {
+                            maxHeight: 200, // Giới hạn chiều cao dropdown
+                          },
+                        },
+                      }}
                     >
                       <MenuItem value="">
                         <em>Xóa</em>
@@ -206,6 +213,13 @@ export default function TimeSlotSelector({
                       value={rest.endTime}
                       label="endTime"
                       onChange={handleChangeEndTime}
+                      MenuProps={{
+                        PaperProps: {
+                          style: {
+                            maxHeight: 200, // Giới hạn chiều cao dropdown
+                          },
+                        },
+                      }}
                     >
                       <MenuItem value="">
                         <em>Xóa</em>
