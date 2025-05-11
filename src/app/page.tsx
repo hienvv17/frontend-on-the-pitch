@@ -70,6 +70,7 @@ import { useRouter } from 'next/navigation';
 import { publicApi } from "@/api/base";
 import { AppContext } from "./contexts/AppContext";
 import Image from "./components/Image";
+import BranchDetailsModal from "./components/BranchDetailModal";
 
 const HeroVideo = styled("video")({
   position: "absolute",
@@ -156,7 +157,19 @@ export default function HomePage() {
   const [branchData, setBranchData] = useState([]);
   const [sportCategoriesData, setSportCategoriesData] = useState([]);
   const [tabData, setTabData] = useState<any[]>([]);
+  const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null)
+  const [modalOpen, setModalOpen] = useState(false)
 
+  const handleOpenModal = (branchId: string) => {
+    setSelectedBranchId(branchId)
+    setModalOpen(true)
+  }
+
+  const handleCloseModal = () => {
+    setModalOpen(false)
+  }
+
+  
   const handleSportTabChange = (
     event: any,
     newValue: React.SetStateAction<number>
@@ -1161,7 +1174,9 @@ export default function HomePage() {
                             display: "flex",
                             flexDirection: "column",
                             height: "100%",
+                            cursor: "pointer"
                           }}
+                           onClick={() => handleOpenModal(item.id)}
                         >
                           <CardMedia
                             component="img"
@@ -1329,7 +1344,7 @@ export default function HomePage() {
           </motion.div>
         </Container>
       </Box>
-
+              <BranchDetailsModal open={modalOpen} onClose={handleCloseModal} branchId={selectedBranchId} />
       {/* Footer */}
       <Footer />
 
