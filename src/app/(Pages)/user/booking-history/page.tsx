@@ -19,9 +19,10 @@ import {
   Skeleton,
   Button,
 } from "@mui/material"
-import { History, Receipt, CalendarMonth, Payments, Circle, Star, StarBorder } from "@mui/icons-material"
+import { History, Receipt, CalendarMonth, Payments, Circle, Star, StarBorder, ArrowCircleDown } from "@mui/icons-material"
 import AddRatingModal from "@/app/components/rating/AddRatingModal"
 import ViewRatingModal from "@/app/components/rating/ViewRatingModal"
+import { useRouter } from 'next/navigation';
 
 const allowedColors = ["default", "primary", "secondary", "error", "info", "success", "warning"] as const
 
@@ -39,6 +40,8 @@ export default function BookingHistory() {
   const [ratingModalOpen, setRatingModalOpen] = useState(false)
   const [viewRatingModalOpen, setViewRatingModalOpen] = useState(false)
   const [currentBooking, setCurrentBooking] = useState<any>(null)
+
+  const router = useRouter();
 
   useEffect(() => {
     const getData = async () => {
@@ -105,6 +108,19 @@ export default function BookingHistory() {
     setViewRatingModalOpen(false)
     setCurrentBooking(null)
   }
+
+  const handleRefund = (item) => {
+  if (!window.confirm(`Bạn có chắc muốn hoàn tiền cho đơn ${item.bookingCode}?`)) return;
+
+  console.log("Hoàn tiền thành công", { variant: "success" });
+  };
+
+  const handlePayNow = (item) => {
+  
+  router.push(`/checkout?bookingId=${item.id}`);
+};
+
+
 
   return (
     <UserLayout>
@@ -243,6 +259,20 @@ export default function BookingHistory() {
                       }}
                     >
                       <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <ArrowCircleDown fontSize="small" />
+                        Hành động
+                      </Box>
+                    </TableCell>
+
+                    <TableCell
+                      sx={{
+                        fontWeight: 600,
+                        backgroundColor: "var(--Primary-50)",
+                        color: "var(--Primary-700)",
+                        borderBottom: "2px solid var(--Primary-200)",
+                      }}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
                         <Star fontSize="small" />
                         Đánh giá
                       </Box>
@@ -255,6 +285,9 @@ export default function BookingHistory() {
                     // Loading skeleton
                     Array.from(new Array(5)).map((_, index) => (
                       <TableRow key={index}>
+                        <TableCell>
+                          <Skeleton animation="wave" height={40} />
+                        </TableCell>
                         <TableCell>
                           <Skeleton animation="wave" height={40} />
                         </TableCell>
@@ -328,6 +361,32 @@ export default function BookingHistory() {
                                 }}
                               />
                             </TableCell>
+                            <TableCell sx={{ py: 2 }}>
+                              {item.status === "PAID" && (
+                                <Button
+                                  variant="outlined"
+                                  size="small"
+                                  color="primary"
+                                  onClick={() => handleRefund(item)}
+                                  sx={{ textTransform: "none", minWidth: 130 }}
+                                >
+                                  Hoàn tiền
+                                </Button>
+                              )}
+
+                              {item.status === "PENDING" && (
+                                <Button
+                                  variant="contained"
+                                  size="small"
+                                  color="primary"
+                                  onClick={() => handlePayNow(item)}
+                                  sx={{ textTransform: "none", minWidth: 130 }}
+                                >
+                                  Thanh toán ngay
+                                </Button>
+                              )}
+                            </TableCell>
+
                             <TableCell sx={{ py: 2 }}>
                               {item.status === "PAID" && (
                                 <>

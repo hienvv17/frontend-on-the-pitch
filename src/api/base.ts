@@ -18,8 +18,8 @@ export const publicApi = (subPath = "") => {
 
   api.interceptors.request.use(
     (config) => {
-      console.log("Sending request to: " + config.baseURL + config.url);
-      console.log("config: ", config);
+      // console.log("Sending request to: " + config.baseURL + config.url);
+      // console.log("config: ", config);
       return config;
     },
     (error) => {

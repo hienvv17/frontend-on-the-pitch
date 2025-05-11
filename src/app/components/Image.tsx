@@ -7,7 +7,6 @@ import React from "react";
 import NextImage from "next/image";
 
 const imagekitLoader = ({ src, width, quality }: ImageLoaderProps) => {
-  console.log("src", src);
   const params = [`w-${width}`];
   if (quality) {
     params.push(`q-${quality}`);

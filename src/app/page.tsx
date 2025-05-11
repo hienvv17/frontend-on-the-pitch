@@ -46,9 +46,13 @@ import {
   Grid2,
   Stack,
   CircularProgress,
+  FormControlLabel,
+  Checkbox,
+  TextField,
 } from "@mui/material";
 import { motion } from "framer-motion";
-
+import { useFormik } from "formik";
+import * as Yup from "yup";
 import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
@@ -159,7 +163,7 @@ export default function HomePage() {
   const [tabData, setTabData] = useState<any[]>([]);
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null)
   const [modalOpen, setModalOpen] = useState(false)
-
+  const [topReviews, setTopReviews] = useState<any[]>([])
   const handleOpenModal = (branchId: string) => {
     setSelectedBranchId(branchId)
     setModalOpen(true)
@@ -216,8 +220,7 @@ export default function HomePage() {
   const [tab1, setTab1] = useState<any[]>([]);
   const [tab2, setTab2] = useState<any[]>([]);
   const [tab3, setTab3] = useState<any[]>([]);
-  // const [tab4, setTab4] = useState<any[]>([]);
-  // const [tab5, setTab5] = useState<any[]>([]);
+ 
 
   useEffect(() => {
 
@@ -230,7 +233,6 @@ export default function HomePage() {
         const result = await configApi.get("/branches");
         const sportCatigories = await configApi.get("/sport-categories");
         setBranchData(result.data.items);
-        console.log("result.data.items", result.data.items);
         setSportCategoriesData(sportCatigories.data.items);
 
         // sportCatigories.data.items.forEach((item: any) => {
@@ -256,6 +258,25 @@ export default function HomePage() {
     getData();
     // setSportName('Bóng đá');
     // console.log("tabData", tabData);
+  }, []);
+
+  useEffect(() => {
+
+    setSportName('');
+    setBranchOption({ value: 0, label: '' });
+
+    const getData = async () => {
+      try {
+        const configApi = publicApi("");
+        const response = await configApi.get("/reviews/top-reviews");
+        setTopReviews(response.data.items);
+      } catch (error) {
+        setTopReviews([]);
+        console.error("call api error ^-^")
+      }
+    }
+    getData();
+   
   }, []);
 
   const featuredSliderSettings = {
@@ -285,25 +306,15 @@ export default function HomePage() {
     ],
   };
 
-  const promotionSliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: isSmallScreen ? 1 : 3,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 4000,
-  };
+ 
 
-  const reviewSliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: isSmallScreen ? 1 : 3,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 6000,
-  };
+ const reviewSliderSettings = {
+  infinite: false,
+  slidesToShow: Math.min(topReviews.length, 3),
+  slidesToScroll: 3,
+  dots: true,
+  arrows: false,
+};
 
   const [chipSelected, setChipSelected] = React.useState({
     soccer: {
@@ -342,82 +353,49 @@ export default function HomePage() {
     selectedCarouselIndex,
   ]);
 
-  const handleChipClick = (
-    sport: string,
-    chipKey: string,
-    chipNum: number,
-    index: number
-  ) => {
-    setSelectedCarouselIndex(index);
-    setChipSelected((prevState) => ({
-      ...prevState,
-      [sport]: {
-        chip1: chipKey === "chip1",
-        chip2: chipKey === "chip2",
-        chip3: chipKey === "chip3",
-        chipNum: chipNum,
-      },
-    }));
-  };
+  
 
   const scrollDown = useRef<HTMLDivElement | null>(null);
 
-  const settings = {
-    dots: true,
-    speed: 800,
-    initialSlide: 0,
-    infinite: true,
-    centerMode: !isSmallScreen,
-    slidesToShow: 5,
-    slidesToScroll: 1,
-    responsive: [
-      {
-        breakpoint: 9999,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-    ],
-  };
+  const formik = useFormik({
+    initialValues: {
+      email: "",
+      phone: "",
+      fixedBooking: false,
+    },
+    validationSchema: Yup.object({
+      email: Yup.string().email("Email không hợp lệ").required("Vui lòng nhập email"),
+      phone: Yup.string()
+        .matches(/^[0-9]{10,11}$/, "Số điện thoại không hợp lệ")
+        .required("Vui lòng nhập số điện thoại"),
+    }),
+    onSubmit: (values) => {
+      handleBookingRequest();
+    }
+  });
 
-  const promotions = [
-    {
-      id: 1,
-      title: "Book 5 times, get 1 free playing hour",
-      image:
-        "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
-      badge: "HOT",
-    },
-    {
-      id: 2,
-      title: "30% off when booking a court 3 days in advance",
-      image:
-        "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
-      badge: "FLASH DEAL",
-    },
-    {
-      id: 3,
-      title: "Free team shirt when booking for the first time",
-      image:
-        "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
-      badge: "NEW",
-    },
-  ];
+  const handleBookingRequest = async () => {
+  try {
+    const { email, phone } = formik.values;
+
+    const configApi = publicApi("");
+
+    const response = await configApi.post(`/fixed-booking-requests`, {
+      email,
+      phoneNumber: phone,
+    });
+
+    console.log("Yêu cầu đã gửi:", response.data);
+
+    formik.resetForm();
+  } catch (error) {
+    console.error("Lỗi khi gửi yêu cầu:", error);
+  }
+};
+
+
+
+
 
   const reviews = [
     {
@@ -1244,6 +1222,80 @@ export default function HomePage() {
         </Box>
       }
 
+      <Box sx={{ py: 6, backgroundColor: "#f9f9f9" }}>
+        <Typography variant="h4" align="center" gutterBottom fontWeight={700} 
+                sx={{
+                  mb: 1,
+                  fontSize: { xs: "2rem", md: "2.5rem" },
+                  fontWeight: 700,
+                  color: theme.palette.primary.dark,
+                }} >
+          Liên hệ đặt sân cố định
+        </Typography> 
+        <Typography align="center" color="text.secondary" sx={{ mb: 1 }}>
+          Để lại thông tin, chúng tôi sẽ liên hệ bạn trong thời gian sớm nhất
+        </Typography>
+
+              <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          px: 2,
+          mt: 2
+        }}
+      >
+        <Box
+          component="form"
+          onSubmit={formik.handleSubmit}
+          sx={{
+            width: "100%",
+            maxWidth: 500,
+            backgroundColor: "#fff",
+            p: 4,
+            borderRadius: 2,
+            boxShadow: 3,
+          }}
+        >
+          <Grid container spacing={3}>
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Email"
+                name="email"
+                type="email"
+                value={formik.values.email}
+                onChange={formik.handleChange}
+                error={formik.touched.email && Boolean(formik.errors.email)}
+                helperText={formik.touched.email && formik.errors.email}
+              />
+            </Grid>
+
+            <Grid item xs={12}>
+              <TextField
+                fullWidth
+                label="Số điện thoại"
+                name="phone"
+                value={formik.values.phone}
+                onChange={formik.handleChange}
+                error={formik.touched.phone && Boolean(formik.errors.phone)}
+                helperText={formik.touched.phone && formik.errors.phone}
+              />
+            </Grid>
+
+            
+
+            <Grid item xs={12}>
+              <Button type="submit" variant="contained" color="primary" fullWidth >
+                Gửi thông tin
+              </Button>
+            </Grid>
+          </Grid>
+        </Box>
+      </Box>
+
+    </Box>
+
       {/* Customer Reviews */}
       <Box sx={{ py: { xs: 6, md: 10 }, backgroundColor: "#f8f9fa" }}>
         <Container maxWidth="lg">
@@ -1282,8 +1334,8 @@ export default function HomePage() {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <CustomSlider {...reviewSliderSettings}>
-              {reviews.map((review) => (
-                <Box key={review.id} sx={{ px: 1 }}>
+              {topReviews.map((reviews) => (
+                <Box key={reviews.id} sx={{ px: 1,mb:2 }}>
                   <motion.div
                     whileHover={{ scale: 1.03 }}
                     transition={{ type: "spring", stiffness: 400, damping: 10 }}
@@ -1292,7 +1344,7 @@ export default function HomePage() {
                       elevation={2}
                       sx={{
                         p: 3,
-                        height: 280,
+                        height: 200,
                         borderRadius: 4,
                         display: "flex",
                         flexDirection: "column",
@@ -1303,22 +1355,20 @@ export default function HomePage() {
                         sx={{ display: "flex", alignItems: "center", mb: 2 }}
                       >
                         <Avatar
-                          src={review.avatar}
-                          alt={review.name}
+                          src={reviews.userImage}
+                          alt={reviews.userName}
                           sx={{ width: 60, height: 60, mr: 2 }}
                         />
                         <Box>
                           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                            {review.name}
+                            {reviews.userName}
                           </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {review.bookings} bookings
-                          </Typography>
+                          
                         </Box>
                       </Box>
                       <Box sx={{ mb: 2 }}>
                         <Rating
-                          value={review.rating}
+                          value={reviews.rating}
                           precision={0.5}
                           readOnly
                           icon={<Star sx={{ color: "#FFD700" }} />}
@@ -1334,7 +1384,7 @@ export default function HomePage() {
                           textOverflow: "ellipsis",
                         }}
                       >
-                        {review.comment}
+                        {reviews.comment}
                       </Typography>
                     </Paper>
                   </motion.div>

@@ -63,7 +63,7 @@ interface BranchDetails {
   sportCategories: SportCategory[]
   sportFields: SportField[]
   images:[]
-  topReiews: TopReiews[]
+  topReviews: TopReiews[]
 }
 
 export default function BranchDetailsModal({ open, onClose, branchId }: BranchDetailsModalProps) {
@@ -121,7 +121,7 @@ export default function BranchDetailsModal({ open, onClose, branchId }: BranchDe
         sx={{
            position: "absolute",
           top:  "2%" , 
-          left: { xs: "0.5%", sm: "10%", md: "2%" },
+          left: { xs: "0.5%", sm: "20%", md: "23%" },
          
           width: { xs: "90%", sm: "75%", md: "50%" },
           maxWidth: "1000px",
@@ -332,7 +332,9 @@ export default function BranchDetailsModal({ open, onClose, branchId }: BranchDe
               </Typography>
 
               <Grid container spacing={3}>
-              {branchDetails.topReiews.slice(0, 3).map((review) => (
+
+              {branchDetails.topReviews && branchDetails.topReviews.length > 0 ? (
+                branchDetails.topReviews.slice(0, 3).map((review) => (
                   <Grid item xs={12} sm={6} md={4} key={review.id}>
                     <Card sx={{ height: "100%", display: "flex", flexDirection: "column", p: 1 }}>
                       <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
@@ -341,9 +343,6 @@ export default function BranchDetailsModal({ open, onClose, branchId }: BranchDe
                           <Typography variant="subtitle1" fontWeight={600}>
                             {review.userName}
                           </Typography>
-                          {/* <Typography variant="body2" color="text.secondary">
-                            {review.fieldName}
-                          </Typography> */}
                         </Box>
                       </Box>
 
@@ -352,14 +351,21 @@ export default function BranchDetailsModal({ open, onClose, branchId }: BranchDe
                       <Typography variant="body2" color="text.primary" sx={{ mb: 1, flexGrow: 1 }}>
                         "{review.comment}"
                       </Typography>
-
                     </Card>
                   </Grid>
-                ))}
+                ))
+              ) : (
+                <Grid item xs={12}>
+                  <Typography variant="body1" align="center" color="text.secondary">
+                    Không có đánh giá
+                  </Typography>
+                </Grid>
+              )}
+
               </Grid>
             </motion.div>
 
-            <Box sx={{ mt: 8, display: "flex", justifyContent: "center" }}>
+            {/* <Box sx={{ mt: 8, display: "flex", justifyContent: "center" }}>
               <Button
                 variant="contained"
                 color="primary"
@@ -371,7 +377,7 @@ export default function BranchDetailsModal({ open, onClose, branchId }: BranchDe
               >
                 Đặt sân ngay
               </Button>
-            </Box>
+            </Box> */}
           </>
         ) : null}
       </Box>
