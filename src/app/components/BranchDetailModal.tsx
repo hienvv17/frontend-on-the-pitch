@@ -15,6 +15,8 @@ import {
   CardMedia,
   CardContent,
   useTheme,
+  Rating,
+  Avatar,
 } from "@mui/material"
 import { Close, AccessTime, LocationOn, SportsTennis, AttachMoney, CheckCircle } from "@mui/icons-material"
 import { motion } from "framer-motion"
@@ -39,6 +41,14 @@ interface SportField {
   images: string[] | null
 }
 
+interface TopReiews{
+  id:number
+  comment: string
+  rating: number
+  fieldName: string
+  userName: string
+  userImage: string
+}
 interface BranchDetails {
   id: string
   name: string
@@ -53,6 +63,7 @@ interface BranchDetails {
   sportCategories: SportCategory[]
   sportFields: SportField[]
   images:[]
+  topReiews: TopReiews[]
 }
 
 export default function BranchDetailsModal({ open, onClose, branchId }: BranchDetailsModalProps) {
@@ -109,8 +120,8 @@ export default function BranchDetailsModal({ open, onClose, branchId }: BranchDe
       <Box
         sx={{
            position: "absolute",
-          top: "2%",
-          left: "25%",
+          top:  "2%" , 
+          left: { xs: "0.5%", sm: "10%", md: "2%" },
          
           width: { xs: "90%", sm: "75%", md: "50%" },
           maxWidth: "1000px",
@@ -280,7 +291,7 @@ export default function BranchDetailsModal({ open, onClose, branchId }: BranchDe
               </Typography>
 
               <Grid container spacing={3}>
-                {branchDetails.sportFields.map((field) => (
+                {branchDetails.sportFields.slice(0, 3).map((field) => (
                   <Grid item xs={12} sm={6} md={4} key={field.id}>
                     <Card sx={{ height: "100%", display: "flex", flexDirection: "column" }}>
                       <CardMedia
@@ -303,15 +314,58 @@ export default function BranchDetailsModal({ open, onClose, branchId }: BranchDe
                 ))}
               </Grid>
             </motion.div>
+            <Divider sx={{ my: 3 }} />
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.5, delay: 0.5 }}
+            >
+              <Typography
+                variant="h5"
+                sx={{
+                  mb: 2,
+                  fontWeight: 600,
+                  color: theme.palette.primary.dark,
+                }}
+              >
+                Đánh giá nổi bật
+              </Typography>
 
-            <Box sx={{ mt: 4, display: "flex", justifyContent: "center" }}>
+              <Grid container spacing={3}>
+              {branchDetails.topReiews.slice(0, 3).map((review) => (
+                  <Grid item xs={12} sm={6} md={4} key={review.id}>
+                    <Card sx={{ height: "100%", display: "flex", flexDirection: "column", p: 1 }}>
+                      <Box sx={{ display: "flex", alignItems: "center", mb: 2 }}>
+                        <Avatar src={review.userImage} alt={review.userName} sx={{ width: 48, height: 48, mr: 2 }} />
+                        <Box>
+                          <Typography variant="subtitle1" fontWeight={600}>
+                            {review.userName}
+                          </Typography>
+                          {/* <Typography variant="body2" color="text.secondary">
+                            {review.fieldName}
+                          </Typography> */}
+                        </Box>
+                      </Box>
+
+                      <Rating value={review.rating} readOnly size="medium" />
+                      <br />
+                      <Typography variant="body2" color="text.primary" sx={{ mb: 1, flexGrow: 1 }}>
+                        "{review.comment}"
+                      </Typography>
+
+                    </Card>
+                  </Grid>
+                ))}
+              </Grid>
+            </motion.div>
+
+            <Box sx={{ mt: 8, display: "flex", justifyContent: "center" }}>
               <Button
                 variant="contained"
                 color="primary"
                 size="large"
                 sx={{ px: 4, py: 1, borderRadius: 2 }}
                 onClick={() => {
-                  // Add your booking logic here
                   onClose()
                 }}
               >
