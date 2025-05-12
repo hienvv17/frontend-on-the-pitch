@@ -88,13 +88,9 @@ export default function SportsFieldBooking() {
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogData, setDialogData] = useState<any>();
   const [bookingData, setBookingData] = useState({
-    sportFieldId: 0,
-    email: "",
-    bookingDate: "",
-    startTime: "",
-    endTime: "",
-    totalPrice: 0,
+    
   });
+
 
   const [tempEmail, setTempEemail] = useState("");
   const [selectedSlots, setSelectedSlots] = useState<Date[]>([]);
@@ -160,7 +156,6 @@ export default function SportsFieldBooking() {
           },
         });
 
-        console.log("sportName", sportName);
 
         if (sportName !== '') {
           const temp = reformattedData2.find((item: any) => {
@@ -249,8 +244,6 @@ export default function SportsFieldBooking() {
     } else if (reformattedData2.length > 1) {
       // console.log("sportName", sportName);
       if (sportName !== '') {
-        console.log("sportName", sportName);
-        console.log("reformattedData2", reformattedData2);
         const temp = reformattedData2.find((item: any) => {
           return item.label.trim().toLowerCase() === sportName.trim().toLowerCase();
         });
@@ -422,7 +415,7 @@ export default function SportsFieldBooking() {
           );
 
 
-          setBookingData((prev) => ({
+         setBookingData((prev) => ({
             ...prev,
             bookingDate: requestBody.date === null ? "" : requestBody.date,
             sportFieldId: requestBody.sportCategoryId,
@@ -459,7 +452,6 @@ export default function SportsFieldBooking() {
       getData(requestBody);
     }
   };
-
   const [timePickerErrorNum, setTimePickerErrorNum] = useState(0);
 
   useEffect(() => {
@@ -522,8 +514,9 @@ export default function SportsFieldBooking() {
       try {
         const configApi = publicApi('');
         const response = await configApi.post(ROUTES.FILED_BOOKINGS + '/new', bookingData);
-        console.log("response", response);
+        
         setOrderInfo(response.data.bookingData);
+        router.push(response.data.bookingData.order_url)
         console.log("DONE");
       } catch (err) {
         console.log("err", err);
@@ -535,7 +528,6 @@ export default function SportsFieldBooking() {
     setOpenDialog2(false);
     setOpenDialog(false);
 
-    router.push("/payment");
   };
 
   const handleClosePayment = () => {
@@ -1072,30 +1064,7 @@ export default function SportsFieldBooking() {
                           Vui lòng thử lại với các tiêu chí tìm kiếm khác hoặc
                           chọn một ngày khác để xem kết quả.
                         </Typography>
-                        <Button
-                          variant="outlined"
-                          color="primary"
-                          onClick={() => {
-                            setSearchData((prev: any) => ({
-                              ...prev,
-                              sportValue: null,
-                              branchValue: searchData.branchValue,
-                              dayPicked: null,
-                              startTime: null,
-                              endTime: null,
-                              sportOption: null,
-                              branchOption: null
-                            }));
-                            setSelectedDate(null);
-                          }}
-                          sx={{
-                            borderRadius: "8px",
-                            textTransform: "none",
-                            fontWeight: 600,
-                          }}
-                        >
-                          Đặt lại tìm kiếm
-                        </Button>
+                        
                       </Box>
                     )}
                 </>
@@ -1138,8 +1107,8 @@ export default function SportsFieldBooking() {
         email={bookingData.email}
         orderInfo={bookingData}
         setBookingData={setBookingData}
-        data={dialogData}
         handleConfirmOrder={handleConfirmOrder}
+        data={dialogData}
         selectedSlots={selectedSlots}
         setSelectedSlots={setSelectedSlots}
         startSlot={startSlot}

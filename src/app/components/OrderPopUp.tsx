@@ -36,12 +36,7 @@ const [result, setResult] = useState<any>(null);
   const [voucherError, setVoucherError] = useState("")
   const [isValidatingVoucher, setIsValidatingVoucher] = useState(false)
   const [filteredBranches, setFilteredBranches] = useState<any[]>([])
-  const [bookingData, setBookingData] = useState({
-    totalPrice: 0,
-    discountAmount: 0,
-    originalPrice: 0,
-    voucherCode: "",
-  });
+  
   const handleResultChange = (newResult: any) => {
     setResult(newResult); 
   };
@@ -119,9 +114,7 @@ const [result, setResult] = useState<any>(null);
   }
 
   try {
-    setIsValidatingVoucher(true);
-    setVoucherError("");
-
+   
     const configApi = privateApi("");
     const { data: responseData } = await configApi.get(`/vouchers/validate?code=${code}`);
 
@@ -161,9 +154,7 @@ const [result, setResult] = useState<any>(null);
   } catch (error: any) {
     setVoucherError(error.message || "Có lỗi xảy ra khi xác thực voucher");
     setVoucherData(null);
-  } finally {
-    setIsValidatingVoucher(false);
-  }
+  } 
 };
 
 
@@ -257,7 +248,7 @@ const [result, setResult] = useState<any>(null);
                 <BookingInfoTable
                   data={props.data}
                   hourCount={selectedSlots}
-                  setBookingData={setBookingData }
+                  setBookingData={props.setBookingData}
                   orderInfo={props.orderInfo}
                   onResultChange={handleResultChange}
                   voucherData={voucherData}

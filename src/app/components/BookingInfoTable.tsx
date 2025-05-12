@@ -35,80 +35,61 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   },
 }));
 
-export default function BookingInfoTable({ data, orderInfo, voucherData, setBookingData,onResultChange }: any) {
-  
-  
-const discount = React.useMemo(() => {
-  if (!voucherData) return 0;
-  return voucherData.percentDiscount || 0;
-}, [voucherData]);
+export default function BookingInfoTable({
+  data,
+  orderInfo,
+  voucherData,
+  setBookingData,
+  onResultChange,
+}: any) {
 
-const discountType = React.useMemo(() => {
-  return voucherData?.percentDiscount ? "percentage" : "fixed";
-}, [voucherData]);
-
-
-
-const result = React.useMemo(() => {
-  const calculationResult = calculateUnitPrice(
+  const calculationResult = React.useMemo(() => {
+  return calculateUnitPrice(
     data.field.timsSlots,
     orderInfo.startTime,
     orderInfo.endTime,
-    Number(data.field.defaultPrice)
+    Number(data.field.defaultPrice),
+    voucherData 
   );
+}, [data, orderInfo, voucherData]);
 
-  let discountAmount = 0;
-
-  if (voucherData) {
-    if (discountType === "percentage") {
-      discountAmount = Math.round((calculationResult.total * discount) / 100);
-
-      if (
-        voucherData.maxDiscountAmount &&
-        discountAmount > voucherData.maxDiscountAmount
-      ) {
-        discountAmount = voucherData.maxDiscountAmount;
-      }
-    } else {
-      discountAmount = Math.min(discount, calculationResult.total);
-
-      if (
-        voucherData.maxDiscountAmount &&
-        discountAmount > voucherData.maxDiscountAmount
-      ) {
-        discountAmount = voucherData.maxDiscountAmount;
-      }
-    }
-  }
-
-  const finalTotal = calculationResult.total - discountAmount;
-
+const result = React.useMemo(() => {
   return {
     ...calculationResult,
-    discountAmount,
-    discountAmountFormatted: formatPrice(discountAmount),
-    finalTotal,
-    finalTotalFormatted: formatPrice(finalTotal),
+    discountAmountFormatted: formatPrice(calculationResult.discountAmount),
+    finalTotalFormatted: formatPrice(calculationResult.finalTotal),
     totalFormatted: formatPrice(calculationResult.total),
   };
-  
-}, [data, orderInfo, discount, discountType, voucherData]);
+}, [calculationResult]);
+const hasUpdatedRef = React.useRef<boolean>(false);
+
+React.useEffect(() => {
+  if (!hasUpdatedRef.current) {
+    hasUpdatedRef.current = true;
+    return;
+  }
+
+  const updated = {
+    totalPrice: calculationResult.finalTotal,
+    originPrice: calculationResult.total,
+    discountAmount: calculationResult.discountAmount,
+    voucherCode: voucherData?.code || "",
+  };
+
+  setBookingData((prev: any) => {
+    const isSame =
+      prev.totalPrice === updated.totalPrice &&
+      prev.originPrice === updated.originPrice   &&
+      prev.discountAmount === updated.discountAmount &&
+      prev.voucherCode === updated.voucherCode;
+
+    return isSame ? prev : { ...prev, ...updated };
+  });
+
+  onResultChange?.(result);
+}, [calculationResult, voucherData]);
 
 
-
-
-  React.useEffect(() => {
-    setBookingData((prev: any) => ({
-      ...prev,
-      totalPrice: result.finalTotal,
-      discountAmount: result.discountAmount,
-      originalPrice: result.total,
-      voucherCode: voucherData?.code || ""
-    }));
-    if (onResultChange) {
-      onResultChange(result);
-    }
-  }, [result,result.finalTotal, result.discountAmount, voucherData, setBookingData]);
   return (
     <TableContainer component={Paper}>
       <Table sx={{ width: "100%" }} aria-label="customized table" size="small">
@@ -129,17 +110,20 @@ const result = React.useMemo(() => {
               <StyledTableCell align="center">{formatPrice(item.total)}</StyledTableCell>
             </StyledTableRow>
           ))}
-          
+
           {result.discountAmount > 0 && (
             <StyledTableRow>
-               <StyledTableCell  colSpan={2} sx={{ color: "red", fontWeight: "bold" }}>
-                Giảm giá 
+              <StyledTableCell colSpan={2} sx={{ color: "red", fontWeight: "bold" }}>
+                Giảm giá
               </StyledTableCell>
-              <StyledTableCell align="center" colSpan={2} sx={{ color: "red", fontWeight: "bold" }}>-{formatPrice(result.discountAmount)}</StyledTableCell>
+              <StyledTableCell align="center" sx={{ color: "red", fontWeight: "bold" }}>
+                -{formatPrice(result.discountAmount)}
+              </StyledTableCell>
             </StyledTableRow>
           )}
+
           <StyledTableRow style={{ height: 40 }}>
-            <StyledTableCell  colSpan={2} sx={{ color: "red", fontWeight: "bold" }}>
+            <StyledTableCell colSpan={2} sx={{ color: "red", fontWeight: "bold" }}>
               Tổng thanh toán
             </StyledTableCell>
             <StyledTableCell align="center" sx={{ color: "red", fontWeight: "bold" }}>

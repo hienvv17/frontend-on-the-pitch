@@ -11,6 +11,7 @@ const nextConfig = {
             // { source: "/khach-hang/danh-gia-cua-toi", destination: "/user/my-review" },
             { source: "/chinh-sach-hoan-tien", destination: "/refund-policy" },
             { source: "/lien-he", destination: "/contact" },
+            { source: "/payment-result", destination: "/payment-result" },
         ];
     },
 };

@@ -14,7 +14,7 @@ function GoogleLogin() {
         console.log("No token: Google login failed");
         return null;
       }
-      const expriresIn = new Date(new Date().getTime() + 5 * 60 * 1000);
+      const expriresIn = new Date(new Date().getTime() + 60 * 24 * 60 * 1000);
       Cookies.set("accessToken", token, { expires: expriresIn }); // token expires in 1 minute
 
       return { user, token };

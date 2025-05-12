@@ -36,45 +36,43 @@ export const calculateUnitPrice = (
   start: string,
   end: string,
   defaultPricePerHour = 1000,
-  discount?: number,
-  discountType: "percentage" | "fixed" = "fixed"
-): { total: number; breakdown: PriceBlock[]; discountAmount: number; finalTotal: number } => {
+  voucherData?: {
+    percentDiscount?: number;
+    fixedDiscount?: number;
+    maxDiscountAmount?: number;
+    minBookingAmount?: number;
+  }
+): {
+  total: number;
+  breakdown: PriceBlock[];
+  discountAmount: number;
+  finalTotal: number;
+} => {
   const startMins = toMinutes(start);
   const endMins = toMinutes(end);
   let total = 0;
   const breakdown: PriceBlock[] = [];
 
   let current = startMins;
-
   while (current < endMins) {
     const next = Math.min(current + 30, endMins);
     const duration = next - current;
     const hours = duration / 60;
 
-    const matchedSlot = !timeSlots
-      ? ({
-          id: 0,
-          startTime: openTime,
-          endTime: closeTime,
-          pricePerHour: defaultPricePerHour,
-        } as TimeSlot)
-      : timeSlots.find((slot) => {
-          const slotStart = toMinutes(slot.startTime);
-          const slotEnd = toMinutes(slot.endTime);
-          return current >= slotStart && current < slotEnd;
-        });
+    const matchedSlot = timeSlots?.find((slot) => {
+      const slotStart = toMinutes(slot.startTime);
+      const slotEnd = toMinutes(slot.endTime);
+      return current >= slotStart && current < slotEnd;
+    });
 
     const pricePerHour = matchedSlot?.pricePerHour ?? defaultPricePerHour;
     const blockTotal = Math.round(pricePerHour * hours);
     total += blockTotal;
 
     const lastBlock = breakdown[breakdown.length - 1];
+    const source = matchedSlot && timeSlots ? "slot" : "default";
 
-    if (
-      lastBlock &&
-      lastBlock.price === pricePerHour &&
-      lastBlock.source === (matchedSlot && timeSlots ? "slot" : "default")
-    ) {
+    if (lastBlock && lastBlock.price === pricePerHour && lastBlock.source === source) {
       lastBlock.to = toTimeString(next);
       lastBlock.hours += hours;
       lastBlock.total += blockTotal;
@@ -85,7 +83,7 @@ export const calculateUnitPrice = (
         price: pricePerHour,
         hours,
         total: blockTotal,
-        source: matchedSlot && timeSlots ? "slot" : "default",
+        source,
       });
     }
 
@@ -93,15 +91,26 @@ export const calculateUnitPrice = (
   }
 
   let discountAmount = 0;
-  if (discount) {
-    if (discountType === "percentage") {
-      discountAmount = Math.round((total * discount) / 100);
-    } else {
-      discountAmount = Math.min(discount, total);
+
+  if (voucherData && total >= (voucherData.minBookingAmount || 0)) {
+    if (voucherData.percentDiscount) {
+      discountAmount = Math.round((total * voucherData.percentDiscount) / 100);
+    } else if (voucherData.fixedDiscount) {
+      discountAmount = voucherData.fixedDiscount;
     }
+
+    if (
+      voucherData.maxDiscountAmount &&
+      discountAmount > voucherData.maxDiscountAmount
+    ) {
+      discountAmount = voucherData.maxDiscountAmount;
+    }
+
+    discountAmount = Math.min(discountAmount, total);
   }
 
   const finalTotal = total - discountAmount;
 
   return { total, breakdown, discountAmount, finalTotal };
 };
+
