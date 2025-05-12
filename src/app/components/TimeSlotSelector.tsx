@@ -42,7 +42,6 @@ export default function TimeSlotSelector({
   ...rest
 }: TimeSlotSelectorProps) {
 
-  console.log("TimeSlotSelector ->rest", rest);
 
   const { setOpenSnackBar } = useContext(AppContext);
 

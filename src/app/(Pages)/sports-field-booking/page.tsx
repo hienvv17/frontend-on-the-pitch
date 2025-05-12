@@ -1129,6 +1129,7 @@ export default function SportsFieldBooking() {
 
       <OrderPopUp
         name="email"
+        nameVoucher="Mã voucher *"
         label="Email"
         title="Xác nhận đặt sân"
         open={openDialog}

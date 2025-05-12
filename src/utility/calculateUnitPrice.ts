@@ -1,3 +1,4 @@
+
 import { closeTime, openTime } from "./constant";
 
 type TimeSlot = {
@@ -35,7 +36,9 @@ export const calculateUnitPrice = (
   start: string,
   end: string,
   defaultPricePerHour = 1000,
-): { total: number; breakdown: PriceBlock[] } => {
+  discount?: number,
+  discountType: "percentage" | "fixed" = "fixed"
+): { total: number; breakdown: PriceBlock[]; discountAmount: number; finalTotal: number } => {
   const startMins = toMinutes(start);
   const endMins = toMinutes(end);
   let total = 0;
@@ -44,7 +47,7 @@ export const calculateUnitPrice = (
   let current = startMins;
 
   while (current < endMins) {
-    const next = Math.min(current + 30, endMins); // 30 phút block
+    const next = Math.min(current + 30, endMins);
     const duration = next - current;
     const hours = duration / 60;
 
@@ -61,9 +64,7 @@ export const calculateUnitPrice = (
           return current >= slotStart && current < slotEnd;
         });
 
-    const pricePerHour = matchedSlot?.pricePerHour
-      ? matchedSlot.pricePerHour
-      : defaultPricePerHour;
+    const pricePerHour = matchedSlot?.pricePerHour ?? defaultPricePerHour;
     const blockTotal = Math.round(pricePerHour * hours);
     total += blockTotal;
 
@@ -91,5 +92,16 @@ export const calculateUnitPrice = (
     current = next;
   }
 
-  return { total, breakdown };
+  let discountAmount = 0;
+  if (discount) {
+    if (discountType === "percentage") {
+      discountAmount = Math.round((total * discount) / 100);
+    } else {
+      discountAmount = Math.min(discount, total);
+    }
+  }
+
+  const finalTotal = total - discountAmount;
+
+  return { total, breakdown, discountAmount, finalTotal };
 };

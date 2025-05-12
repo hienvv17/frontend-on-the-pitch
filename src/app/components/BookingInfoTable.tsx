@@ -1,17 +1,17 @@
-"use client";
-
 import * as React from "react";
 import { styled } from "@mui/material/styles";
-import Table from "@mui/material/Table";
-import TableBody from "@mui/material/TableBody";
-import TableCell, { tableCellClasses } from "@mui/material/TableCell";
-import TableContainer from "@mui/material/TableContainer";
-import TableHead from "@mui/material/TableHead";
-import TableRow from "@mui/material/TableRow";
-import Paper from "@mui/material/Paper";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  tableCellClasses,
+  TableContainer,
+  TableHead,
+  TableRow,
+  Paper,
+} from "@mui/material";
 import { formatPrice } from "@/utility/formatPrice";
 import { calculateUnitPrice } from "@/utility/calculateUnitPrice";
-// import { width } from '@mui/system';
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -30,40 +30,85 @@ const StyledTableRow = styled(TableRow)(({ theme }) => ({
   "&:nth-of-type(odd)": {
     backgroundColor: theme.palette.action.hover,
   },
-  // hide last border
   "&:last-child td, &:last-child th": {
     border: 0,
   },
 }));
 
-export default function BookingInfoTable(props: any) {
-  // console.log("BookingInfoTable -> props", props);
-  // const hourCount = props.hourCount;
-  // console.log("BookingInfoTable ->hourCount", hourCount.slice(-1)[0].getTime() - hourCount[0].getTime());
+export default function BookingInfoTable({ data, orderInfo, voucherData, setBookingData,onResultChange }: any) {
+  
+  
+const discount = React.useMemo(() => {
+  if (!voucherData) return 0;
+  return voucherData.percentDiscount || 0;
+}, [voucherData]);
 
-  // đơn giá 1 giờ
-  // console.log("props.selectedSlots[0]", props.selectedSlots);
+const discountType = React.useMemo(() => {
+  return voucherData?.percentDiscount ? "percentage" : "fixed";
+}, [voucherData]);
 
-  // const unitPrice = props.unitPrice * 1000;
-  // console.log("!props.data.field.timsSlots = ", !props.data.field.timsSlots);
 
-  const result = calculateUnitPrice(
-    props.data.field.timsSlots,
-    props.orderInfo.startTime,
-    props.orderInfo.endTime,
-    Number(props.data.field.defaultPrice / 1000),
-  ); // nếu be có update thì xóa /1000
-  // console.log("result", result);
 
-  // số giờ thuê
-  // const rentalHour = (hourCount.slice(-1)[0].getTime() - hourCount[0].getTime()) / (1000 * 60 * 60);
+const result = React.useMemo(() => {
+  const calculationResult = calculateUnitPrice(
+    data.field.timsSlots,
+    orderInfo.startTime,
+    orderInfo.endTime,
+    Number(data.field.defaultPrice)
+  );
+
+  let discountAmount = 0;
+
+  if (voucherData) {
+    if (discountType === "percentage") {
+      discountAmount = Math.round((calculationResult.total * discount) / 100);
+
+      if (
+        voucherData.maxDiscountAmount &&
+        discountAmount > voucherData.maxDiscountAmount
+      ) {
+        discountAmount = voucherData.maxDiscountAmount;
+      }
+    } else {
+      discountAmount = Math.min(discount, calculationResult.total);
+
+      if (
+        voucherData.maxDiscountAmount &&
+        discountAmount > voucherData.maxDiscountAmount
+      ) {
+        discountAmount = voucherData.maxDiscountAmount;
+      }
+    }
+  }
+
+  const finalTotal = calculationResult.total - discountAmount;
+
+  return {
+    ...calculationResult,
+    discountAmount,
+    discountAmountFormatted: formatPrice(discountAmount),
+    finalTotal,
+    finalTotalFormatted: formatPrice(finalTotal),
+    totalFormatted: formatPrice(calculationResult.total),
+  };
+  
+}, [data, orderInfo, discount, discountType, voucherData]);
+
+
+
+
   React.useEffect(() => {
-    props.setBookingData((prev: any) => ({
+    setBookingData((prev: any) => ({
       ...prev,
-      totalPrice: result.total,
+      totalPrice: result.finalTotal,
+      discountAmount: result.discountAmount,
+      originalPrice: result.total,
+      voucherCode: voucherData?.code || ""
     }));
-  }, []);
-
+    if (onResultChange) {
+      onResultChange(result);
+    }
+  }, [result,result.finalTotal, result.discountAmount, voucherData, setBookingData]);
   return (
     <TableContainer component={Paper}>
       <Table sx={{ width: "100%" }} aria-label="customized table" size="small">
@@ -77,29 +122,28 @@ export default function BookingInfoTable(props: any) {
         <TableBody>
           {result.breakdown.map((item, index) => (
             <StyledTableRow key={index}>
-              <StyledTableCell
-                align="center"
-                style={{ whiteSpace: "pre-line" }}
-              >{`${formatPrice(item.price)}\n(${item.from}-${item.to})`}</StyledTableCell>
-              <StyledTableCell align="center">{item.hours}</StyledTableCell>
-              <StyledTableCell align="center">
-                {formatPrice(item.total)}
+              <StyledTableCell align="center" style={{ whiteSpace: "pre-line" }}>
+                {`${formatPrice(item.price)}\n(${item.from}-${item.to})`}
               </StyledTableCell>
+              <StyledTableCell align="center">{item.hours}</StyledTableCell>
+              <StyledTableCell align="center">{formatPrice(item.total)}</StyledTableCell>
             </StyledTableRow>
           ))}
-          <StyledTableRow style={{ height: "40px" }}>
-            <StyledTableCell
-              align="center"
-              colSpan={2}
-              style={{ color: "red", fontWeight: "bold" }}
-            >
-              Tổng số tiền
+          
+          {result.discountAmount > 0 && (
+            <StyledTableRow>
+               <StyledTableCell  colSpan={2} sx={{ color: "red", fontWeight: "bold" }}>
+                Giảm giá 
+              </StyledTableCell>
+              <StyledTableCell align="center" colSpan={2} sx={{ color: "red", fontWeight: "bold" }}>-{formatPrice(result.discountAmount)}</StyledTableCell>
+            </StyledTableRow>
+          )}
+          <StyledTableRow style={{ height: 40 }}>
+            <StyledTableCell  colSpan={2} sx={{ color: "red", fontWeight: "bold" }}>
+              Tổng thanh toán
             </StyledTableCell>
-            <StyledTableCell
-              align="center"
-              style={{ color: "red", fontWeight: "bold" }}
-            >
-              {formatPrice(result.total)}
+            <StyledTableCell align="center" sx={{ color: "red", fontWeight: "bold" }}>
+              {formatPrice(result.finalTotal)}
             </StyledTableCell>
           </StyledTableRow>
         </TableBody>
