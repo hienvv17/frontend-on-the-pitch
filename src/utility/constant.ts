@@ -38,6 +38,8 @@ export const msgDetail = [
   "Vui lòng chọn ngày",
   "Đang xử lý...",
   "Đã đặt sân thành công.",
+  "Đã sao chép mã: ",
+  "Lỗi sao chép mã!"
 ];
 
 export const openTime = "05:00";

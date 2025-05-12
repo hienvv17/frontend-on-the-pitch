@@ -41,6 +41,7 @@ import {
   Edit,
   PhotoCamera,
 } from "@mui/icons-material";
+import { useSnackbar } from "notistack";
 import UserLayout from "@/app/components/UserLayout";
 import { AppContext } from "@/app/contexts/AppContext";
 import { useUserApiPrivate } from "@/api/user/user";
@@ -48,37 +49,8 @@ import { UserInfo, UserUpdateData } from "@/types/UserType";
 import { msgDetail, ROUTES } from "@/utility/constant";
 import { useUploadAuthApi } from "@/api/auth/upload-auth";
 import Image from "@/app/components/Image";
+import { privateApi, publicApi } from "@/api/base";
 
-// Sample voucher data
-const sampleVouchers = [
-  {
-    id: 1,
-    code: "SUMMER2023",
-    discount: "20%",
-    validUntil: "2023-08-31",
-    description: "Giảm 20% cho tất cả các đặt sân trong mùa hè",
-    status: "active",
-    minBooking: 200000,
-  },
-  {
-    id: 2,
-    code: "WELCOME10",
-    discount: "10%",
-    validUntil: "2023-12-31",
-    description: "Giảm 10% cho lần đặt sân đầu tiên",
-    status: "active",
-    minBooking: 100000,
-  },
-  {
-    id: 3,
-    code: "WEEKEND15",
-    discount: "15%",
-    validUntil: "2023-09-30",
-    description: "Giảm 15% cho đặt sân vào cuối tuần",
-    status: "expired",
-    minBooking: 150000,
-  },
-];
 
 export default function MyInfo() {
   const { user, setUser, setOpenSnackBar } = useContext(AppContext);
@@ -86,7 +58,7 @@ export default function MyInfo() {
   const [expandedVoucher, setExpandedVoucher] = useState<number | false>(false);
   const { GET_UPLOAD_AUTH } = useUploadAuthApi();
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
-
+  const [myVouchers, setMyVouchers] = useState<any[]> ([])
   const [userInfo, setUserInfo] = useState<UserInfo>({
     fullName: "",
     phoneNumber: "",
@@ -264,6 +236,32 @@ export default function MyInfo() {
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
+  };
+
+  useEffect(() => {
+    const getDataVouchers = async () => {
+      try {
+        setIsLoading(true);
+          const configApi = privateApi("");
+        const response = await configApi.get("/vouchers/my-voucher");
+        setMyVouchers(response.data.items);
+        
+      } catch (error) {
+        console.error("Error fetching user data:", error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getDataVouchers();
+  }, []);
+  const handleCopyCode = (code) => {
+    navigator.clipboard.writeText(code)
+    .then(() => {
+      setOpenSnackBar({ isOpen: true, msg: msgDetail[18] + code, type: "info" });
+    })
+    .catch(() => {
+      setOpenSnackBar({ isOpen: true, msg: msgDetail[19], type: "error" });
+    });
   };
 
   const handleVoucherExpand =
@@ -640,269 +638,232 @@ export default function MyInfo() {
                   Voucher của tôi
                 </Typography>
 
-                {sampleVouchers.length > 0 ? (
-                  <Box sx={{ mb: 4 }}>
-                    {sampleVouchers.map((voucher) => (
-                      <Accordion
-                        key={voucher.id}
-                        expanded={expandedVoucher === voucher.id}
-                        onChange={handleVoucherExpand(voucher.id)}
-                        sx={{
-                          mb: 2,
-                          borderRadius: "12px !important",
-                          overflow: "hidden",
-                          border: "1px solid",
-                          borderColor: "divider",
-                          "&:before": {
-                            display: "none",
-                          },
-                          boxShadow: "none",
-                          "&.Mui-expanded": {
-                            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
-                          },
-                        }}
-                      >
-                        <AccordionSummary
-                          expandIcon={<ExpandMore />}
+                {myVouchers.length > 0 ? (
+                    <Box sx={{ mb: 4 }}>
+                      {myVouchers.map((voucher) => (
+                        <Accordion
+                          key={voucher.id}
+                          expanded={expandedVoucher === voucher.id}
+                          onChange={handleVoucherExpand(voucher.id)}
                           sx={{
-                            backgroundColor:
-                              voucher.status === "active"
-                                ? alpha("#f5f5f5", 0.5)
-                                : alpha("#f5f5f5", 0.8),
-                            borderBottom: "1px solid",
+                            mb: 2,
+                            borderRadius: "12px !important",
+                            overflow: "hidden",
+                            border: "1px solid",
                             borderColor: "divider",
+                            "&:before": { display: "none" },
+                            boxShadow: "none",
+                            "&.Mui-expanded": {
+                              boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                            },
                           }}
                         >
-                          <Box
+                          <AccordionSummary
+                            expandIcon={<ExpandMore />}
                             sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              width: "100%",
+                              backgroundColor:
+                                voucher.status === "ACTIVE"
+                                  ? alpha("#f5f5f5", 0.5)
+                                  : alpha("#f5f5f5", 0.8),
+                              borderBottom: "1px solid",
+                              borderColor: "divider",
                             }}
                           >
-                            <Box
-                              sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
-                                width: 50,
-                                height: 50,
-                                borderRadius: "50%",
-                                bgcolor:
-                                  voucher.status === "active"
-                                    ? "var(--Primary-50)"
-                                    : "#f5f5f5",
-                                mr: 2,
-                                border: "1px solid",
-                                borderColor:
-                                  voucher.status === "active"
-                                    ? "var(--Primary-200)"
-                                    : "divider",
-                              }}
-                            >
-                              <LocalOffer
-                                sx={{
-                                  color:
-                                    voucher.status === "active"
-                                      ? "var(--Primary-500)"
-                                      : "text.disabled",
-                                }}
-                              />
-                            </Box>
-
-                            <Box sx={{ flexGrow: 1 }}>
-                              <Typography
-                                variant="subtitle1"
-                                fontWeight={600}
-                                sx={{
-                                  color:
-                                    voucher.status === "active"
-                                      ? "text.primary"
-                                      : "text.disabled",
-                                }}
-                              >
-                                {voucher.code}
-                              </Typography>
-                              <Typography
-                                variant="body2"
-                                sx={{
-                                  color:
-                                    voucher.status === "active"
-                                      ? "text.secondary"
-                                      : "text.disabled",
-                                }}
-                              >
-                                Giảm {voucher.discount} cho đơn từ{" "}
-                                {new Intl.NumberFormat("vi-VN").format(
-                                  voucher.minBooking
-                                )}
-                                đ
-                              </Typography>
-                            </Box>
-
-                            <Chip
-                              label={
-                                voucher.status === "active"
-                                  ? "Còn hiệu lực"
-                                  : "Hết hạn"
-                              }
-                              color={
-                                voucher.status === "active"
-                                  ? "success"
-                                  : "default"
-                              }
-                              size="small"
-                              sx={{ fontWeight: 500 }}
-                            />
-                          </Box>
-                        </AccordionSummary>
-
-                        <AccordionDetails sx={{ p: 3 }}>
-                          <MuiGrid container spacing={2}>
-                            <MuiGrid item xs={12} sm={8}>
-                              <Typography
-                                variant="body1"
-                                fontWeight={500}
-                                gutterBottom
-                              >
-                                {voucher.description}
-                              </Typography>
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                paragraph
-                              >
-                                Áp dụng cho tất cả các đơn đặt sân có giá trị từ{" "}
-                                {new Intl.NumberFormat("vi-VN").format(
-                                  voucher.minBooking
-                                )}
-                                đ.
-                              </Typography>
+                            <Box sx={{ display: "flex", alignItems: "center", width: "100%" }}>
                               <Box
                                 sx={{
                                   display: "flex",
                                   alignItems: "center",
-                                  mt: 2,
+                                  justifyContent: "center",
+                                  width: 50,
+                                  height: 50,
+                                  borderRadius: "50%",
+                                  bgcolor:
+                                    voucher.status === "ACTIVE" ? "var(--Primary-50)" : "#f5f5f5",
+                                  mr: 2,
+                                  border: "1px solid",
+                                  borderColor:
+                                    voucher.status === "ACTIVE"
+                                      ? "var(--Primary-200)"
+                                      : "divider",
                                 }}
                               >
-                                <Button
-                                  variant="outlined"
-                                  size="small"
-                                  disabled={voucher.status !== "active"}
+                                <LocalOffer
                                   sx={{
-                                    borderRadius: "8px",
-                                    textTransform: "none",
-                                    fontWeight: 600,
+                                    color:
+                                      voucher.status === "ACTIVE"
+                                        ? "var(--Primary-500)"
+                                        : "text.disabled",
+                                  }}
+                                />
+                              </Box>
+
+                              <Box sx={{ flexGrow: 1 }}>
+                                <Typography
+                                  variant="subtitle1"
+                                  fontWeight={600}
+                                  sx={{
+                                    color:
+                                      voucher.status === "ACTIVE"
+                                        ? "text.primary"
+                                        : "text.disabled",
                                   }}
                                 >
-                                  Sao chép mã
-                                </Button>
-                              </Box>
-                            </MuiGrid>
-
-                            <MuiGrid item xs={12} sm={4}>
-                              <Paper
-                                elevation={0}
-                                sx={{
-                                  p: 2,
-                                  borderRadius: "10px",
-                                  bgcolor: "var(--Primary-50)",
-                                  border: "1px dashed var(--Primary-200)",
-                                }}
-                              >
+                                  {voucher.code}
+                                </Typography>
                                 <Typography
                                   variant="body2"
-                                  color="text.secondary"
-                                  gutterBottom
-                                >
-                                  Thông tin
-                                </Typography>
-                                <Box
                                   sx={{
-                                    display: "flex",
-                                    alignItems: "center",
-                                    mb: 1,
+                                    color:
+                                      voucher.status === "ACTIVE"
+                                        ? "text.secondary"
+                                        : "text.disabled",
                                   }}
                                 >
-                                  <CalendarMonth
-                                    fontSize="small"
-                                    sx={{ color: "var(--Primary-500)", mr: 1 }}
-                                  />
-                                  <Typography variant="body2">
-                                    HSD: {formatDate(voucher.validUntil)}
-                                  </Typography>
-                                </Box>
-                                <Box
-                                  sx={{ display: "flex", alignItems: "center" }}
-                                >
-                                  <CheckCircle
-                                    fontSize="small"
+                                  Giảm {voucher.percentDiscount}% tối đa{" "}
+                                  {new Intl.NumberFormat("vi-VN").format(
+                                    voucher.maxDiscountAmount
+                                  )}
+                                  đ cho đơn từ{" "}
+                                  {new Intl.NumberFormat("vi-VN").format(voucher.minBookingAmount)}đ
+                                </Typography>
+                              </Box>
+
+                              <Chip
+                                label={voucher.status === "ACTIVE" ? "Còn hiệu lực" : "Hết hạn"}
+                                color={voucher.status === "ACTIVE" ? "success" : "default"}
+                                size="small"
+                                sx={{ fontWeight: 500 }}
+                              />
+                            </Box>
+                          </AccordionSummary>
+
+                          <AccordionDetails sx={{ p: 3 }}>
+                            <MuiGrid container spacing={2}>
+                              <MuiGrid item xs={12} sm={8}>
+                                <Typography variant="body1" fontWeight={500} gutterBottom>
+                                  {voucher.description}
+                                </Typography>
+                                <Typography variant="body2" color="text.secondary" paragraph>
+                                  Áp dụng cho các đơn đặt sân có giá trị từ{" "}
+                                  {new Intl.NumberFormat("vi-VN").format(
+                                    voucher.minBookingAmount
+                                  )}
+                                  đ.
+                                </Typography>
+                                <Box sx={{ display: "flex", alignItems: "center", mt: 2 }}>
+                                  <Button
+                                    variant="outlined"
+                                    size="small"
+                                    disabled={voucher.status == "INACTIVE"}
+                                    onClick={() => handleCopyCode(voucher.code)}
                                     sx={{
-                                      color:
-                                        voucher.status === "active"
-                                          ? "success.main"
-                                          : "text.disabled",
-                                      mr: 1,
-                                    }}
-                                  />
-                                  <Typography
-                                    variant="body2"
-                                    sx={{
-                                      color:
-                                        voucher.status === "active"
-                                          ? "text.primary"
-                                          : "text.disabled",
+                                      borderRadius: "8px",
+                                      textTransform: "none",
+                                      fontWeight: 600,
                                     }}
                                   >
-                                    {voucher.status === "active"
-                                      ? "Có thể sử dụng"
-                                      : "Đã hết hạn"}
-                                  </Typography>
+                                    Sao chép mã
+                                  </Button>
                                 </Box>
-                              </Paper>
+                              </MuiGrid>
+
+                              <MuiGrid item xs={12} sm={4}>
+                                <Paper
+                                  elevation={0}
+                                  sx={{
+                                    p: 2,
+                                    borderRadius: "10px",
+                                    bgcolor: "var(--Primary-50)",
+                                    border: "1px dashed var(--Primary-200)",
+                                  }}
+                                >
+                                  <Typography
+                                    variant="body2"
+                                    color="text.secondary"
+                                    gutterBottom
+                                  >
+                                    Thông tin
+                                  </Typography>
+                                  <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+                                    <CalendarMonth
+                                      fontSize="small"
+                                      sx={{ color: "var(--Primary-500)", mr: 1 }}
+                                    />
+                                    <Typography variant="body2">
+                                      HSD: {formatDate(voucher.validTo)}
+                                    </Typography>
+                                  </Box>
+                                  <Box sx={{ display: "flex", alignItems: "center" }}>
+                                    <CheckCircle
+                                      fontSize="small"
+                                      sx={{
+                                        color:
+                                          voucher.status === "ACTIVE"
+                                            ? "success.main"
+                                            : "text.disabled",
+                                        mr: 1,
+                                      }}
+                                    />
+                                    <Typography
+                                      variant="body2"
+                                      sx={{
+                                        color:
+                                          voucher.status === "ACTIVE"
+                                            ? "text.primary"
+                                            : "text.disabled",
+                                      }}
+                                    >
+                                      {voucher.status === "ACTIVE"
+                                        ? "Có thể sử dụng"
+                                        : "Đã hết hạn"}
+                                    </Typography>
+                                  </Box>
+                                </Paper>
+                              </MuiGrid>
                             </MuiGrid>
-                          </MuiGrid>
-                        </AccordionDetails>
-                      </Accordion>
-                    ))}
-                  </Box>
-                ) : (
-                  <Box
-                    sx={{
-                      textAlign: "center",
-                      py: 6,
-                      px: 2,
-                      backgroundColor: "var(--Primary-50)",
-                      borderRadius: "16px",
-                      border: "1px dashed var(--Primary-200)",
-                    }}
-                  >
-                    <LocalOffer
+                          </AccordionDetails>
+                        </Accordion>
+                      ))}
+                    </Box>
+                  ) : (
+                    <Box
                       sx={{
-                        fontSize: 60,
-                        color: "var(--Primary-200)",
-                        mb: 2,
-                        opacity: 0.7,
+                        textAlign: "center",
+                        py: 6,
+                        px: 2,
+                        backgroundColor: "var(--Primary-50)",
+                        borderRadius: "16px",
+                        border: "1px dashed var(--Primary-200)",
                       }}
-                    />
-                    <Typography
-                      variant="h6"
-                      color="var(--Primary-700)"
-                      fontWeight={600}
-                      gutterBottom
                     >
-                      Bạn chưa có voucher nào
-                    </Typography>
-                    <Typography
-                      variant="body1"
-                      color="text.secondary"
-                      sx={{ maxWidth: "600px", mx: "auto", mb: 3 }}
-                    >
-                      Hãy tham gia các chương trình khuyến mãi hoặc tích điểm để
-                      nhận voucher giảm giá.
-                    </Typography>
-                  </Box>
-                )}
+                      <LocalOffer
+                        sx={{
+                          fontSize: 60,
+                          color: "var(--Primary-200)",
+                          mb: 2,
+                          opacity: 0.7,
+                        }}
+                      />
+                      <Typography
+                        variant="h6"
+                        color="var(--Primary-700)"
+                        fontWeight={600}
+                        gutterBottom
+                      >
+                        Bạn chưa có voucher nào
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        color="text.secondary"
+                        sx={{ maxWidth: "600px", mx: "auto", mb: 3 }}
+                      >
+                        Hãy tham gia các chương trình khuyến mãi hoặc tích điểm để nhận voucher
+                        giảm giá.
+                      </Typography>
+                    </Box>
+                  )
+                }
               </Box>
             )}
           </CardContent>
