@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
-import { useContext, useEffect, useRef, useState } from "react";
-import moment, { Moment } from "moment";
+import { useContext, useEffect, useRef, useState } from 'react';
+import moment, { Moment } from 'moment';
 import {
   Typography,
   Button,
@@ -17,7 +17,7 @@ import {
   useTheme,
   useMediaQuery,
   Grid,
-} from "@mui/material";
+} from '@mui/material';
 
 import {
   Search,
@@ -26,29 +26,30 @@ import {
   LocationOn,
   AccessTime,
   FilterList,
-} from "@mui/icons-material";
-import UserLayout from "@/app/components/UserLayout";
-import SportCard from "@/app/components/SportCard";
-import SelectBox from "@/app/components/SelectBox";
-import TimePickerValue from "@/app/components/TimePicker";
-import { useBookingApi } from "@/api/booking/booking";
-import { msgDetail, ROUTES } from "@/utility/constant";
-import { formatTime } from "@/utility/formatTime";
-import { SportField } from "@/types/filedSearching";
-import { AppContext } from "@/app/contexts/AppContext";
-import OrderPopUp from "@/app/components/OrderPopUp";
-import TimeSlotSelector from "@/app/components/TimeSlotSelector";
-import CustomDatePicker from "@/app/components/DatePicker";
-import PaymentPopUp from "@/app/components/PaymentPopUp";
-import { getSportFieldsByBranch } from "@/utility/getSportCategory";
-import { publicApi } from "@/api/base";
-import { useRouter } from "next/navigation";
+} from '@mui/icons-material';
+import UserLayout from '@/app/components/UserLayout';
+import SportCard from '@/app/components/SportCard';
+import SelectBox from '@/app/components/SelectBox';
+import TimePickerValue from '@/app/components/TimePicker';
+import { useBookingApi } from '@/api/booking/booking';
+import { msgDetail, ROUTES } from '@/utility/constant';
+import { formatTime } from '@/utility/formatTime';
+import { SportField } from '@/types/filedSearching';
+import { AppContext } from '@/app/contexts/AppContext';
+import OrderPopUp from '@/app/components/OrderPopUp';
+import TimeSlotSelector from '@/app/components/TimeSlotSelector';
+import CustomDatePicker from '@/app/components/DatePicker';
+import PaymentPopUp from '@/app/components/PaymentPopUp';
+import { getSportFieldsByBranch } from '@/utility/getSportCategory';
+import { publicApi } from '@/api/base';
+import { useRouter } from 'next/navigation';
 
 export default function SportsFieldBooking() {
   const theme = useTheme();
   const router = useRouter();
-  const isMobile = useMediaQuery(theme.breakpoints.down("md"));
-  const { setOpenSnackBar, sportName, setSportName, branchOption, setBranchOption, setOrderInfo } = useContext(AppContext);
+  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
+  const { setOpenSnackBar, sportName, setSportName, branchOption, setBranchOption, setOrderInfo } =
+    useContext(AppContext);
   // console.log("sportName", sportName);
   const [data, setData] = useState<SportField[]>([]);
   const { GET_OPTIONS, POST_SEARCH_FIELDS } = useBookingApi();
@@ -87,12 +88,9 @@ export default function SportsFieldBooking() {
 
   const [openDialog, setOpenDialog] = useState(false);
   const [dialogData, setDialogData] = useState<any>();
-  const [bookingData, setBookingData] = useState({
-    
-  });
+  const [bookingData, setBookingData] = useState<any>({});
 
-
-  const [tempEmail, setTempEemail] = useState("");
+  const [tempEmail, setTempEemail] = useState('');
   const [selectedSlots, setSelectedSlots] = useState<Date[]>([]);
   const [startSlot, setStartSlot] = useState<Date | null>(null);
   const [openDialog2, setOpenDialog2] = useState(false);
@@ -118,15 +116,14 @@ export default function SportsFieldBooking() {
   useEffect(() => {
     setData([]);
     const isAvailable =
-      moment(searchData.dayPicked).date() === moment().date() &&
-      moment().hour() >= 22;
+      moment(searchData.dayPicked).date() === moment().date() && moment().hour() >= 22;
     if (isAvailable) {
       setIsSearchDisable(true);
-      setOpenSnackBar({ isOpen: true, msg: msgDetail[6], type: "error" });
+      setOpenSnackBar({ isOpen: true, msg: msgDetail[6], type: 'error' });
       return;
     }
     setIsSearchDisable(false);
-    setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: "info" });
+    setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: 'info' });
   }, [searchData.dayPicked]);
 
   useEffect(() => {
@@ -156,43 +153,40 @@ export default function SportsFieldBooking() {
           },
         });
 
-
         if (sportName !== '') {
           const temp = reformattedData2.find((item: any) => {
             return item.label.trim().toLowerCase() === sportName.trim().toLowerCase();
           });
-          console.log("temp", temp);
+          console.log('temp', temp);
           setSearchData((prev: any) => ({
             ...prev,
             sportOption: temp,
-            sportValue: temp.value
+            sportValue: temp.value,
           }));
         }
 
-        console.log("branchOption", branchOption);
+        console.log('branchOption', branchOption);
         if (branchOption.value !== 0) {
           setSearchData((prev: any) => ({
             ...prev,
             branchOption: branchOption,
-            branchValue: branchOption.value
+            branchValue: branchOption.value,
           }));
         } else {
           setSearchData((prev: any) => ({
             ...prev,
             branchOption: null,
-            branchValue: null
+            branchValue: null,
           }));
         }
-
       } catch (err) {
-        console.log("Lỗi khi gọi API: ", err);
+        console.log('Lỗi khi gọi API: ', err);
       } finally {
         setIsLoading(false);
       }
     };
     getData();
   }, []);
-
 
   useEffect(() => {
     // console.log("searchData.branchValue", searchData.branchValue);
@@ -231,15 +225,14 @@ export default function SportsFieldBooking() {
 
     setResData((prevData: any) => ({
       ...prevData,
-      sportFields: reformattedData2
+      sportFields: reformattedData2,
     }));
-
 
     if (reformattedData2.length === 1) {
       setSearchData((prev: any) => ({
         ...prev,
         sportOption: reformattedData2[0],
-        sportValue: reformattedData2[0].value
+        sportValue: reformattedData2[0].value,
       }));
     } else if (reformattedData2.length > 1) {
       // console.log("sportName", sportName);
@@ -247,29 +240,27 @@ export default function SportsFieldBooking() {
         const temp = reformattedData2.find((item: any) => {
           return item.label.trim().toLowerCase() === sportName.trim().toLowerCase();
         });
-        console.log("temp22", temp);
+        console.log('temp22', temp);
         setSearchData((prev: any) => ({
           ...prev,
           sportOption: temp,
-          sportValue: temp.value
+          sportValue: temp.value,
         }));
-
       } else {
         setSearchData((prev: any) => ({
           ...prev,
           sportOption: null,
-          sportValue: null
+          sportValue: null,
         }));
       }
     }
     setIsFirstChange(false);
   }, [searchData.branchValue]);
 
-
   const handleStartTimeChange = (e: moment.Moment) => {
     setSearchData((prev) => ({
       ...prev,
-      startTime: e ? moment(e, "HH:mm") : null,
+      startTime: e ? moment(e, 'HH:mm') : null,
       endTime: null,
     }));
   };
@@ -277,16 +268,16 @@ export default function SportsFieldBooking() {
   const handleEndTimeChange = (e: moment.Moment) => {
     setSearchData((prev) => ({
       ...prev,
-      endTime: e ? moment(e, "HH:mm") : null,
+      endTime: e ? moment(e, 'HH:mm') : null,
     }));
   };
 
   const handleSelectChange = (e: any, name: string) => {
-    if (name === "sportValue") {
+    if (name === 'sportValue') {
       setSearchData((prev) => ({
         ...prev,
         [name]: e ? e.value : e,
-        sportOption: e
+        sportOption: e,
       }));
     } else {
       setSearchData((prev) => ({
@@ -302,20 +293,21 @@ export default function SportsFieldBooking() {
   const [branchFilter, setBranchFilter] = useState({});
 
   useEffect(() => {
-    console.log("resData", resData.raw.branchs);
-    console.log("searchData.branchOption", searchData.branchOption);
-    console.log("typeof branchs =", typeof resData?.raw?.branchs);
+    console.log('resData', resData.raw.branchs);
+    console.log('searchData.branchOption', searchData.branchOption);
+    console.log('typeof branchs =', typeof resData?.raw?.branchs);
     const branchsObject = resData?.raw?.branchs;
     const branchsArray = Object.values(branchsObject);
     // const branchs = resData?.raw?.branchs as any[];
-    const filteredBranches = branchsArray.find((branch: any) => branch.name === searchData.branchOption.label);
-    console.log("filteredBranches", filteredBranches);
+    const filteredBranches = branchsArray.find(
+      (branch: any) => branch.name === searchData.branchOption.label,
+    );
+    console.log('filteredBranches', filteredBranches);
     setBranchFilter(filteredBranches as any);
-
   }, [searchData.branchOption]);
 
   const handleDateChange = (e: any) => {
-    const value = e === null ? e : moment(e, "YYYY-MM-DD");
+    const value = e === null ? e : moment(e, 'YYYY-MM-DD');
     setSelectedDate(value);
     setSearchData((prev) => ({
       ...prev,
@@ -330,17 +322,15 @@ export default function SportsFieldBooking() {
       sportCategoryId: Number(searchData.sportValue),
       branchId: Number(searchData.branchValue),
       date:
-        searchData.dayPicked === null
-          ? null
-          : moment(searchData.dayPicked).format("YYYY-MM-DD"),
+        searchData.dayPicked === null ? null : moment(searchData.dayPicked).format('YYYY-MM-DD'),
       startTime: formatTime(searchData.startTime) as string,
       endTime: formatTime(searchData.endTime) as string,
     };
 
-    console.log("searchSubmit->requestBody", requestBody);
+    console.log('searchSubmit->requestBody', requestBody);
     // Nếu không chọn cụm sân, báo lỗi yêu cầu chọn cụm sân
     if (requestBody.branchId === 0) {
-      setOpenSnackBar({ isOpen: true, msg: msgDetail[1], type: "error" });
+      setOpenSnackBar({ isOpen: true, msg: msgDetail[1], type: 'error' });
       setData([]);
       return;
     } else {
@@ -349,32 +339,32 @@ export default function SportsFieldBooking() {
         if (requestBodyCopy.sportCategoryId === 0) {
           delete requestBodyCopy.sportCategoryId;
         }
-        console.log("requestBody", requestBody);
-        console.log("requestBodyCopy", requestBodyCopy);
+        console.log('requestBody', requestBody);
+        console.log('requestBodyCopy', requestBodyCopy);
 
         let response;
         try {
           setOpenSnackBar({
             isOpen: false,
             msg: msgDetail[16],
-            type: "info",
+            type: 'info',
           });
 
           if (requestBody.date === null) {
             setOpenSnackBar({
               isOpen: true,
               msg: msgDetail[15],
-              type: "error",
+              type: 'error',
             });
             setData([]);
             return;
           }
 
-          if (requestBody.endTime > "23:00") {
+          if (requestBody.endTime > '23:00') {
             setOpenSnackBar({
               isOpen: true,
               msg: msgDetail[5],
-              type: "error",
+              type: 'error',
             });
             setIsSearchDisable(true);
             return;
@@ -385,7 +375,7 @@ export default function SportsFieldBooking() {
               setOpenSnackBar({
                 isOpen: true,
                 msg: msgDetail[4],
-                type: "error",
+                type: 'error',
               });
               setIsSearchDisable(true);
               return;
@@ -393,13 +383,12 @@ export default function SportsFieldBooking() {
           } else {
             if (searchData.endTime !== null) {
               const isValidDuration =
-                searchData.endTime.diff(searchData.startTime, "minutes") >=
-                60;
+                searchData.endTime.diff(searchData.startTime, 'minutes') >= 60;
               if (!isValidDuration) {
                 setOpenSnackBar({
                   isOpen: true,
                   msg: msgDetail[3],
-                  type: "error",
+                  type: 'error',
                 });
                 return;
               }
@@ -410,23 +399,22 @@ export default function SportsFieldBooking() {
           setIsSearchDisable(true);
           setIsBusy(true);
           response = await POST_SEARCH_FIELDS(
-            ROUTES.SPORT_FIELDS + "/available",
-            requestBody.sportCategoryId === 0 ? requestBodyCopy : requestBody
+            ROUTES.SPORT_FIELDS + '/available',
+            requestBody.sportCategoryId === 0 ? requestBodyCopy : requestBody,
           );
 
-
-         setBookingData((prev) => ({
+          setBookingData((prev: any) => ({
             ...prev,
-            bookingDate: requestBody.date === null ? "" : requestBody.date,
+            bookingDate: requestBody.date === null ? '' : requestBody.date,
             sportFieldId: requestBody.sportCategoryId,
             startTime: requestBody.startTime,
             endTime: requestBody.endTime,
           }));
 
           if (response.status === 201) {
-            console.log("response", response);
+            console.log('response', response);
             setData(response.data.items);
-            setOpenSnackBar({ isOpen: true, msg: msgDetail[2], type: "info" });
+            setOpenSnackBar({ isOpen: true, msg: msgDetail[2], type: 'info' });
             return;
           }
           // else if (response.message === "Success") {
@@ -437,11 +425,10 @@ export default function SportsFieldBooking() {
           setOpenSnackBar({
             isOpen: true,
             msg: `Error2: ${response.data.message}`,
-            type: "error",
+            type: 'error',
           });
-
         } catch (error) {
-          console.log("error", error);
+          console.log('error', error);
           setData([]);
         } finally {
           setIsSearchDone(false);
@@ -462,18 +449,18 @@ export default function SportsFieldBooking() {
 
   const handleTimeError = (e: any, name: string) => {
     setData([]);
-    if (name === "startTime") {
+    if (name === 'startTime') {
       setOpenSnackBar(
         e
-          ? { isOpen: true, msg: msgDetail[4], type: "error" }
-          : { isOpen: false, msg: msgDetail[4], type: "error" }
+          ? { isOpen: true, msg: msgDetail[4], type: 'error' }
+          : { isOpen: false, msg: msgDetail[4], type: 'error' },
       );
     }
-    if (name === "endTime") {
+    if (name === 'endTime') {
       setOpenSnackBar(
         e
-          ? { isOpen: true, msg: msgDetail[5], type: "error" }
-          : { isOpen: false, msg: msgDetail[5], type: "error" }
+          ? { isOpen: true, msg: msgDetail[5], type: 'error' }
+          : { isOpen: false, msg: msgDetail[5], type: 'error' },
       );
     }
     if (e !== null) {
@@ -492,13 +479,13 @@ export default function SportsFieldBooking() {
       branch,
     });
 
-    setBookingData((prev) => ({
+    setBookingData((prev: any) => ({
       ...prev,
       sportFieldId: field.id,
     }));
 
-    setStartTime(searchData.startTime !== null ? searchData.startTime.format("HH:mm") : '');
-    setEndTime(searchData.endTime !== null ? searchData.endTime.format("HH:mm") : '');
+    setStartTime(searchData.startTime !== null ? searchData.startTime.format('HH:mm') : '');
+    setEndTime(searchData.endTime !== null ? searchData.endTime.format('HH:mm') : '');
     setOpenDialog2(true);
   };
 
@@ -509,25 +496,23 @@ export default function SportsFieldBooking() {
   const [confirmOrder, setConfirmOrder] = useState(false);
 
   const handleConfirmOrder = () => {
-
     const senBooking = async () => {
       try {
         const configApi = publicApi('');
         const response = await configApi.post(ROUTES.FILED_BOOKINGS + '/new', bookingData);
-        
+
         setOrderInfo(response.data.bookingData);
-        router.push(response.data.bookingData.order_url)
-        console.log("DONE");
+        router.push(response.data.bookingData.order_url);
+        console.log('DONE');
       } catch (err) {
-        console.log("err", err);
+        console.log('err', err);
       }
-    }
+    };
 
     senBooking();
-    setOpenSnackBar({ isOpen: true, msg: msgDetail[17], type: "info" });
+    setOpenSnackBar({ isOpen: true, msg: msgDetail[17], type: 'info' });
     setOpenDialog2(false);
     setOpenDialog(false);
-
   };
 
   const handleClosePayment = () => {
@@ -542,31 +527,31 @@ export default function SportsFieldBooking() {
       {isLoading ? (
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "80vh",
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '80vh',
           }}
         >
           <CircularProgress
             size={60}
             thickness={4}
             sx={{
-              color: "var(--Primary-500)",
+              color: 'var(--Primary-500)',
               mb: 2,
             }}
           />
           <Typography
             variant="h6"
             sx={{
-              color: "var(--Primary-700)",
+              color: 'var(--Primary-700)',
               fontWeight: 500,
-              animation: "pulse 1.5s infinite",
-              "@keyframes pulse": {
-                "0%": { opacity: 0.6 },
-                "50%": { opacity: 1 },
-                "100%": { opacity: 0.6 },
+              animation: 'pulse 1.5s infinite',
+              '@keyframes pulse': {
+                '0%': { opacity: 0.6 },
+                '50%': { opacity: 1 },
+                '100%': { opacity: 0.6 },
               },
             }}
           >
@@ -577,37 +562,37 @@ export default function SportsFieldBooking() {
         <>
           <Box
             sx={{
-              position: "relative",
-              width: "100%",
-              height: { xs: "200px", sm: "300px", md: "400px" },
+              position: 'relative',
+              width: '100%',
+              height: { xs: '200px', sm: '300px', md: '400px' },
               backgroundImage: "url('/image/image_11.png')",
-              backgroundSize: "cover",
-              backgroundPosition: "center",
-              "&::before": {
+              backgroundSize: 'cover',
+              backgroundPosition: 'center',
+              '&::before': {
                 content: '""',
-                position: "absolute",
+                position: 'absolute',
                 top: 0,
                 left: 0,
                 right: 0,
                 bottom: 0,
-                backgroundColor: "rgba(0,0,0,0.3)",
+                backgroundColor: 'rgba(0,0,0,0.3)',
                 zIndex: 1,
               },
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              alignItems: "center",
-              color: "white",
-              textAlign: "center",
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              alignItems: 'center',
+              color: 'white',
+              textAlign: 'center',
               zIndex: 0,
             }}
           >
             <Box
               sx={{
-                position: "relative",
+                position: 'relative',
                 zIndex: 2,
                 px: 3,
-                maxWidth: "800px",
+                maxWidth: '800px',
               }}
             >
               <Typography
@@ -616,9 +601,9 @@ export default function SportsFieldBooking() {
                 sx={{
                   fontWeight: 800,
                   mb: 2,
-                  textShadow: "0 2px 4px rgba(0,0,0,0.5)",
-                  fontSize: { xs: "2rem", sm: "2.5rem", md: "3rem" },
-                  color: "#fff",
+                  textShadow: '0 2px 4px rgba(0,0,0,0.5)',
+                  fontSize: { xs: '2rem', sm: '2.5rem', md: '3rem' },
+                  color: '#fff',
                 }}
               >
                 Đặt Sân Thể Thao Trực Tuyến
@@ -628,15 +613,15 @@ export default function SportsFieldBooking() {
                 sx={{
                   fontWeight: 400,
                   opacity: 0.9,
-                  maxWidth: "600px",
-                  mx: "auto",
-                  textShadow: "0 1px 2px rgba(0,0,0,0.5)",
-                  fontSize: { xs: "1rem", sm: "1.1rem", md: "1.25rem" },
-                  color: "#fff",
+                  maxWidth: '600px',
+                  mx: 'auto',
+                  textShadow: '0 1px 2px rgba(0,0,0,0.5)',
+                  fontSize: { xs: '1rem', sm: '1.1rem', md: '1.25rem' },
+                  color: '#fff',
                 }}
               >
-                Tìm và đặt sân thể thao một cách nhanh chóng, dễ dàng với hệ
-                thống đặt sân trực tuyến của chúng tôi
+                Tìm và đặt sân thể thao một cách nhanh chóng, dễ dàng với hệ thống đặt sân trực
+                tuyến của chúng tôi
               </Typography>
             </Box>
           </Box>
@@ -646,17 +631,17 @@ export default function SportsFieldBooking() {
             sx={{
               mt: { xs: -5, sm: -7, md: -8 },
               mb: 8,
-              position: "relative",
+              position: 'relative',
               zIndex: 10,
             }}
           >
             <Card
               elevation={8}
               sx={{
-                borderRadius: "16px",
-                overflow: "visible",
-                background: "linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)",
-                border: "1px solid rgba(0, 0, 0, 0.05)",
+                borderRadius: '16px',
+                overflow: 'visible',
+                background: 'linear-gradient(145deg, #ffffff 0%, #f8f9fa 100%)',
+                border: '1px solid rgba(0, 0, 0, 0.05)',
               }}
             >
               <CardContent sx={{ p: { xs: 1, sm: 2, md: 3 } }}>
@@ -665,20 +650,20 @@ export default function SportsFieldBooking() {
                     variant="h5"
                     sx={{
                       fontWeight: 700,
-                      color: "var(--Primary-700)",
+                      color: 'var(--Primary-700)',
                       mb: 1,
-                      display: "flex",
-                      alignItems: "center",
+                      display: 'flex',
+                      alignItems: 'center',
                       gap: 1,
                     }}
                   >
-                    <SportsSoccer sx={{ color: "var(--Primary-500)" }} />
+                    <SportsSoccer sx={{ color: 'var(--Primary-500)' }} />
                     Tìm Kiếm Sân Thể Thao
                   </Typography>
                   <Typography
                     variant="body1"
                     sx={{
-                      color: "text.secondary",
+                      color: 'text.secondary',
                     }}
                   >
                     Điền thông tin để tìm sân phù hợp với lịch của bạn
@@ -687,45 +672,37 @@ export default function SportsFieldBooking() {
 
                 <Box
                   sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    justifyContent: "center",
+                    display: 'flex',
+                    flexDirection: 'column',
+                    justifyContent: 'center',
                     gap: 3,
                   }}
                 >
-                  <Grid
-                    container
-                    spacing={2}
-                    alignItems="center"
-                    gap={3}
-                    justifyContent={"center"}
-                  >
+                  <Grid container spacing={2} alignItems="center" gap={3} justifyContent={'center'}>
                     <Grid xs={12} md={5}>
                       <Paper
                         elevation={0}
                         sx={{
                           p: 2,
-                          borderRadius: "12px",
-                          border: "1px solid",
-                          borderColor: "divider",
-                          height: "100%",
-                          transition: "all 0.2s",
-                          "&:hover": {
-                            borderColor: "var(--Primary-300)",
-                            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                          borderRadius: '12px',
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          height: '100%',
+                          transition: 'all 0.2s',
+                          '&:hover': {
+                            borderColor: 'var(--Primary-300)',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
                           },
                         }}
                       >
                         <Box
                           sx={{
-                            display: "flex",
-                            alignItems: "center",
+                            display: 'flex',
+                            alignItems: 'center',
                             mb: 1.5,
                           }}
                         >
-                          <LocationOn
-                            sx={{ color: "var(--Primary-500)", mr: 1 }}
-                          />
+                          <LocationOn sx={{ color: 'var(--Primary-500)', mr: 1 }} />
                           <Typography variant="subtitle1" fontWeight={600}>
                             Cụm Sân
                           </Typography>
@@ -736,9 +713,7 @@ export default function SportsFieldBooking() {
                           name="sportBranchId"
                           options={resData.branchs}
                           value={searchData.branchOption}
-                          onChange={(e: any) =>
-                            handleSelectChange(e, "branchValue")
-                          }
+                          onChange={(e: any) => handleSelectChange(e, 'branchValue')}
                           isBusy={isBusy}
                         />
                       </Paper>
@@ -749,27 +724,25 @@ export default function SportsFieldBooking() {
                         elevation={0}
                         sx={{
                           p: 2,
-                          borderRadius: "12px",
-                          border: "1px solid",
-                          borderColor: "divider",
-                          height: "100%",
-                          transition: "all 0.2s",
-                          "&:hover": {
-                            borderColor: "var(--Primary-300)",
-                            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                          borderRadius: '12px',
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          height: '100%',
+                          transition: 'all 0.2s',
+                          '&:hover': {
+                            borderColor: 'var(--Primary-300)',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
                           },
                         }}
                       >
                         <Box
                           sx={{
-                            display: "flex",
-                            alignItems: "center",
+                            display: 'flex',
+                            alignItems: 'center',
                             mb: 1.5,
                           }}
                         >
-                          <SportsSoccer
-                            sx={{ color: "var(--Primary-500)", mr: 1 }}
-                          />
+                          <SportsSoccer sx={{ color: 'var(--Primary-500)', mr: 1 }} />
                           <Typography variant="subtitle1" fontWeight={600}>
                             Môn Thể Thao
                           </Typography>
@@ -780,9 +753,7 @@ export default function SportsFieldBooking() {
                           name="sportId"
                           options={resData.sportFields}
                           value={searchData.sportOption}
-                          onChange={(e: any) =>
-                            handleSelectChange(e, "sportValue")
-                          }
+                          onChange={(e: any) => handleSelectChange(e, 'sportValue')}
                           isBusy={isBusy}
                         />
                       </Paper>
@@ -793,27 +764,25 @@ export default function SportsFieldBooking() {
                         elevation={0}
                         sx={{
                           p: 2,
-                          borderRadius: "12px",
-                          border: "1px solid",
-                          borderColor: "divider",
-                          height: "100%",
-                          transition: "all 0.2s",
-                          "&:hover": {
-                            borderColor: "var(--Primary-300)",
-                            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                          borderRadius: '12px',
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          height: '100%',
+                          transition: 'all 0.2s',
+                          '&:hover': {
+                            borderColor: 'var(--Primary-300)',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
                           },
                         }}
                       >
                         <Box
                           sx={{
-                            display: "flex",
-                            alignItems: "center",
+                            display: 'flex',
+                            alignItems: 'center',
                             mb: 1.5,
                           }}
                         >
-                          <CalendarMonth
-                            sx={{ color: "var(--Primary-500)", mr: 1 }}
-                          />
+                          <CalendarMonth sx={{ color: 'var(--Primary-500)', mr: 1 }} />
                           <Typography variant="subtitle1" fontWeight={600}>
                             Ngày
                           </Typography>
@@ -834,38 +803,32 @@ export default function SportsFieldBooking() {
                         elevation={0}
                         sx={{
                           p: 2,
-                          borderRadius: "12px",
-                          border: "1px solid",
-                          borderColor: "divider",
-                          height: "100%",
-                          transition: "all 0.2s",
-                          "&:hover": {
-                            borderColor: "var(--Primary-300)",
-                            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                          borderRadius: '12px',
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          height: '100%',
+                          transition: 'all 0.2s',
+                          '&:hover': {
+                            borderColor: 'var(--Primary-300)',
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
                           },
                         }}
                       >
                         <Box
                           sx={{
-                            display: "flex",
-                            alignItems: "center",
+                            display: 'flex',
+                            alignItems: 'center',
                             mb: 1.5,
                           }}
                         >
-                          <AccessTime
-                            sx={{ color: "var(--Primary-500)", mr: 1 }}
-                          />
+                          <AccessTime sx={{ color: 'var(--Primary-500)', mr: 1 }} />
                           <Typography variant="subtitle1" fontWeight={600}>
                             Thời Gian
                           </Typography>
                         </Box>
                         <Grid container spacing={2} justifyContent="center">
-                          <Grid
-                            item
-                            xs={6}
-                            sx={{ display: "flex", justifyContent: "center" }}
-                          >
-                            <Box sx={{ width: "100%", maxWidth: 200 }}>
+                          <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'center' }}>
+                            <Box sx={{ width: '100%', maxWidth: 200 }}>
                               <TimePickerValue
                                 label="Giờ vào sân"
                                 name="startTime"
@@ -874,18 +837,12 @@ export default function SportsFieldBooking() {
                                 selectedDate={searchData.dayPicked}
                                 value={searchData.startTime}
                                 value2={searchData}
-                                onError={(e: any) =>
-                                  handleTimeError(e, "startTime")
-                                }
+                                onError={(e: any) => handleTimeError(e, 'startTime')}
                                 isBusy={isBusy || searchData.dayPicked === null}
                               />
                             </Box>
                           </Grid>
-                          <Grid
-                            item
-                            xs={6}
-                            sx={{ display: "flex", justifyContent: "center" }}
-                          >
+                          <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'center' }}>
                             <TimePickerValue
                               label="Giờ trả sân"
                               name="endTime"
@@ -894,9 +851,7 @@ export default function SportsFieldBooking() {
                               selectedDate={searchData.dayPicked}
                               value={searchData.endTime}
                               value2={searchData}
-                              onError={(e: any) =>
-                                handleTimeError(e, "endTime")
-                              }
+                              onError={(e: any) => handleTimeError(e, 'endTime')}
                               isBusy={isBusy}
                             />
                           </Grid>
@@ -905,9 +860,7 @@ export default function SportsFieldBooking() {
                     </Grid>
                   </Grid>
 
-                  <Box
-                    sx={{ display: "flex", justifyContent: "center", mt: 1 }}
-                  >
+                  <Box sx={{ display: 'flex', justifyContent: 'center', mt: 1 }}>
                     <Button
                       variant="contained"
                       startIcon={<Search />}
@@ -916,25 +869,25 @@ export default function SportsFieldBooking() {
                       onClick={searchSubmit}
                       sx={{
                         background:
-                          "linear-gradient(90deg, var(--Primary-600) 0%, var(--Primary-500) 100%)",
-                        color: "white",
+                          'linear-gradient(90deg, var(--Primary-600) 0%, var(--Primary-500) 100%)',
+                        color: 'white',
                         px: 4,
                         py: 1.5,
-                        borderRadius: "12px",
+                        borderRadius: '12px',
                         fontWeight: 600,
-                        textTransform: "none",
-                        fontSize: "1rem",
-                        boxShadow: "0 4px 10px rgba(var(--Primary-rgb), 0.3)",
-                        transition: "all 0.3s",
-                        "&:hover": {
-                          boxShadow: "0 6px 15px rgba(var(--Primary-rgb), 0.4)",
+                        textTransform: 'none',
+                        fontSize: '1rem',
+                        boxShadow: '0 4px 10px rgba(var(--Primary-rgb), 0.3)',
+                        transition: 'all 0.3s',
+                        '&:hover': {
+                          boxShadow: '0 6px 15px rgba(var(--Primary-rgb), 0.4)',
                           background:
-                            "linear-gradient(90deg, var(--Primary-700) 0%, var(--Primary-600) 100%)",
+                            'linear-gradient(90deg, var(--Primary-700) 0%, var(--Primary-600) 100%)',
                         },
-                        "&:disabled": {
-                          background: "rgba(0, 0, 0, 0.12)",
-                          color: "rgba(0, 0, 0, 0.26)",
-                          boxShadow: "none",
+                        '&:disabled': {
+                          background: 'rgba(0, 0, 0, 0.12)',
+                          color: 'rgba(0, 0, 0, 0.26)',
+                          boxShadow: 'none',
                         },
                       }}
                     >
@@ -949,46 +902,33 @@ export default function SportsFieldBooking() {
               {isSearchDone ? (
                 <Box
                   sx={{
-                    display: "flex",
-                    justifyContent: "center",
-                    alignItems: "center",
-                    minHeight: "300px",
+                    display: 'flex',
+                    justifyContent: 'center',
+                    alignItems: 'center',
+                    minHeight: '300px',
                   }}
                 >
-                  <CircularProgress
-                    size={60}
-                    thickness={4}
-                    sx={{ color: "var(--Primary-500)" }}
-                  />
+                  <CircularProgress size={60} thickness={4} sx={{ color: 'var(--Primary-500)' }} />
                 </Box>
               ) : (
                 <>
                   {data.length > 0 && (
                     <Box sx={{ mb: 2 }}>
-                      <Stack
-                        direction="row"
-                        alignItems="center"
-                        spacing={2}
-                        sx={{ mb: 3 }}
-                      >
-                        <FilterList sx={{ color: "var(--Primary-500)" }} />
-                        <Typography
-                          variant="h5"
-                          fontWeight={700}
-                          color="var(--Primary-700)"
-                        >
+                      <Stack direction="row" alignItems="center" spacing={2} sx={{ mb: 3 }}>
+                        <FilterList sx={{ color: 'var(--Primary-500)' }} />
+                        <Typography variant="h5" fontWeight={700} color="var(--Primary-700)">
                           Kết Quả Tìm Kiếm
                         </Typography>
                         <Divider sx={{ flexGrow: 1 }} />
                         <Box
                           sx={{
-                            backgroundColor: "var(--Primary-50)",
-                            color: "var(--Primary-700)",
+                            backgroundColor: 'var(--Primary-50)',
+                            color: 'var(--Primary-700)',
                             px: 2,
                             py: 0.5,
-                            borderRadius: "20px",
+                            borderRadius: '20px',
                             fontWeight: 600,
-                            border: "1px solid var(--Primary-200)",
+                            border: '1px solid var(--Primary-200)',
                           }}
                         >
                           {data.length} sân
@@ -999,13 +939,10 @@ export default function SportsFieldBooking() {
                         elevation={0}
                         sx={{
                           p: 0.5,
-                          borderRadius: "16px",
-                          backgroundColor: alpha(
-                            theme.palette.primary.main,
-                            0.05
-                          ),
-                          border: "1px solid",
-                          borderColor: "divider",
+                          borderRadius: '16px',
+                          backgroundColor: alpha(theme.palette.primary.main, 0.05),
+                          border: '1px solid',
+                          borderColor: 'divider',
                         }}
                       >
                         <Grid container sx={{ p: { xs: 1, sm: 2 } }}>
@@ -1016,9 +953,7 @@ export default function SportsFieldBooking() {
                                 resData={resData}
                                 searchData={searchData}
                                 branchInfo={resData.raw.branchs}
-                                onClick={() =>
-                                  handleClickOpen(field, resData.raw.branchs)
-                                }
+                                onClick={() => handleClickOpen(field, resData.raw.branchs)}
                               />
                             </Grid>
                           ))}
@@ -1027,46 +962,43 @@ export default function SportsFieldBooking() {
                     </Box>
                   )}
 
-                  {data.length === 0 &&
-                    !isLoading &&
-                    searchData.branchValue && (
-                      <Box
+                  {data.length === 0 && !isLoading && searchData.branchValue && (
+                    <Box
+                      sx={{
+                        textAlign: 'center',
+                        py: 8,
+                        px: 2,
+                        backgroundColor: 'var(--Primary-50)',
+                        borderRadius: '16px',
+                        border: '1px dashed var(--Primary-200)',
+                      }}
+                    >
+                      <SportsSoccer
                         sx={{
-                          textAlign: "center",
-                          py: 8,
-                          px: 2,
-                          backgroundColor: "var(--Primary-50)",
-                          borderRadius: "16px",
-                          border: "1px dashed var(--Primary-200)",
+                          fontSize: 80,
+                          color: 'var(--Primary-200)',
+                          mb: 2,
+                          opacity: 0.7,
                         }}
+                      />
+                      <Typography
+                        variant="h5"
+                        color="var(--Primary-700)"
+                        fontWeight={600}
+                        gutterBottom
                       >
-                        <SportsSoccer
-                          sx={{
-                            fontSize: 80,
-                            color: "var(--Primary-200)",
-                            mb: 2,
-                            opacity: 0.7,
-                          }}
-                        />
-                        <Typography
-                          variant="h5"
-                          color="var(--Primary-700)"
-                          fontWeight={600}
-                          gutterBottom
-                        >
-                          Không tìm thấy sân phù hợp
-                        </Typography>
-                        <Typography
-                          variant="body1"
-                          color="text.secondary"
-                          sx={{ maxWidth: "600px", mx: "auto", mb: 3 }}
-                        >
-                          Vui lòng thử lại với các tiêu chí tìm kiếm khác hoặc
-                          chọn một ngày khác để xem kết quả.
-                        </Typography>
-                        
-                      </Box>
-                    )}
+                        Không tìm thấy sân phù hợp
+                      </Typography>
+                      <Typography
+                        variant="body1"
+                        color="text.secondary"
+                        sx={{ maxWidth: '600px', mx: 'auto', mb: 3 }}
+                      >
+                        Vui lòng thử lại với các tiêu chí tìm kiếm khác hoặc chọn một ngày khác để
+                        xem kết quả.
+                      </Typography>
+                    </Box>
+                  )}
                 </>
               )}
             </Box>
@@ -1093,7 +1025,6 @@ export default function SportsFieldBooking() {
         endTime={endTime}
         setStartTime={setStartTime}
         setEndTime={setEndTime}
-
       />
 
       <OrderPopUp
@@ -1130,4 +1061,3 @@ export default function SportsFieldBooking() {
     </UserLayout>
   );
 }
-

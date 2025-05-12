@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import React from "react";
-import Select from "react-select";
+import React from 'react';
+import Select from 'react-select';
 // import SportsSoccerIcon from '@mui/icons-material/SportsSoccer';
-import { Box, Grid2, Typography } from "@mui/material";
-import { Favorite, Room, SportsSoccer } from "@mui/icons-material";
+import { Box, Grid2, Typography } from '@mui/material';
+import { Favorite, Room, SportsSoccer } from '@mui/icons-material';
 
-type IconType = "Favorite" | "Room" | "SportsSoccer";
+type IconType = 'Favorite' | 'Room' | 'SportsSoccer';
 
 interface SelectBoxProps {
   icon: IconType;
@@ -26,16 +26,11 @@ interface Option {
   label: string | null;
 }
 
-export default function SelectBox({
-  icon,
-  titleValue,
-  options,
-  ...rest
-}: SelectBoxProps) {
+export default function SelectBox({ icon, titleValue, options, ...rest }: SelectBoxProps) {
   const IconComponent = icons[icon];
 
   return (
-    <Box sx={{ width: "100%", height: "100%" }}>
+    <Box sx={{ width: '100%', height: '100%' }}>
       <Select<Option>
         options={options}
         value={rest.value}
@@ -45,21 +40,20 @@ export default function SelectBox({
         name={rest.name}
         isDisabled={rest.isBusy}
         placeholder={
-          <Grid2 container direction={"row"} sx={{ gap: 1 }}>
-            {IconComponent ? <IconComponent /> : null}{" "}
-            <Typography>{titleValue}</Typography>
+          <Grid2 container direction={'row'} sx={{ gap: 1 }}>
+            {IconComponent ? <IconComponent /> : null} <Typography>{titleValue}</Typography>
           </Grid2>
         }
         styles={{
           container: (base) => ({
             ...base,
-            width: "100%",
-            height: "100%",
+            width: '100%',
+            height: '100%',
           }),
           control: (base) => ({
             ...base,
-            width: "100%",
-            height: "100%",
+            width: '100%',
+            height: '100%',
           }),
           menu: (base) => ({
             ...base,

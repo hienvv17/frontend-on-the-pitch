@@ -1,14 +1,14 @@
-import { privateApi, publicApi } from "../base";
-import { UserUpdateData } from "@/types/UserType";
+import { privateApi, publicApi } from '../base';
+import { UserUpdateData } from '@/types/UserType';
 
-const subPath = "";
+const subPath = '';
 
 const useUserApiPublic = () => {
   const configApi = publicApi(subPath);
 
   const GET_USER_PUBLIC = async (url: string) => {
     const res = await configApi.get(url);
-    console.log("GET_USER_PUBLIC: ", res);
+    console.log('GET_USER_PUBLIC: ', res);
     return res.data;
   };
 

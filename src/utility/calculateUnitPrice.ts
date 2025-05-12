@@ -1,5 +1,4 @@
-
-import { closeTime, openTime } from "./constant";
+import { closeTime, openTime } from './constant';
 
 type TimeSlot = {
   id: number;
@@ -15,19 +14,19 @@ type PriceBlock = {
   price: number; // Giá theo giờ
   hours: number; // Số giờ trong block
   total: number; // Tổng tiền cho block = price * hours
-  source: "slot" | "default";
+  source: 'slot' | 'default';
 };
 
 const toMinutes = (time: string): number => {
-  const [h, m] = time.split(":").map(Number);
+  const [h, m] = time.split(':').map(Number);
   return h * 60 + m;
 };
 
 const toTimeString = (mins: number): string => {
   const h = Math.floor(mins / 60)
     .toString()
-    .padStart(2, "0");
-  const m = (mins % 60).toString().padStart(2, "0");
+    .padStart(2, '0');
+  const m = (mins % 60).toString().padStart(2, '0');
   return `${h}:${m}`;
 };
 
@@ -41,7 +40,7 @@ export const calculateUnitPrice = (
     fixedDiscount?: number;
     maxDiscountAmount?: number;
     minBookingAmount?: number;
-  }
+  },
 ): {
   total: number;
   breakdown: PriceBlock[];
@@ -70,7 +69,7 @@ export const calculateUnitPrice = (
     total += blockTotal;
 
     const lastBlock = breakdown[breakdown.length - 1];
-    const source = matchedSlot && timeSlots ? "slot" : "default";
+    const source = matchedSlot && timeSlots ? 'slot' : 'default';
 
     if (lastBlock && lastBlock.price === pricePerHour && lastBlock.source === source) {
       lastBlock.to = toTimeString(next);
@@ -99,10 +98,7 @@ export const calculateUnitPrice = (
       discountAmount = voucherData.fixedDiscount;
     }
 
-    if (
-      voucherData.maxDiscountAmount &&
-      discountAmount > voucherData.maxDiscountAmount
-    ) {
+    if (voucherData.maxDiscountAmount && discountAmount > voucherData.maxDiscountAmount) {
       discountAmount = voucherData.maxDiscountAmount;
     }
 
@@ -113,4 +109,3 @@ export const calculateUnitPrice = (
 
   return { total, breakdown, discountAmount, finalTotal };
 };
-

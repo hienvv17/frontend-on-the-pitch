@@ -1,18 +1,16 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { PROTECTED_ROUTES } from "./utility/constant";
+import { NextResponse } from 'next/server';
+import type { NextRequest } from 'next/server';
+import { PROTECTED_ROUTES } from './utility/constant';
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
   // console.log("pathname", pathname);
   // Check nếu URL bắt đầu bằng một trong các protected routes
-  const isProtected = PROTECTED_ROUTES.some((route) =>
-    pathname.startsWith(route),
-  );
+  const isProtected = PROTECTED_ROUTES.some((route) => pathname.startsWith(route));
 
   if (isProtected) {
-    if (!request.cookies.has("accessToken")) {
-      return NextResponse.redirect(new URL("/dat-san", request.url));
+    if (!request.cookies.has('accessToken')) {
+      return NextResponse.redirect(new URL('/dat-san', request.url));
     }
   }
 
@@ -23,5 +21,5 @@ export function middleware(request: NextRequest) {
 // cookies có accessToken không, nếu không thì chặn truy cập vào path
 // sau đó redirect về url được truyền vào trong NextResponse.redirect
 export const config = {
-  matcher: ["/:path*"], // Bắt TẤT CẢ request
+  matcher: ['/:path*'], // Bắt TẤT CẢ request
 };
