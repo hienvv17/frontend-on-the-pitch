@@ -30,6 +30,7 @@ const PaymentDonePage = () => {
   const searchParams = useSearchParams();
   const router = useRouter();
   const [status, setStatus] = useState<null | 'success' | 'fail'>(null);
+  const [response, setResponse] = useState<any>({})
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -52,7 +53,8 @@ const PaymentDonePage = () => {
           },
         });
 
-        if (response.data.paymentSuccess) {
+        if (response.data.paymentInfo.paymentSuccess) {
+          setResponse(response.data)
           setStatus('success');
         } else {
           setStatus('fail');
@@ -121,7 +123,10 @@ const PaymentDonePage = () => {
                 </Typography>
                 <Typography variant="body2" color="text.secondary" fontSize="1.1rem">
                   Cảm ơn bạn đã sử dụng dịch vụ của chúng tôi. Chúc bạn có một trải nghiệm tuyệt vời
-                  trên sân cỏ! ⚽
+                  trên sân đấu!
+                </Typography>
+                <Typography variant="body2" color="text.secondary" fontSize="1.1rem">
+                  Mã đặt sân của bạn là : <strong>{response.paymentInfo.bookingCode}</strong>
                 </Typography>
               </>
             ) : (
