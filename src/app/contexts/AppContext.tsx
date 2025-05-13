@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { ACCESS_TOKEN } from "@/utility/constant";
-import { createContext, useState, ReactNode, useEffect } from "react";
-import Cookies from "js-cookie";
+import { ACCESS_TOKEN } from '@/utility/constant';
+import { createContext, useState, ReactNode, useEffect, Dispatch, SetStateAction } from 'react';
+import Cookies from 'js-cookie';
 
-type SnackbarType = "success" | "error" | "info" | "warning";
+type SnackbarType = 'success' | 'error' | 'info' | 'warning';
 
 export interface SnackbarState {
   isOpen: boolean;
@@ -21,6 +21,17 @@ interface AppContextType {
   handleLogout: () => void;
   openSnackbar: SnackbarState;
   setOpenSnackBar: React.Dispatch<React.SetStateAction<SnackbarState>>;
+  sportName: string;
+  setSportName: React.Dispatch<React.SetStateAction<string>>;
+  branchOption: any;
+  setBranchOption: Dispatch<
+    SetStateAction<{
+      value: number;
+      label: string;
+    }>
+  >;
+  orderInfo: any;
+  setOrderInfo: Dispatch<any>;
 }
 
 export const AppContext = createContext<AppContextType>({
@@ -29,25 +40,34 @@ export const AppContext = createContext<AppContextType>({
   user: null,
   setUser: () => {},
   handleLogout: () => {},
-  openSnackbar: { isOpen: false, msg: "", type: "info" },
+  openSnackbar: { isOpen: false, msg: '', type: 'info' },
   setOpenSnackBar: () => {},
+  sportName: '',
+  setSportName: () => {},
+  branchOption: { value: 0, label: '' },
+  setBranchOption: () => {},
+  orderInfo: {},
+  setOrderInfo: () => {},
 });
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
   const [isChange, setIsChange] = useState(false);
   const [user, setUser] = useState(null);
   const [isClient, setIsClient] = useState(false);
-
+  const [sportName, setSportName] = useState('');
+  const [branchOption, setBranchOption] = useState({ value: 0, label: '' });
   // for snackbar
   const [openSnackbar, setOpenSnackBar] = useState<SnackbarState>({
     isOpen: false,
-    msg: "",
-    type: "info",
+    msg: '',
+    type: 'info',
   });
+
+  const [orderInfo, setOrderInfo] = useState<any>();
 
   useEffect(() => {
     setIsClient(true);
-    const storedUser = localStorage.getItem("user");
+    const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
@@ -56,11 +76,11 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (isClient) {
       if (user) {
-        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem('user', JSON.stringify(user));
       } else {
-        console.log("No user logged");
-        localStorage.removeItem("user");
-        localStorage.removeItem("userAvatar");
+        console.log('No user logged');
+        localStorage.removeItem('user');
+        localStorage.removeItem('userAvatar');
       }
     }
   }, [user, isClient]);
@@ -88,6 +108,12 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         handleLogout,
         openSnackbar,
         setOpenSnackBar,
+        sportName,
+        setSportName,
+        branchOption,
+        setBranchOption,
+        orderInfo,
+        setOrderInfo,
       }}
     >
       {children}

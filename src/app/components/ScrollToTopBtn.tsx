@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { Fab, Zoom } from "@mui/material";
-import KeyboardArrowUpIcon from "@mui/icons-material/KeyboardArrowUp";
+import React, { useEffect, useState } from 'react';
+import { Fab, Zoom } from '@mui/material';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
 
 const ScrollToTopBtn = () => {
   const [visible, setVisible] = useState(false);
@@ -13,12 +13,12 @@ const ScrollToTopBtn = () => {
   };
 
   const handleClick = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   useEffect(() => {
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
   return (
@@ -28,7 +28,7 @@ const ScrollToTopBtn = () => {
         size="small"
         onClick={handleClick}
         sx={{
-          position: "fixed",
+          position: 'fixed',
           bottom: 40,
           right: 40,
         }}

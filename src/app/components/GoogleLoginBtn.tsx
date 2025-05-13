@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import {
   Stack,
@@ -8,14 +8,14 @@ import {
   Typography,
   useMediaQuery,
   useTheme,
-} from "@mui/material";
-import { useContext, useState } from "react";
-import { AppContext } from "../contexts/AppContext";
-import Cookies from "js-cookie";
-import { useAuthApi } from "@/api/auth/auth";
-import GoogleLogin from "./firebase/popup-login";
-import { ACCESS_TOKEN } from "@/utility/constant";
-import Image from "next/image";
+} from '@mui/material';
+import { useContext, useState } from 'react';
+import { AppContext } from '../contexts/AppContext';
+import Cookies from 'js-cookie';
+import { useAuthApi } from '@/api/auth/auth';
+import GoogleLogin from './firebase/popup-login';
+import { ACCESS_TOKEN } from '@/utility/constant';
+import Image from 'next/image';
 
 export default function GoogleLoginBtn() {
   const { setUser } = useContext(AppContext);
@@ -26,7 +26,7 @@ export default function GoogleLoginBtn() {
 
   const theme = useTheme();
 
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("sm")); // <600px
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('sm')); // <600px
 
   // Hàm kích hoạt đăng nhập Google
 
@@ -63,27 +63,24 @@ export default function GoogleLoginBtn() {
       const idToken = await data?.user.getIdToken();
       if (!idToken) {
         setIsLoading(false);
-        console.log("Google login failed");
+        console.log('Google login failed');
         return;
       }
 
       const response = await POST_LOGIN(idToken);
 
       if (response.error) {
-        console.log(
-          "You are not authorized to access this page",
-          response.error,
-        );
+        console.log('You are not authorized to access this page', response.error);
         return;
       }
       Cookies.set(ACCESS_TOKEN, idToken);
-
-      localStorage.setItem("userAvatar", JSON.stringify(data?.user.photoURL));
+      const userImage = response.user.image ?? data?.user.photoURL ?? '';
+      localStorage.setItem('userAvatar', JSON.stringify(userImage));
       setUser(response.user);
-      console.log("Login successfully");
+      console.log('Login successfully');
       window.location.reload();
     } catch (error) {
-      console.error("Login failed", error);
+      console.error('Login failed', error);
     } finally {
       setIsLoading(false);
     }
@@ -101,51 +98,46 @@ export default function GoogleLoginBtn() {
           // top: "auto",
           // right: 0,
           // zIndex: 99,
-          textTransform: "none",
-          background: "var(--Primary-50)",
-          height: "46px",
-          gap: "10px",
-          borderRadius: "8px",
-          minWidth: { xs: "60px", sm: "140px" }, //  Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
-          display: "inline-flex",
-          justifyContent: "center",
-          p: "6px",
-          ":hover": {
-            boxShadow: "0 0 1px 2px var(--Primary-500)",
+          textTransform: 'none',
+          background: 'var(--Primary-50)',
+          height: '46px',
+          gap: '10px',
+          borderRadius: '8px',
+          minWidth: { xs: '100%', sm: '100%' }, //  Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
+          display: 'inline-flex',
+          justifyContent: 'center',
+          p: '12px',
+          ':hover': {
+            boxShadow: '0 0 1px 2px var(--Primary-500)',
           },
-          ":active": { background: "var(--Primary-50)" },
+          ':active': { background: 'var(--Primary-50)' },
         }}
       >
         {!isLoading ? (
           <>
             <Icon
               sx={{
-                width: "fit-content",
-                height: "fit-content",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                background: "transparent",
-                borderRadius: "6px",
+                width: 'fit-content',
+                height: 'fit-content',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: 'transparent',
+                borderRadius: '6px',
                 // border: "var(--Primary-600) solid 1px",
                 // p: "8px",
                 scale: 0.8,
                 // ml: -1.2,
               }}
             >
-              <Image
-                alt="googleIcon"
-                src="/icon/googleIcon.svg"
-                width={24}
-                height={24}
-              />
+              <Image alt="googleIcon" src="/icon/googleIcon.svg" width={24} height={24} />
             </Icon>
             {!isSmallScreen && (
               <>
                 <Typography
                   sx={{
-                    visibility: isLoading ? "hidden" : "visible",
-                    color: "var(--Primary-900)",
+                    visibility: isLoading ? 'hidden' : 'visible',
+                    color: 'var(--Primary-900)',
                   }}
                 >
                   Đăng nhập
@@ -154,11 +146,7 @@ export default function GoogleLoginBtn() {
             )}
           </>
         ) : (
-          <CircularProgress
-            size={24}
-            color="inherit"
-            sx={{ position: "absolute" }}
-          />
+          <CircularProgress size={24} color="inherit" sx={{ position: 'absolute' }} />
         )}
       </Button>
     </Stack>

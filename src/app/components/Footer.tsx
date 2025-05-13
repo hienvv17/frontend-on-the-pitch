@@ -1,34 +1,29 @@
-import { Divider, IconButton, Typography, Grid } from "@mui/material";
-import { Box, Container } from "@mui/system";
+import { Divider, IconButton, Typography, Grid } from '@mui/material';
+import { Box, Container } from '@mui/system';
+import { useRouter } from 'next/navigation';
 
 export default function Footer() {
-  const branches = [
-    "",
-    "Cầu lông Tiến Minh",
-    "Hoàng Gia Tenis Club",
-    "Sân cỏ nhân tạo Star",
-  ];
+  const branches = ['', 'Cầu lông Tiến Minh', 'Hoàng Gia Tenis Club', 'Sân cỏ nhân tạo Star'];
+  const router = useRouter();
+
   return (
     <>
-      <Box sx={{ bgcolor: "#000", color: "white", py: 6 }}>
+      <Box sx={{ bgcolor: '#000', color: 'white', py: 6 }}>
         <Container maxWidth="lg">
           <Grid container spacing={4}>
             <Grid item xs={12} md={4}>
               <Typography
                 variant="h6"
-                sx={{ color: "rgba(255,255,255,0.7)", fontWeight: 700, mb: 3 }}
+                sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 700, mb: 3 }}
               >
                 On The Pitch
               </Typography>
-              <Typography
-                variant="body2"
-                sx={{ color: "rgba(255,255,255,0.7)", mb: 2 }}
-              >
-                Cách dễ nhất để đặt chỗ các cơ sở thể thao trên toàn quốc. Đặt
-                sân bóng đá, cầu lông và tennis chỉ với vài cú nhấp chuột.
+              <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)', mb: 2 }}>
+                Cách dễ nhất để đặt chỗ các cơ sở thể thao trên toàn quốc. Đặt sân bóng đá, cầu lông
+                và tennis chỉ với vài cú nhấp chuột.
               </Typography>
-              <Box sx={{ display: "flex", gap: 2, mt: 3 }}>
-                <IconButton sx={{ color: "white" }}>
+              <Box sx={{ display: 'flex', gap: 2, mt: 3 }}>
+                <IconButton sx={{ color: 'white' }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -43,7 +38,7 @@ export default function Footer() {
                     <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
                   </svg>
                 </IconButton>
-                <IconButton sx={{ color: "white" }}>
+                <IconButton sx={{ color: 'white' }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -55,19 +50,12 @@ export default function Footer() {
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   >
-                    <rect
-                      x="2"
-                      y="2"
-                      width="20"
-                      height="20"
-                      rx="5"
-                      ry="5"
-                    ></rect>
+                    <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
                     <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
                     <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
                   </svg>
                 </IconButton>
-                <IconButton sx={{ color: "white" }}>
+                <IconButton sx={{ color: 'white' }}>
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="24"
@@ -87,18 +75,18 @@ export default function Footer() {
             <Grid item xs={6} sm={3} md={2}>
               <Typography
                 variant="subtitle1"
-                sx={{ color: "rgba(255,255,255,0.7)", fontWeight: 700, mb: 2 }}
+                sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 700, mb: 2 }}
               >
                 Chi nhánh
               </Typography>
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 {branches.slice(1, 5).map((branch) => (
                   <Typography
                     key={branch}
                     variant="body2"
                     sx={{
-                      color: "rgba(255,255,255,0.7)",
-                      "&:hover": { color: "white", cursor: "pointer" },
+                      color: 'rgba(255,255,255,0.7)',
+                      '&:hover': { color: 'white', cursor: 'pointer' },
                     }}
                   >
                     {branch}
@@ -109,16 +97,16 @@ export default function Footer() {
             <Grid item xs={6} sm={3} md={2}>
               <Typography
                 variant="subtitle1"
-                sx={{ color: "rgba(255,255,255,0.7)", fontWeight: 700, mb: 2 }}
+                sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 700, mb: 2 }}
               >
                 Sports
               </Typography>
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Typography
                   variant="body2"
                   sx={{
-                    color: "rgba(255,255,255,0.7)",
-                    "&:hover": { color: "white", cursor: "pointer" },
+                    color: 'rgba(255,255,255,0.7)',
+                    '&:hover': { color: 'white', cursor: 'pointer' },
                   }}
                 >
                   Bóng đá
@@ -126,8 +114,8 @@ export default function Footer() {
                 <Typography
                   variant="body2"
                   sx={{
-                    color: "rgba(255,255,255,0.7)",
-                    "&:hover": { color: "white", cursor: "pointer" },
+                    color: 'rgba(255,255,255,0.7)',
+                    '&:hover': { color: 'white', cursor: 'pointer' },
                   }}
                 >
                   Cầu lông
@@ -135,8 +123,8 @@ export default function Footer() {
                 <Typography
                   variant="body2"
                   sx={{
-                    color: "rgba(255,255,255,0.7)",
-                    "&:hover": { color: "white", cursor: "pointer" },
+                    color: 'rgba(255,255,255,0.7)',
+                    '&:hover': { color: 'white', cursor: 'pointer' },
                   }}
                 >
                   Tennis
@@ -146,26 +134,28 @@ export default function Footer() {
             <Grid item xs={6} sm={3} md={2}>
               <Typography
                 variant="subtitle1"
-                sx={{ color: "rgba(255,255,255,0.7)", fontWeight: 700, mb: 2 }}
+                sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 700, mb: 2 }}
               >
                 Company
               </Typography>
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Typography
                   variant="body2"
                   sx={{
-                    color: "rgba(255, 255, 255, 0.7)",
-                    "&:hover": { color: "white", cursor: "pointer" },
+                    color: 'rgba(255, 255, 255, 0.7)',
+                    '&:hover': { color: 'white', cursor: 'pointer' },
                   }}
+                  onClick={() => router.push('/about')}
                 >
                   Về chúng tôi
                 </Typography>
                 <Typography
                   variant="body2"
                   sx={{
-                    color: "rgba(255,255,255,0.7)",
-                    "&:hover": { color: "white", cursor: "pointer" },
+                    color: 'rgba(255,255,255,0.7)',
+                    '&:hover': { color: 'white', cursor: 'pointer' },
                   }}
+                  onClick={() => router.push('/lien-he')}
                 >
                   Liên hệ
                 </Typography>
@@ -173,8 +163,8 @@ export default function Footer() {
                 <Typography
                   variant="body2"
                   sx={{
-                    color: "rgba(255,255,255,0.7)",
-                    "&:hover": { color: "white", cursor: "pointer" },
+                    color: 'rgba(255,255,255,0.7)',
+                    '&:hover': { color: 'white', cursor: 'pointer' },
                   }}
                 >
                   Blogs
@@ -184,16 +174,16 @@ export default function Footer() {
             <Grid item xs={6} sm={3} md={2}>
               <Typography
                 variant="subtitle1"
-                sx={{ color: "rgba(255,255,255,0.7)", fontWeight: 700, mb: 2 }}
+                sx={{ color: 'rgba(255,255,255,0.7)', fontWeight: 700, mb: 2 }}
               >
                 Legal
               </Typography>
-              <Box sx={{ display: "flex", flexDirection: "column", gap: 1 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 1 }}>
                 <Typography
                   variant="body2"
                   sx={{
-                    color: "rgba(255,255,255,0.7)",
-                    "&:hover": { color: "white", cursor: "pointer" },
+                    color: 'rgba(255,255,255,0.7)',
+                    '&:hover': { color: 'white', cursor: 'pointer' },
                   }}
                 >
                   Điều khoản dịch vụ
@@ -201,8 +191,8 @@ export default function Footer() {
                 <Typography
                   variant="body2"
                   sx={{
-                    color: "rgba(255,255,255,0.7)",
-                    "&:hover": { color: "white", cursor: "pointer" },
+                    color: 'rgba(255,255,255,0.7)',
+                    '&:hover': { color: 'white', cursor: 'pointer' },
                   }}
                 >
                   Chính sách bảo mật
@@ -210,8 +200,8 @@ export default function Footer() {
                 <Typography
                   variant="body2"
                   sx={{
-                    color: "rgba(255,255,255,0.7)",
-                    "&:hover": { color: "white", cursor: "pointer" },
+                    color: 'rgba(255,255,255,0.7)',
+                    '&:hover': { color: 'white', cursor: 'pointer' },
                   }}
                 >
                   Chính sách Cookie
@@ -219,9 +209,10 @@ export default function Footer() {
                 <Typography
                   variant="body2"
                   sx={{
-                    color: "rgba(255,255,255,0.7)",
-                    "&:hover": { color: "white", cursor: "pointer" },
+                    color: 'rgba(255,255,255,0.7)',
+                    '&:hover': { color: 'white', cursor: 'pointer' },
                   }}
+                  onClick={() => router.push('/chinh-sach-hoan-tien')}
                 >
                   Chính sách hoàn tiền
                 </Typography>
@@ -229,26 +220,26 @@ export default function Footer() {
             </Grid>
           </Grid>
 
-          <Divider sx={{ my: 4, borderColor: "rgba(255,255,255,0.1)" }} />
+          <Divider sx={{ my: 4, borderColor: 'rgba(255,255,255,0.1)' }} />
 
           <Box
             sx={{
-              display: "flex",
-              flexDirection: { xs: "column", sm: "row" },
-              justifyContent: "space-between",
-              alignItems: { xs: "center", sm: "flex-start" },
+              display: 'flex',
+              flexDirection: { xs: 'column', sm: 'row' },
+              justifyContent: 'space-between',
+              alignItems: { xs: 'center', sm: 'flex-start' },
               gap: 2,
             }}
           >
-            <Typography variant="body2" sx={{ color: "rgba(255,255,255,0.7)" }}>
+            <Typography variant="body2" sx={{ color: 'rgba(255,255,255,0.7)' }}>
               © {new Date().getFullYear()} On The Pitch. All rights reserved.
             </Typography>
-            <Box sx={{ display: "flex", gap: 3 }}>
+            <Box sx={{ display: 'flex', gap: 3 }}>
               <Typography
                 variant="body2"
                 sx={{
-                  color: "rgba(255,255,255,0.7)",
-                  "&:hover": { color: "white", cursor: "pointer" },
+                  color: 'rgba(255,255,255,0.7)',
+                  '&:hover': { color: 'white', cursor: 'pointer' },
                 }}
               >
                 Trung tâm trợ giúp
@@ -256,17 +247,18 @@ export default function Footer() {
               <Typography
                 variant="body2"
                 sx={{
-                  color: "rgba(255,255,255,0.7)",
-                  "&:hover": { color: "white", cursor: "pointer" },
+                  color: 'rgba(255,255,255,0.7)',
+                  '&:hover': { color: 'white', cursor: 'pointer' },
                 }}
+                onClick={() => router.push('/faq')}
               >
                 FAQ
               </Typography>
               <Typography
                 variant="body2"
                 sx={{
-                  color: "rgba(255,255,255,0.7)",
-                  "&:hover": { color: "white", cursor: "pointer" },
+                  color: 'rgba(255,255,255,0.7)',
+                  '&:hover': { color: 'white', cursor: 'pointer' },
                 }}
               >
                 Hỗ trợ

@@ -1,43 +1,51 @@
 export const ROUTES = {
-  HOME: "/",
-  LOGIN: "/login",
-  BRANCHES: "/branches",
-  SPORT_CATEGORIES: "/sport-categories",
-  SPORT_FIELDS: "sport-fields",
-  FILED_BOOKINGS: "/field-bookings",
-  USERS: "/users",
+  HOME: '/',
+  LOGIN: '/login',
+  BRANCHES: '/branches',
+  SPORT_CATEGORIES: '/sport-categories',
+  SPORT_FIELDS: 'sport-fields',
+  FILED_BOOKINGS: '/field-bookings',
+  USERS: '/users',
 };
 
 export const publicRoutes = [ROUTES.LOGIN];
-export const ACCESS_TOKEN = "accessToken";
-export const USERNAME = "username";
-export const DEFAULT_IMG =
-  "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743151739/image_12_ub4gfu.png";
-
-export const msgDetail = [
-  "Vui lòng chọn môn thể thao",
-  "Vui lòng chọn cụm sân",
-  "Gửi yêu cầu thành công",
-  "Giờ trả sân phải lớn hơn giờ vào sân ít nhất 1 giờ",
-  "Giờ vào sân không hợp lệ, vui lòng chọn giờ khác",
-  "Giờ trả sân không hợp lệ, vui lòng chọn giờ khác",
-  "Đã hết giờ đặt sân cho hôm nay, vui lòng chọn ngày khác",
-  "File quá lớn. Vui lòng chọn file dưới 2 MB",
-  "Số điện thoại không hợp lệ",
-  "Phiên hết hạn, bạn đã bị đăng xuất",
-  "Đã hủy thay đổi",
-  "Cập nhật thông tin tài khoản thành công",
-  "Vui lòng nhập đúng định dạng email. Định dạng đúng ...@...",
-  "Email hợp lệ",
-  "Vui lòng chọn thời gian thuê sân ít nhất 1 giờ",
-  "Vui lòng chọn ngày",
-  "Đang xử lý...",
+export const ACCESS_TOKEN = 'accessToken';
+export const USERNAME = 'username';
+export const DEFAULT_IMG = '/image/defaultPicture.png';
+export const ALTER_IMG = [
+  'https://ik.imagekit.io/onthepitch/football-alter.jpg?updatedAt=1746764599468',
+  'https://ik.imagekit.io/onthepitch/tennis-alter.jpg?updatedAt=1746764599532',
+  'https://ik.imagekit.io/onthepitch/PICKLEBALL-alter.jpg?updatedAt=1746764599545',
+  'https://ik.imagekit.io/onthepitch/badminton-alter.png?updatedAt=1746764599644',
 ];
 
-export const openTime = "05:00";
-export const closeTime = "23:00";
+export const msgDetail = [
+  'Vui lòng chọn môn thể thao',
+  'Vui lòng chọn cụm sân',
+  'Gửi yêu cầu thành công',
+  'Giờ trả sân phải lớn hơn giờ vào sân ít nhất 1 giờ',
+  'Giờ vào sân không hợp lệ, vui lòng chọn giờ khác',
+  'Giờ trả sân không hợp lệ, vui lòng chọn giờ khác',
+  'Đã hết giờ đặt sân cho hôm nay, vui lòng chọn ngày khác',
+  'File quá lớn. Vui lòng chọn file dưới 2 MB',
+  'Số điện thoại không hợp lệ',
+  'Phiên hết hạn, bạn đã bị đăng xuất',
+  'Đã hủy thay đổi',
+  'Cập nhật thông tin tài khoản thành công',
+  'Vui lòng nhập đúng định dạng email. Định dạng đúng ...@...',
+  'Email hợp lệ',
+  'Vui lòng chọn thời gian thuê sân ít nhất 1 giờ',
+  'Vui lòng chọn ngày',
+  'Đang xử lý...',
+  'Đã đặt sân thành công.',
+  'Đã sao chép mã: ',
+  'Lỗi sao chép mã!',
+];
 
-export const PROTECTED_ROUTES = ["/user", "/khach-hang"];
+export const openTime = '05:00';
+export const closeTime = '23:00';
+
+export const PROTECTED_ROUTES = ['/user', '/khach-hang'];
 
 // export const emailRegex = /^[\w\-\.]+@([\w-]+\.)+[\w-]{2,}$/;
 

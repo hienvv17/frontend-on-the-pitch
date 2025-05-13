@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import {
   Button,
   Typography,
@@ -10,8 +10,12 @@ import {
   DialogContent,
   DialogTitle,
   Divider,
+  FormControl,
+  InputLabel,
+  MenuItem,
+  Select,
+  SelectChangeEvent,
 } from "@mui/material";
-import { format, addMinutes, isEqual } from "date-fns";
 import Grid from "@mui/material/Grid2";
 import { AppContext } from "../contexts/AppContext";
 import { msgDetail } from "@/utility/constant";
@@ -19,28 +23,16 @@ import ClearIcon from "@mui/icons-material/Clear";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 import { blueBlurDialogSlotProps } from "@/utility/dialogSlotProps";
 import CustomDatePicker from "./DatePicker";
-import moment from "moment";
+import { generateTimeSlots2 } from "@/utility/generateTimeSlots2";
+import dayjs from "dayjs";
 
-const startTime = new Date();
-startTime.setHours(5, 0, 0, 0);
 
-const endTime = new Date();
-endTime.setHours(23, 0, 0, 0);
-
-function generateTimeSlots() {
-  const slots: Date[] = [];
-  let current = new Date(startTime);
-  while (current <= endTime) {
-    slots.push(new Date(current));
-    current = addMinutes(current, 30);
-  }
-  return slots;
-}
 
 interface TimeSlotSelectorProps {
   disabledSlots?: Date[];
   open: boolean;
   onClose: () => void;
+  dialogData: any,
   [key: string]: any; // Cho phép các props khác
 }
 
@@ -48,16 +40,16 @@ export default function TimeSlotSelector({
   disabledSlots = [],
   open,
   onClose,
+  dialogData,
   ...rest
 }: TimeSlotSelectorProps) {
-  // console.log("TimeSlotSelector ->rest", rest.searchData);
+
 
   const { setOpenSnackBar } = useContext(AppContext);
 
-  // const [selectedSlots, setSelectedSlots] = useState<Date[]>([]);
-  // const [startSlot, setStartSlot] = useState<Date | null>(null);
-
-  const timeSlots = generateTimeSlots();
+  const [timeSlotsStart, setTimeSlotsStart] = useState<any[]>([]);
+  const [timeSlotsEnd, setTimeSlotsEnd] = useState<any[]>([]);
+  const [filteredStartSlots, setFilteredStartSlots] = useState<string[]>([]);
 
   useEffect(() => {
     rest.setBookingData((prev: any) => ({
@@ -68,44 +60,6 @@ export default function TimeSlotSelector({
           : "",
     }));
   }, []);
-
-  const isSlotSelected = (slot: Date) =>
-    rest.selectedSlots.some((s: number | Date) => isEqual(s, slot));
-
-  const isSlotDisabled = (slot: Date) =>
-    disabledSlots.some((s) => isEqual(s, slot));
-
-  const toggleSlot = (slot: Date) => {
-    if (isSlotDisabled(slot)) return;
-
-    const isAlreadySelected = isSlotSelected(slot);
-
-    if (isAlreadySelected) {
-      rest.setSelectedSlots([]);
-      rest.setStartSlot(null);
-      return;
-    }
-
-    if (rest.selectedSlots.length === 0) {
-      rest.setSelectedSlots([slot]);
-      rest.setStartSlot(slot);
-    } else {
-      if (!rest.startSlot) return; // thêm dòng này để tránh lỗi null
-
-      const start = rest.startSlot;
-
-      const startIndex = timeSlots.findIndex((s) => isEqual(s, start));
-      const endIndex = timeSlots.findIndex((s) => isEqual(s, slot));
-
-      const [from, to] =
-        startIndex < endIndex ? [startIndex, endIndex] : [endIndex, startIndex];
-      const range = timeSlots
-        .slice(from, to + 1)
-        .filter((s) => !isSlotDisabled(s));
-
-      rest.setSelectedSlots(range);
-    }
-  };
 
   const handleCancel = () => {
     rest.setBookingData((prev: any) => ({
@@ -124,21 +78,17 @@ export default function TimeSlotSelector({
     rest.setSelectedSlots([]);
     rest.setStartSlot(null);
     rest.setSelectedDate(rest.searchData.dayPicked);
+    // setStartTime('');
+    // setEndTime('');
     setOpenSnackBar({ isOpen: false, msg: msgDetail[14], type: "error" });
     onClose(); // Đóng Dialog
   };
 
   const handleContinue = () => {
-    setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: "info" });
+    console.log("rest.startTime", rest.startTime);
+    console.log("rest.endTime", rest.endTime);
 
-    if (!rest.bookingData.bookingDate) {
-      setTimeout(() => {
-        setOpenSnackBar({ isOpen: true, msg: msgDetail[15], type: "error" });
-      }, 100);
-      return;
-    }
-
-    if (!hasAtLeastOneHourBlock(rest.selectedSlots)) {
+    if (rest.startTime === '' || rest.endTime === '') {
       setTimeout(() => {
         setOpenSnackBar({ isOpen: true, msg: msgDetail[14], type: "error" });
       }, 100);
@@ -146,67 +96,125 @@ export default function TimeSlotSelector({
     }
 
     setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: "info" });
-    // console.log("continue");
-
-    // console.log("startTime:", rest.selectedSlots[0].toTimeString().slice(0, 5));
-    // console.log("endTime:", rest.selectedSlots[rest.selectedSlots.length - 1].toTimeString().slice(0, 5));
-
-    const startTimeValue = rest.selectedSlots[0].toTimeString().slice(0, 5);
-    const endTimeValue = rest.selectedSlots[rest.selectedSlots.length - 1]
-      .toTimeString()
-      .slice(0, 5);
 
     rest.setBookingData((prev: any) => ({
       ...prev,
-      startTime: startTimeValue,
-      endTime: endTimeValue,
+      startTime: rest.startTime,
+      endTime: rest.endTime,
     }));
 
     // rest.setIsContinue(true);
     rest.setOpenDialog1(true);
-    onClose(); // Đóng Dialog
+    // onClose(); // Đóng Dialog
     // router.push("/checkout"); // chuyển sang trang thanh toán
   };
 
-  function hasAtLeastOneHourBlock(selected: Date[]) {
-    if (selected.length < 2) {
-      // setOpenSnackBar({ isOpen: true, msg: msgDetail[14], type: 'error' });
-      return false;
-    }
+ 
 
-    const sorted = [...selected].sort((a, b) => a.getTime() - b.getTime());
+const generateTimeSlotsFromRanges = (
+  ranges: { startTime: string; endTime: string }[],
+  booked: { startTime: string; endTime: string }[],
+  stepMinutes: number = 30
+) => {
+  const result: string[] = [];
 
-    let count = 1;
-    for (let i = 1; i < sorted.length; i++) {
-      const diff = sorted[i].getTime() - sorted[i - 1].getTime();
-      if (diff === 30 * 60 * 1000) {
-        count++;
-        if (count >= 3) return true; // ít nhất 3 slot liên tiếp
-      } else {
-        count = 1; // reset nếu không liên tiếp
-      }
-    }
-
-    return false;
-  }
-
-  // console.log("rest.selectedDate", rest.selectedDate);
-
-  const handleDateChange = (e: any) => {
-    // console.log("handleDateChange ->e", e);
-    const value = e === null ? e : moment(e).format("YYYY-MM-DD");
-    rest.setSelectedDate(e);
-    rest.setBookingData((prev: any) => ({
-      ...prev,
-      bookingDate: value,
-      startTime: null,
-      endTime: null,
-    }));
+  const toMinutes = (timeStr: string) => {
+    const [h, m] = timeStr.split(":").map(Number);
+    return h * 60 + m;
   };
 
-  // useEffect(() => {
-  //   setSelectedDate(rest.selectedDate !== null ? moment(rest.selectedDate) : null);
-  // }, []);
+  const toHHMM = (totalMinutes: number) => {
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+  };
+
+  const isBooked = (slotStart: number, slotEnd: number) =>
+    booked.some((b) => {
+      const bStart = toMinutes(b.startTime);
+      const bEnd = toMinutes(b.endTime);
+      return slotStart < bEnd && slotEnd > bStart;
+    }) ||
+    booked.some((b) => slotEnd === toMinutes(b.startTime));
+
+  const MAX_START_TIME = toMinutes("22:00");
+
+  for (const range of ranges) {
+    let start = toMinutes(range.startTime);
+    const end = toMinutes(range.endTime);
+
+    while (start + stepMinutes <= end && start <= MAX_START_TIME) {
+      const next = start + stepMinutes;
+      if (!isBooked(start, next)) {
+        result.push(toHHMM(start));
+      } else {
+        console.log(`Slot ${toHHMM(start)} - ${toHHMM(next)} bị loại do booked`);
+      }
+      start = next;
+    }
+  }
+
+  return result;
+};
+
+useEffect(() => {
+  const result = generateTimeSlotsFromRanges(
+    dialogData?.field?.availableTimeSlots ?? [],
+    dialogData?.field?.bookedTimeSlots ?? []
+  );
+  setFilteredStartSlots(result);
+}, [
+  dialogData?.field?.availableTimeSlots,
+  dialogData?.field?.bookedTimeSlots
+]);
+
+const generateEndTimeSlots = (
+  selectedStartTime: string,
+  stepMinutes: number = 30
+): string[] => {
+  const toMinutes = (timeStr: string) => {
+    const [h, m] = timeStr.split(":").map(Number);
+    return h * 60 + m;
+  };
+
+  const toHHMM = (totalMinutes: number) => {
+    const h = Math.floor(totalMinutes / 60);
+    const m = totalMinutes % 60;
+    return `${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}`;
+  };
+
+  const startMinutes = toMinutes(selectedStartTime);
+  const MIN_END = startMinutes + 60; 
+  const MAX_END = toMinutes("23:00");
+
+  const result: string[] = [];
+
+  for (let end = MIN_END; end <= MAX_END; end += stepMinutes) {
+    result.push(toHHMM(end));
+  }
+
+  return result;
+};
+
+
+
+
+const handleChangeStartTime = (event: SelectChangeEvent<typeof rest.startTime>) => {
+  const selectedStartTime = event.target.value as string;
+  rest.setStartTime(selectedStartTime);
+
+  const newEndSlots = generateEndTimeSlots(selectedStartTime);
+
+  setTimeSlotsEnd(newEndSlots);
+  rest.setEndTime(""); 
+};
+
+
+
+
+  const handleChangeEndTime = (event: SelectChangeEvent<typeof rest.endTime>) => {
+    rest.setEndTime(event.target.value as string);
+  };
 
   return (
     <>
@@ -233,53 +241,80 @@ export default function TimeSlotSelector({
         </DialogTitle>
         <Divider />
         <DialogContent sx={{ pt: 2 }}>
-          <Grid container direction={"column"} sx={{ width: "100%", gap: 2 }}>
+          <Grid container direction={"column"} sx={{ width: "100%", gap: 5, height: "100%", my: 3 }}>
             <Grid>
               <CustomDatePicker
                 label="Chọn ngày"
                 name="bookingDate"
                 value={rest.selectedDate}
                 // setSelectedDate={setSelectedDate}
-                onChange={handleDateChange}
-                isBusy={false}
+                onChange={() => { }}
+                isBusy={true}
               />
             </Grid>
-            <Grid container spacing={1}>
-              {timeSlots.map((slot, index) => {
-                const disabled = isSlotDisabled(slot);
-                const selected = isSlotSelected(slot);
 
-                return (
-                  <Grid size={12} key={index}>
-                    <Button
-                      variant={selected ? "contained" : "outlined"}
-                      color={
-                        disabled
-                          ? "inherit"
-                          : rest.startSlot && isEqual(slot, rest.startSlot)
-                            ? "secondary"
-                            : selected
-                              ? "primary"
-                              : "primary"
-                      }
-                      fullWidth
-                      disabled={disabled}
-                      onClick={() => toggleSlot(slot)}
-                    >
-                      {format(slot, "HH:mm")}
-                    </Button>
-                  </Grid>
-                );
-              })}
+            <Grid container spacing={1} sx={{ width: "100%" }}>
+              <Grid container direction="row" sx={{ width: "100%" }}>
+                <Grid size={{ xs: 12, sm: 6 }}>
+                 <FormControl fullWidth>
+  <InputLabel id="select-start-time-label">Giờ vào</InputLabel>
+  <Select
+    labelId="select-start-time-label"
+    id="select-start-time"
+    value={rest.startTime}
+    label="startTime"
+    onChange={handleChangeStartTime}
+  >
+    <MenuItem value="">
+      <em>Xóa</em>
+    </MenuItem>
+    {filteredStartSlots.map((slot, index) => (
+      <MenuItem key={index} value={slot}>
+        {slot}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+
+
+
+
+                </Grid>
+
+                <Grid size={{ xs: 12, sm: 6 }}>
+                  <FormControl fullWidth>
+  <InputLabel id="select-end-time-label">Giờ ra</InputLabel>
+  <Select
+    labelId="select-end-time-label"
+    id="select-end-time"
+    value={rest.endTime}
+    label="endTime"
+    onChange={handleChangeEndTime}
+  >
+    <MenuItem value="">
+      <em>Xóa</em>
+    </MenuItem>
+    {timeSlotsEnd.map((slot, index) => (
+      <MenuItem key={index} value={slot}>
+        {slot}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
+
+
+                </Grid>
+              </Grid>
             </Grid>
           </Grid>
         </DialogContent>
         <DialogActions>
           <Box
             display="flex"
-            justifyContent="center"
+            justifyContent="flex-end"
             width="100%"
             gap={2} // khoảng cách giữa hai nút
+            sx={{ px: 2, mb: 2 }}
           >
             <Button
               variant="contained"
@@ -306,3 +341,4 @@ export default function TimeSlotSelector({
     </>
   );
 }
+
