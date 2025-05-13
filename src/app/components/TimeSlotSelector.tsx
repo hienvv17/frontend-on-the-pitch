@@ -169,6 +169,8 @@ useEffect(() => {
 ]);
 
 const generateEndTimeSlots = (
+  ranges: { startTime: string; endTime: string }[],
+  booked: { startTime: string; endTime: string }[],
   selectedStartTime: string,
   stepMinutes: number = 30
 ): string[] => {
@@ -184,13 +186,33 @@ const generateEndTimeSlots = (
   };
 
   const startMinutes = toMinutes(selectedStartTime);
-  const MIN_END = startMinutes + 60; 
+  const MIN_END = startMinutes + 60; // Phải cách ít nhất 1 tiếng
   const MAX_END = toMinutes("23:00");
+
+  const isInRange = (minute: number) =>
+    ranges.some((range) => {
+      const rStart = toMinutes(range.startTime);
+      const rEnd = toMinutes(range.endTime);
+      return minute <= rEnd && startMinutes >= rStart;
+    });
+
+  const isBooked = (slotStart: number, slotEnd: number) =>
+    booked.some((b) => {
+      const bStart = toMinutes(b.startTime);
+      const bEnd = toMinutes(b.endTime);
+      return slotStart < bEnd && slotEnd > bStart;
+    });
 
   const result: string[] = [];
 
-  for (let end = MIN_END; end <= MAX_END; end += stepMinutes) {
-    result.push(toHHMM(end));
+  for (
+    let end = MIN_END;
+    end <= MAX_END && isInRange(end);
+    end += stepMinutes
+  ) {
+    if (!isBooked(startMinutes, end)) {
+      result.push(toHHMM(end));
+    }
   }
 
   return result;
@@ -199,14 +221,19 @@ const generateEndTimeSlots = (
 
 
 
+
 const handleChangeStartTime = (event: SelectChangeEvent<typeof rest.startTime>) => {
   const selectedStartTime = event.target.value as string;
   rest.setStartTime(selectedStartTime);
 
-  const newEndSlots = generateEndTimeSlots(selectedStartTime);
+  const newEndSlots = generateEndTimeSlots(
+    dialogData?.field?.availableTimeSlots,
+    dialogData?.field?.bookedTimeSlots,
+    selectedStartTime
+  );
 
   setTimeSlotsEnd(newEndSlots);
-  rest.setEndTime(""); 
+  rest.setEndTime(""); // reset nếu thay đổi start time
 };
 
 
