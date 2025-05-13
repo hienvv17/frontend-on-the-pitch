@@ -52,7 +52,7 @@ const PaymentDonePage = () => {
           },
         });
 
-        if (paymentStatus === '1') {
+        if (response.data.paymentSuccess) {
           setStatus('success');
         } else {
           setStatus('fail');
