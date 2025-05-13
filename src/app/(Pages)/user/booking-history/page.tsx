@@ -1,5 +1,5 @@
 'use client';
-import { type SetStateAction, useEffect, useState } from 'react';
+import { type SetStateAction, useContext, useEffect, useState } from 'react';
 import UserLayout from '@/app/components/UserLayout';
 import { useUserApiPrivate } from '@/api/user/user';
 import {
@@ -32,6 +32,10 @@ import {
 import AddRatingModal from '@/app/components/rating/AddRatingModal';
 import ViewRatingModal from '@/app/components/rating/ViewRatingModal';
 import { useRouter } from 'next/navigation';
+import RefundPopup from '@/app/components/RefundPopup';
+import { privateApi } from '@/api/base';
+import { AppContext } from '@/app/contexts/AppContext';
+import { msgDetail } from '@/utility/constant';
 
 const allowedColors = [
   'default',
@@ -57,24 +61,31 @@ export default function BookingHistory() {
   const [ratingModalOpen, setRatingModalOpen] = useState(false);
   const [viewRatingModalOpen, setViewRatingModalOpen] = useState(false);
   const [currentBooking, setCurrentBooking] = useState<any>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [openRefundPopup, setOpenRefundPopup] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
 
+  const { setOpenSnackBar } = useContext(AppContext);
   const router = useRouter();
 
-  useEffect(() => {
-    const getData = async () => {
-      try {
-        setLoading(true);
-        const data = await POST_P('/field-bookings/history');
-        setHistory(data.data.items);
-      } catch (error) {
-        console.error('Error fetching booking history:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
-    getData();
-  }, []);
+  const fetchHistory = async () => {
+  try {
+    setLoading(true);
+    const data = await POST_P('/field-bookings/history'); 
+    setHistory(data.data.items); 
+  } catch (error) {
+    console.error('Error fetching booking history:', error);
+  } finally {
+    setLoading(false);
+  }
+};
 
+
+useEffect(() => {
+  fetchHistory(); 
+}, []);
+
+  
   const handleChangePage = (event: any, newPage: SetStateAction<number>) => {
     setPage(newPage);
   };
@@ -84,7 +95,6 @@ export default function BookingHistory() {
     setPage(0);
   };
 
-  // Function to determine status chip color
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'PAID':
@@ -98,7 +108,6 @@ export default function BookingHistory() {
     }
   };
 
-  // Format currency
   const formatCurrency = (amount: any) => {
     return new Intl.NumberFormat('vi-VN', {
       style: 'currency',
@@ -118,7 +127,6 @@ export default function BookingHistory() {
 
   const handleCloseRatingModal = () => {
     setRatingModalOpen(false);
-    setCurrentBooking(null);
   };
 
   const handleCloseViewRatingModal = () => {
@@ -127,10 +135,46 @@ export default function BookingHistory() {
   };
 
   const handleRefund = (item: any) => {
-    if (!window.confirm(`Bạn có chắc muốn hoàn tiền cho đơn ${item.bookingCode}?`)) return;
-
-    console.log('Hoàn tiền thành công', { variant: 'success' });
+    setSelectedItem(item);
+    setOpenRefundPopup(true);
   };
+
+  const handleRefundSubmit = async (reason: string, item: any) => {
+
+    try {
+      setIsLoading(true);
+      const configApi = privateApi('');
+      const response = await configApi.post('/refunds/request', {
+        reason: reason,
+        fieldBookingId: item.id,
+      });
+
+      if (response.status >= 200 && response.status < 300) {
+        setOpenSnackBar({
+          isOpen: true,
+          msg: msgDetail[20],
+          type: 'info',
+        });
+
+        setOpenRefundPopup(false);
+      } else {
+        throw new Error('Yêu cầu hoàn tiền không thành công');
+      }
+    } catch (error) {
+      console.error('Lỗi khi gửi yêu cầu hoàn tiền:', error);
+      setOpenSnackBar({
+        isOpen: true,
+        msg: msgDetail[21],
+        type: 'error',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+
+
+
 
   const handlePayNow = (item: any) => {
     router.push(`/checkout?bookingId=${item.id}`);
@@ -364,7 +408,7 @@ export default function BookingHistory() {
                                 sx={{ color: 'var(--Primary-700)' }}
                               >
                                 {formatCurrency(
-                                  item.total || Math.floor(Math.random() * 1000000) + 500000,
+                                  item.totalPrice || 0,
                                 )}
                               </Typography>
                             </TableCell>
@@ -381,7 +425,7 @@ export default function BookingHistory() {
                               />
                             </TableCell>
                             <TableCell sx={{ py: 2 }}>
-                              {item.status === 'PAID' && (
+                              {(item.canRequestRefund === 'true' || item.canRequestRefund === true) && (
                                 <Button
                                   variant="outlined"
                                   size="small"
@@ -406,35 +450,37 @@ export default function BookingHistory() {
                               )}
                             </TableCell>
 
+
                             <TableCell sx={{ py: 2 }}>
-                              {item.status === 'PAID' && (
-                                <>
-                                  {item.rating ? (
-                                    <Button
-                                      variant="outlined"
-                                      size="small"
-                                      color="primary"
-                                      onClick={() => handleOpenViewRatingModal(item)}
-                                      startIcon={<Star />}
-                                      sx={{ textTransform: 'none' }}
-                                    >
-                                      Xem đánh giá
-                                    </Button>
-                                  ) : (
-                                    <Button
-                                      variant="contained"
-                                      size="small"
-                                      color="primary"
-                                      onClick={() => handleOpenRatingModal(item)}
-                                      startIcon={<StarBorder />}
-                                      sx={{ textTransform: 'none' }}
-                                    >
-                                      Đánh giá
-                                    </Button>
-                                  )}
-                                </>
-                              )}
-                            </TableCell>
+  {item.status === 'PAID' && (
+    <>
+      {item?.reviewId ? (
+        <Button
+          variant="outlined"
+          size="small"
+          color="primary"
+          onClick={() => handleOpenViewRatingModal(item)}
+          startIcon={<Star />}
+          sx={{ textTransform: 'none' }}
+        >
+          Xem đánh giá
+        </Button>
+      ) : (
+        <Button
+          variant="contained"
+          size="small"
+          color="primary"
+          onClick={() => handleOpenRatingModal(item)}
+          startIcon={<StarBorder />}
+          sx={{ textTransform: 'none' }}
+        >
+          Đánh giá
+        </Button>
+      )}
+    </>
+  )}
+</TableCell>
+
                           </TableRow>
                         );
                       })
@@ -476,43 +522,48 @@ export default function BookingHistory() {
                 borderTop: '1px solid rgba(0, 0, 0, 0.08)',
                 mt: 2,
                 '.MuiTablePagination-selectLabel, .MuiTablePagination-select, .MuiTablePagination-selectIcon, .MuiTablePagination-displayedRows':
-                  {
-                    color: 'var(--Primary-700)',
-                  },
+                {
+                  color: 'var(--Primary-700)',
+                },
               }}
             />
           </CardContent>
         </Card>
       </Box>
       <AddRatingModal
-        open={ratingModalOpen}
-        onClose={handleCloseRatingModal}
-        booking={currentBooking}
-        onSubmit={(stars, comment) => {
-          if (currentBooking) {
-            const updatedHistory = history.map((item: any) => {
-              if (item.id === currentBooking.id) {
-                return {
-                  ...item,
-                  rating: {
-                    stars,
-                    comment,
-                  },
-                };
-              }
-              return item;
-            });
-            setHistory(updatedHistory);
-            handleCloseRatingModal();
-          }
-        }}
-      />
+  open={ratingModalOpen}
+  onClose={handleCloseRatingModal}
+  booking={currentBooking}
+  onSubmit={(stars, comment) => {
+    if (currentBooking) {
+      const updatedHistory = history.map((item: any) => {
+        if (item.id === currentBooking.id) {
+          return {
+            ...item,
+            rating: { stars, comment },
+          };
+        }
+        return item;
+      });
+      setHistory(updatedHistory);
+    }
+  }}
+  onSubmitSuccess={fetchHistory} 
+/>
+
 
       <ViewRatingModal
         open={viewRatingModalOpen}
         onClose={handleCloseViewRatingModal}
         booking={currentBooking}
       />
+      <RefundPopup
+        open={openRefundPopup}
+        onClose={() => setOpenRefundPopup(false)}
+        onSubmit={handleRefundSubmit}
+        selectedItem={selectedItem}
+      />
+
     </UserLayout>
   );
 }

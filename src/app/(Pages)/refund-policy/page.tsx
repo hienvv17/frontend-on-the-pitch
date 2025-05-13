@@ -60,15 +60,52 @@ export default function RefundPolicy() {
                 1. Điều kiện được hoàn tiền
               </Typography>
               <List dense>
-                <ListItem>
+                <ListItem >
                   <ListItemText
                     primary={
                       <>
-                        Khách hàng hủy đặt sân ít nhất{' '}
-                        <Typography component="span" color="error" fontWeight="bold">
-                          48 giờ trước
+                        Nếu khách hàng hủy đặt sân trước{' '}
+                        <Typography component="span" color="suscess" fontWeight="bold">
+                          24 giờ
                         </Typography>{' '}
-                        thời gian sử dụng dự kiến.
+                        trước ngày sử dụng sân sẽ được hoàn tối đa {' '}
+                        <Typography component="span" color="error" fontWeight="bold">
+                          50%
+                        </Typography>{' '}
+                        <br />
+                        <br />
+                        Nếu khách hàng hủy đặt sân từ {' '}
+                        <Typography component="span" color="suscess" fontWeight="bold">
+                          24 - 48 giờ
+                        </Typography>{' '}
+                        trước ngày sử dụng sân sẽ được hoàn {' '}
+                        <Typography component="span" color="error" fontWeight="bold">
+                          70%
+                        </Typography>{' '}
+                        <br />
+                        <br />
+                        Nếu khách hàng hủy đặt sân trước{' '}
+                        <Typography component="span" color="suscess" fontWeight="bold">
+                          48 giờ
+                        </Typography>{' '}
+
+                        trước ngày sử dụng sân sẽ được hoàn {' '}
+                        <Typography component="span" color="error" fontWeight="bold">
+                          100%
+                        </Typography>{' '}
+                        <br />
+                        <br />
+                        Sau ngày sử dụng sân, yêu cầu hoàn tiền sẽ được xem xét dựa trên các yếu tố như{' '}
+                        điều kiện thời tiết, lý do cá nhân chính đáng, hoặc lỗi từ phía sân bóng.
+                        Trong trường hợp đặc biệt, đội ngũ hỗ trợ sẽ liên hệ trực tiếp để trao đổi và đưa ra giải pháp phù hợp.
+                      </>
+                    }
+                  />
+                  <ListItemText
+                    primary={
+                      <>
+
+
                       </>
                     }
                   />

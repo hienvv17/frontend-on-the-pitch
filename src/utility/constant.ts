@@ -40,6 +40,12 @@ export const msgDetail = [
   'Đã đặt sân thành công.',
   'Đã sao chép mã: ',
   'Lỗi sao chép mã!',
+  'Gửi thông tin hoàn tiền thành công',
+  'Lỗi gửi thông tin hoàn tiền!',
+  'Vui lòng nhập lý do',
+  'Gửi đánh giá thành công',
+  'Gửi đánh giá thất bại',
+
 ];
 
 export const openTime = '05:00';
