@@ -21,6 +21,7 @@ import { formatPrice } from '@/utility/formatPrice';
 import { msgDetail, ROUTES } from '@/utility/constant';
 import { AppContext } from '../contexts/AppContext';
 import { useRouter } from 'next/navigation';
+import { formatToVietnamTime } from '@/utility/formatDate';
 
 export type PaymetPopUpData = {
   id: number;
@@ -330,7 +331,7 @@ const PaymentNowPopUp: React.FC<PaymentNowPopUpProps> = ({ open, onClose, data }
                   <strong>Hạn thanh toán:</strong>
                 </Typography>
                 <Typography variant="body2" color="error">
-                  {data.latestPaymentDate}
+                  {formatToVietnamTime(data.latestPaymentDate, 'DD/MM/YYYY HH:mm')}
                 </Typography>
               </Grid>
             </Grid>
