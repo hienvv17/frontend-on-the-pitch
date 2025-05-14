@@ -41,13 +41,13 @@
     "jsonwebtoken": "^9.0.2",
     "jwt-decode": "^4.0.0",
     "moment": "^2.30.1",
-    "next": "15.2.3",
+    "next": "^15.2.3",
     "next-auth": "^4.24.11",
     "notistack": "^3.0.2",
     "npm": "^11.2.0",
-    "react": "^19.0.0",
+    "react": "^19.1.0",
     "react-awesome-reveal": "^4.3.1",
-    "react-dom": "^19.0.0",
+    "react-dom": "^19.1.0",
     "react-material-ui-carousel": "^3.4.2",
     "react-multi-carousel": "^2.8.5",
     "react-responsive-carousel": "^3.2.23",
@@ -61,25 +61,12 @@
   },
   "devDependencies": {
     "@types/jsonwebtoken": "^9.0.9",
-    "@types/node": "^22.13.11",
+    "@types/node": "^22.15.18",
     "@types/react": "^19.0.12",
     "@types/react-dom": "^19.0.4",
     "eslint": "^9.23.0",
     "eslint-config-next": "15.2.3",
     "prisma": "^6.5.0",
-    "typescript": "^5.8.2"
-  },
-  "packageManager": "pnpm@10.7.0+sha512.6b865ad4b62a1d9842b61d674a393903b871d9244954f652b8842c2b553c72176b278f64c463e52d40fff8aba385c235c8c9ecf5cc7de4fd78b8bb6d49633ab6",
-  "pnpm": {
-    "onlyBuiltDependencies": [
-      "@firebase/util",
-      "@prisma/client",
-      "@prisma/engines",
-      "bcrypt",
-      "esbuild",
-      "prisma",
-      "protobufjs",
-      "sharp"
-    ]
+    "typescript": "^5.8.3"
   }
 }

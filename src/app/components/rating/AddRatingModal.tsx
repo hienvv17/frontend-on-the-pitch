@@ -1,23 +1,69 @@
 'use client';
 
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import { Box, Typography, Button, Modal, TextField, Rating, Stack } from '@mui/material';
+import { privateApi } from '@/api/base';
+import { msgDetail } from '@/utility/constant';
+import { AppContext } from '@/app/contexts/AppContext';
 
 interface AddRatingModalProps {
   open: boolean;
   onClose: () => void;
   booking: any | null;
   onSubmit: (stars: number | null, comment: string) => void;
+  onSubmitSuccess?: () => void; // 👈 Ensure onSubmitSuccess is optional here
 }
 
-export default function AddRatingModal({ open, onClose, booking, onSubmit }: AddRatingModalProps) {
+export default function AddRatingModal({
+  open,
+  onClose,
+  booking,
+  onSubmit,
+  onSubmitSuccess, // 👈 destructure onSubmitSuccess from props
+}: AddRatingModalProps) {
   const [ratingValue, setRatingValue] = useState<number | null>(0);
   const [ratingComment, setRatingComment] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+  const { setOpenSnackBar } = useContext(AppContext);
 
-  const handleSubmit = () => {
-    onSubmit(ratingValue, ratingComment);
-    setRatingValue(0);
-    setRatingComment('');
+  const handleSubmit = async () => {
+    if (!booking) return;
+
+    try {
+      setIsLoading(true);
+
+      const reviewData = {
+        fieldBookingId: booking.id,
+        comment: ratingComment,
+        rating: ratingValue,
+      };
+
+      const configApi = privateApi('');
+      const response = await configApi.post('/reviews', reviewData);
+
+      if (response.status >= 200 && response.status < 300) {
+        onSubmit?.(ratingValue, ratingComment);
+        onSubmitSuccess?.(); // Call onSubmitSuccess if provided
+
+        setOpenSnackBar({
+          isOpen: true,
+          msg: msgDetail[23],
+          type: 'success',
+        });
+      } else {
+        console.error('Review submission failed');
+      }
+    } catch (error) {
+      console.error('Error submitting review:', error);
+      setOpenSnackBar({
+        isOpen: true,
+        msg: msgDetail[24],
+        type: 'error',
+      });
+    } finally {
+      setIsLoading(false);
+      onClose();
+    }
   };
 
   return (
@@ -61,7 +107,7 @@ export default function AddRatingModal({ open, onClose, booking, onSubmit }: Add
               onChange={(event, newValue) => {
                 setRatingValue(newValue);
               }}
-              precision={0.5}
+              precision={1}
               size="large"
             />
           </Box>
@@ -84,9 +130,9 @@ export default function AddRatingModal({ open, onClose, booking, onSubmit }: Add
               onClick={handleSubmit}
               variant="contained"
               color="primary"
-              disabled={!ratingValue}
+              disabled={!ratingValue || isLoading}
             >
-              Gửi đánh giá
+              {isLoading ? 'Đang gửi...' : 'Gửi đánh giá'}
             </Button>
           </Box>
         </Stack>
