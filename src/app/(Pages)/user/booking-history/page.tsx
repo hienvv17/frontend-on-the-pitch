@@ -393,7 +393,7 @@ export default function BookingHistory() {
                             </TableCell>
                             <TableCell sx={{ py: 2 }}>
                               <Typography variant="body2">
-                                {item.day || new Date().toLocaleDateString('vi-VN')}
+                                {item.bookingDate || new Date().toLocaleDateString('vi-VN')}
                               </Typography>
                             </TableCell>
                             <TableCell sx={{ py: 2 }}>
