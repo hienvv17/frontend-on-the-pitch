@@ -48,7 +48,7 @@ export default function AddRatingModal({
         setOpenSnackBar({
           isOpen: true,
           msg: msgDetail[23],
-          type: 'success',
+          type: 'info',
         });
       } else {
         console.error('Review submission failed');

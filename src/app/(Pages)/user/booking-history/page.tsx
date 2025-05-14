@@ -36,6 +36,7 @@ import RefundPopup from '@/app/components/RefundPopup';
 import { privateApi } from '@/api/base';
 import { AppContext } from '@/app/contexts/AppContext';
 import { msgDetail } from '@/utility/constant';
+import PaymentNowPopUp from '@/app/components/PaymentNowPopup';
 
 const allowedColors = [
   'default',
@@ -64,28 +65,30 @@ export default function BookingHistory() {
   const [isLoading, setIsLoading] = useState(false);
   const [openRefundPopup, setOpenRefundPopup] = useState(false);
   const [selectedItem, setSelectedItem] = useState<any>(null);
+const [openPaymentPopup, setOpenPaymentPopup] = useState(false);
+const [selectedOrder, setSelectedOrder] = useState(null);
 
   const { setOpenSnackBar } = useContext(AppContext);
   const router = useRouter();
 
   const fetchHistory = async () => {
-  try {
-    setLoading(true);
-    const data = await POST_P('/field-bookings/history'); 
-    setHistory(data.data.items); 
-  } catch (error) {
-    console.error('Error fetching booking history:', error);
-  } finally {
-    setLoading(false);
-  }
-};
+    try {
+      setLoading(true);
+      const data = await POST_P('/field-bookings/history');
+      setHistory(data.data.items);
+    } catch (error) {
+      console.error('Error fetching booking history:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
 
-useEffect(() => {
-  fetchHistory(); 
-}, []);
+  useEffect(() => {
+    fetchHistory();
+  }, []);
 
-  
+
   const handleChangePage = (event: any, newPage: SetStateAction<number>) => {
     setPage(newPage);
   };
@@ -176,10 +179,16 @@ useEffect(() => {
 
 
 
-  const handlePayNow = (item: any) => {
-    router.push(`/checkout?bookingId=${item.id}`);
-  };
+  const handleOpenModalPaymentNow = (id) => {
+  const booking = history.find((item) => item.id === id);
+  console.log("booking",booking)
+  if (booking) {
+    setSelectedOrder(booking);
+    setOpenPaymentPopup(true);
+  }
+};
 
+console.log("history",history)
   return (
     <UserLayout>
       <Box
@@ -442,7 +451,7 @@ useEffect(() => {
                                   variant="contained"
                                   size="small"
                                   color="primary"
-                                  onClick={() => handlePayNow(item)}
+                                  onClick={() => handleOpenModalPaymentNow(item.id)}
                                   sx={{ textTransform: 'none', minWidth: 130 }}
                                 >
                                   Thanh toán ngay
@@ -452,34 +461,34 @@ useEffect(() => {
 
 
                             <TableCell sx={{ py: 2 }}>
-  {item.status === 'PAID' && (
-    <>
-      {item?.reviewId ? (
-        <Button
-          variant="outlined"
-          size="small"
-          color="primary"
-          onClick={() => handleOpenViewRatingModal(item)}
-          startIcon={<Star />}
-          sx={{ textTransform: 'none' }}
-        >
-          Xem đánh giá
-        </Button>
-      ) : (
-        <Button
-          variant="contained"
-          size="small"
-          color="primary"
-          onClick={() => handleOpenRatingModal(item)}
-          startIcon={<StarBorder />}
-          sx={{ textTransform: 'none' }}
-        >
-          Đánh giá
-        </Button>
-      )}
-    </>
-  )}
-</TableCell>
+                              {item.status === 'PAID' && (
+                                <>
+                                  {item?.reviewId ? (
+                                    <Button
+                                      variant="outlined"
+                                      size="small"
+                                      color="primary"
+                                      onClick={() => handleOpenViewRatingModal(item)}
+                                      startIcon={<Star />}
+                                      sx={{ textTransform: 'none' }}
+                                    >
+                                      Xem đánh giá
+                                    </Button>
+                                  ) : (
+                                    <Button
+                                      variant="contained"
+                                      size="small"
+                                      color="primary"
+                                      onClick={() => handleOpenRatingModal(item)}
+                                      startIcon={<StarBorder />}
+                                      sx={{ textTransform: 'none' }}
+                                    >
+                                      Đánh giá
+                                    </Button>
+                                  )}
+                                </>
+                              )}
+                            </TableCell>
 
                           </TableRow>
                         );
@@ -531,25 +540,25 @@ useEffect(() => {
         </Card>
       </Box>
       <AddRatingModal
-  open={ratingModalOpen}
-  onClose={handleCloseRatingModal}
-  booking={currentBooking}
-  onSubmit={(stars, comment) => {
-    if (currentBooking) {
-      const updatedHistory = history.map((item: any) => {
-        if (item.id === currentBooking.id) {
-          return {
-            ...item,
-            rating: { stars, comment },
-          };
-        }
-        return item;
-      });
-      setHistory(updatedHistory);
-    }
-  }}
-  onSubmitSuccess={fetchHistory} 
-/>
+        open={ratingModalOpen}
+        onClose={handleCloseRatingModal}
+        booking={currentBooking}
+        onSubmit={(stars, comment) => {
+          if (currentBooking) {
+            const updatedHistory = history.map((item: any) => {
+              if (item.id === currentBooking.id) {
+                return {
+                  ...item,
+                  rating: { stars, comment },
+                };
+              }
+              return item;
+            });
+            setHistory(updatedHistory);
+          }
+        }}
+        onSubmitSuccess={fetchHistory}
+      />
 
 
       <ViewRatingModal
@@ -564,6 +573,13 @@ useEffect(() => {
         selectedItem={selectedItem}
       />
 
+      <PaymentNowPopUp
+        open={openPaymentPopup} 
+        onClose={() => setOpenPaymentPopup(false)} 
+        data={selectedOrder}  
+      />
+
+     
     </UserLayout>
   );
 }

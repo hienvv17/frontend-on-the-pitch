@@ -28,7 +28,7 @@ import { formatPrice } from '@/utility/formatPrice';
 export default function OrderPopUp(props: any) {
   const [isDisableBtn, setIsDisableBtn] = useState(true);
   const selectedSlots = props.selectedSlots;
-  const { setOpenSnackBar } = useContext(AppContext);
+  const { user, setUser, setOpenSnackBar } = useContext(AppContext);
   const [result, setResult] = useState<any>(null);
   const [email, setEmail] = useState('');
   const [voucherCode, setVoucherCode] = useState('');
@@ -36,7 +36,6 @@ export default function OrderPopUp(props: any) {
   const [voucherError, setVoucherError] = useState('');
   const [isValidatingVoucher, setIsValidatingVoucher] = useState(false);
   const [filteredBranches, setFilteredBranches] = useState<any[]>([]);
-
   const handleResultChange = (newResult: any) => {
     setResult(newResult);
   };
@@ -69,8 +68,7 @@ export default function OrderPopUp(props: any) {
       }));
     }
   };
-
-  const handleBlur = () => {
+  const handleBlur = (email: any) => {
     validateEmail(email);
   };
 
@@ -153,7 +151,7 @@ export default function OrderPopUp(props: any) {
       setVoucherData(voucher);
       setVoucherError('');
     } catch (error: any) {
-      setVoucherError(error.message || 'Có lỗi xảy ra khi xác thực voucher');
+      setVoucherError('Voucher không hợp lệ');
       setVoucherData(null);
     }
   };
@@ -280,11 +278,11 @@ export default function OrderPopUp(props: any) {
                     name={props.name}
                     placeholder="Vui lòng nhập email"
                     variant="outlined"
-                    value={email}
+                    value={user?.email || email}
                     size="small"
                     margin="normal"
                     onChange={(e) => setEmail(e.target.value)}
-                    onBlur={handleBlur}
+                    onBlur={(e) => handleBlur(e.target.value)}
                     slotProps={{
                       inputLabel: {
                         shrink: true,
