@@ -5,7 +5,7 @@ import { Box, Typography, Button, Modal, Rating, Stack, Paper } from '@mui/mater
 interface ViewRatingModalProps {
   open: boolean;
   onClose: () => void;
-  booking: any | null;
+  booking: any | null; // The booking prop contains the booking details
 }
 
 export default function ViewRatingModal({ open, onClose, booking }: ViewRatingModalProps) {
@@ -35,14 +35,14 @@ export default function ViewRatingModal({ open, onClose, booking }: ViewRatingMo
           Đánh giá dịch vụ
         </Typography>
 
-        {booking && booking.rating && (
+        {booking && (
           <>
             <Box sx={{ mb: 3 }}>
               <Typography variant="subtitle1" fontWeight={500}>
                 {booking.branchName} - {booking.sportFieldName}
               </Typography>
               <Typography variant="body2" color="text.secondary">
-                {booking.day} | {booking.startTime} - {booking.endTime}
+                {booking.bookingDate} | {booking.startTime} - {booking.endTime}
               </Typography>
             </Box>
 
@@ -53,7 +53,7 @@ export default function ViewRatingModal({ open, onClose, booking }: ViewRatingMo
                 </Typography>
                 <Rating
                   name="read-only-rating"
-                  value={booking.rating.stars}
+                  value={booking.reviewRating || 0} // Use the reviewRating if available
                   readOnly
                   precision={0.5}
                   size="large"
@@ -66,7 +66,7 @@ export default function ViewRatingModal({ open, onClose, booking }: ViewRatingMo
                 </Typography>
                 <Paper variant="outlined" sx={{ p: 2, bgcolor: 'rgba(0, 0, 0, 0.02)' }}>
                   <Typography variant="body2">
-                    {booking.rating.comment || 'Không có nhận xét'}
+                    {booking.reviewComment || 'Không có nhận xét'}
                   </Typography>
                 </Paper>
               </Box>

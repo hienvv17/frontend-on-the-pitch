@@ -18,8 +18,6 @@ export const publicApi = (subPath = '') => {
 
   api.interceptors.request.use(
     (config) => {
-      // console.log("Sending request to: " + config.baseURL + config.url);
-      // console.log("config: ", config);
       return config;
     },
     (error) => {
@@ -33,7 +31,6 @@ export const publicApi = (subPath = '') => {
       return checkErrorCode(response);
     },
     (error) => {
-      console.log('checkErrorCode(response)', error);
       return checkErrorCode(error.response);
     },
   );
@@ -51,7 +48,6 @@ export const privateApi = (subPath = ''): AxiosInstance => {
     async (config) => {
       const accessToken = Cookies.get(ACCESS_TOKEN);
       if (config.headers) config.headers.authorization = `${accessToken}`;
-      console.log('Sending request to: ' + config.baseURL + config.url);
       return config;
     },
     (error) => {
@@ -66,13 +62,11 @@ export const privateApi = (subPath = ''): AxiosInstance => {
       if (error.response) {
         if (error.response.status === 401) {
           Cookies.remove(ACCESS_TOKEN);
-          console.log('error', error.response);
           localStorage.removeItem('user');
           localStorage.removeItem('userAvatar');
           window.location.href = ROUTES.HOME;
         }
       }
-      // console.log("error12", error.response);
       return checkErrorCode(error.response);
     },
   );
@@ -82,7 +76,6 @@ export const privateApi = (subPath = ''): AxiosInstance => {
 
 async function checkErrorCode(response: AxiosResponse<APIResponse>) {
   try {
-    // console.log("checkErrorCode->response", response);
     switch (response.data.success) {
       case false:
         break;
