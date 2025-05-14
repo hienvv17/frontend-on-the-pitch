@@ -172,16 +172,14 @@ export default function BookingHistory() {
     }
   };
 
-  const handleOpenModalPaymentNow = (id) => {
-    const booking = history.find((item) => item.id === id);
-    console.log('booking', booking);
+  const handleOpenModalPaymentNow = (id: any) => {
+    const booking = history.find((item: { id: any }) => item.id === id);
     if (booking) {
       setSelectedOrder(booking);
       setOpenPaymentPopup(true);
     }
   };
 
-  console.log('history', history);
   return (
     <UserLayout>
       <Box

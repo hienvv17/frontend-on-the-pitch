@@ -22,27 +22,28 @@ import { msgDetail, ROUTES } from '@/utility/constant';
 import { AppContext } from '../contexts/AppContext';
 import { useRouter } from 'next/navigation';
 
+export type PaymetPopUpData = {
+  id: number;
+  sportFieldId: number;
+  code: string;
+  bookingDate: string;
+  startTime: string;
+  endTime: string;
+  latestPaymentDate: string;
+  originPrice: number;
+  discountAmount: number;
+  totalPrice: number;
+  voucherCode: string | null;
+  userEmail: string;
+  phoneNumber: string;
+  branchName: string;
+  sportFieldName: string;
+  sportCategoryName: string;
+};
 interface PaymentNowPopUpProps {
   open: boolean;
   onClose: () => void;
-  data: {
-    id: number;
-    sportFieldId: number;
-    code: string;
-    bookingDate: string;
-    startTime: string;
-    endTime: string;
-    latestPaymentDate: string;
-    originPrice: number;
-    discountAmount: number;
-    totalPrice: number;
-    voucherCode: string | null;
-    userEmail: string;
-    phoneNumber: string;
-    branchName: string;
-    sportFieldName: string;
-    sportCategoryName: string;
-  };
+  data: PaymetPopUpData | null;
 }
 
 const GradientBox = styled(Box)(({ theme }) => ({
@@ -161,13 +162,16 @@ const PaymentNowPopUp: React.FC<PaymentNowPopUpProps> = ({ open, onClose, data }
 
       const totalPrice = originPrice - discount;
 
-      setBookingData((prev) => ({
-        ...prev,
-        originPrice,
-        voucherCode: code,
-        discountAmount: discount,
-        totalPrice,
-      }));
+      setBookingData(
+        (prev) =>
+          ({
+            ...prev,
+            originPrice,
+            voucherCode: code,
+            discountAmount: discount,
+            totalPrice,
+          } as PaymetPopUpData),
+      );
 
       setVoucherData(voucher);
       setVoucherError('');
