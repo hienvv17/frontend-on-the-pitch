@@ -155,7 +155,6 @@ export default function BookingHistory() {
           msg: msgDetail[20],
           type: 'info',
         });
-
         setOpenRefundPopup(false);
       } else {
         throw new Error('Yêu cầu hoàn tiền không thành công');
@@ -425,16 +424,16 @@ export default function BookingHistory() {
                             <TableCell sx={{ py: 2 }}>
                               {(item.canRequestRefund === 'true' ||
                                 item.canRequestRefund === true) && (
-                                <Button
-                                  variant="outlined"
-                                  size="small"
-                                  color="primary"
-                                  onClick={() => handleRefund(item)}
-                                  sx={{ textTransform: 'none', minWidth: 130 }}
-                                >
-                                  Hoàn tiền
-                                </Button>
-                              )}
+                                  <Button
+                                    variant="outlined"
+                                    size="small"
+                                    color="primary"
+                                    onClick={() => handleRefund(item)}
+                                    sx={{ textTransform: 'none', minWidth: 130 }}
+                                  >
+                                    Hoàn tiền
+                                  </Button>
+                                )}
 
                               {item.status === 'PENDING' && (
                                 <Button
@@ -519,9 +518,9 @@ export default function BookingHistory() {
                 borderTop: '1px solid rgba(0, 0, 0, 0.08)',
                 mt: 2,
                 '.MuiTablePagination-selectLabel, .MuiTablePagination-select, .MuiTablePagination-selectIcon, .MuiTablePagination-displayedRows':
-                  {
-                    color: 'var(--Primary-700)',
-                  },
+                {
+                  color: 'var(--Primary-700)',
+                },
               }}
             />
           </CardContent>

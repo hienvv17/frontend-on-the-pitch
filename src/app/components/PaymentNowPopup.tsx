@@ -82,7 +82,7 @@ const PaymentNowPopUp: React.FC<PaymentNowPopUpProps> = ({ open, onClose, data }
 
   const theme = useTheme();
   if (!data) return null;
-  console.log('data', data);
+  // console.log('data', data);
   const InfoBlock = ({
     title,
     children,
@@ -165,13 +165,13 @@ const PaymentNowPopUp: React.FC<PaymentNowPopUpProps> = ({ open, onClose, data }
 
       setBookingData(
         (prev) =>
-          ({
-            ...prev,
-            originPrice,
-            voucherCode: code,
-            discountAmount: discount,
-            totalPrice,
-          } as PaymetPopUpData),
+        ({
+          ...prev,
+          originPrice,
+          voucherCode: code,
+          discountAmount: discount,
+          totalPrice,
+        } as PaymetPopUpData),
       );
 
       setVoucherData(voucher);

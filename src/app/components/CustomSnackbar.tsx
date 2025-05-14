@@ -1,7 +1,7 @@
 import Alert, { AlertColor } from '@mui/material/Alert';
 import Snackbar from '@mui/material/Snackbar';
 // import { Typography } from "@mui/material";
-// import CheckCircleIcon from '@mui/icons-material/CheckCircle';
+import CheckCircleIcon from '@mui/icons-material/CheckCircle';
 // import ErrorIcon from '@mui/icons-material/Error';
 // import InfoIcon from '@mui/icons-material/Info';
 import WarningIcon from '@mui/icons-material/Warning';
@@ -53,8 +53,8 @@ const CustomSnackbar = (props: CustomSnackbarProps) => {
 
   const getIconColor = () => {
     switch (type) {
-      // case 'success':
-      //     return '#388e3c'; // Màu của biểu tượng thành công
+      case 'success':
+        return '#388e3c'; // Màu của biểu tượng thành công
       // case 'error':
       //     return '#d32f2f'; // Màu của biểu tượng lỗi
       // case 'info':
@@ -69,7 +69,7 @@ const CustomSnackbar = (props: CustomSnackbarProps) => {
   const getBackgroundColor = () => {
     switch (type) {
       case 'success':
-        return '#e8f5e9'; // Màu nền cho thông báo thành công
+        return '#2e7d32'; // Màu nền cho thông báo thành công
       case 'error':
         return '#ff0000'; // Màu nền cho thông báo lỗi
       case 'info':

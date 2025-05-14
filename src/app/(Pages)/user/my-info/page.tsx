@@ -1,6 +1,6 @@
 'use client';
 
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import ImageKit from 'imagekit-javascript';
 
 import {
@@ -14,7 +14,6 @@ import {
   Typography,
   CircularProgress,
   Paper,
-  Avatar,
   Card,
   CardContent,
   Tabs,
@@ -29,19 +28,15 @@ import {
 import Grid2 from '@mui/material/Grid2';
 import {
   Person,
-  BorderColorRounded,
-  AddAPhoto,
   Clear,
   Save,
   LocalOffer,
   ExpandMore,
   CalendarMonth,
   CheckCircle,
-  Info,
   Edit,
   PhotoCamera,
 } from '@mui/icons-material';
-import { useSnackbar } from 'notistack';
 import UserLayout from '@/app/components/UserLayout';
 import { AppContext } from '@/app/contexts/AppContext';
 import { useUserApiPrivate } from '@/api/user/user';
@@ -49,7 +44,7 @@ import { UserInfo, UserUpdateData } from '@/types/UserType';
 import { msgDetail, ROUTES } from '@/utility/constant';
 import { useUploadAuthApi } from '@/api/auth/upload-auth';
 import Image from '@/app/components/Image';
-import { privateApi, publicApi } from '@/api/base';
+import { privateApi } from '@/api/base';
 
 export default function MyInfo() {
   const { user, setUser, setOpenSnackBar } = useContext(AppContext);
@@ -76,10 +71,10 @@ export default function MyInfo() {
   const [isDiscard, setIsDiscard] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const { GET_P, POST_P } = useUserApiPrivate();
 
-  const userAvatar =
-    typeof window !== 'undefined' ? JSON.parse(localStorage.getItem('userAvatar') ?? '') : '';
 
   useEffect(() => {
     const getData = async () => {
@@ -90,7 +85,7 @@ export default function MyInfo() {
         setUpdateData({
           fullName: data.user.fullName,
           phoneNumber: data.user.phoneNumber,
-          image: data.user.image ? data.user.image : userAvatar,
+          image: data.user.image ? data.user.image : '',
         });
         setUser((prev: any) => ({
           ...prev,
@@ -107,8 +102,10 @@ export default function MyInfo() {
     getData();
   }, [isUpdate]);
 
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    // console.log("file", file);
     if (file) {
       const maxSize = 2000 * 1024;
       if (file.size > maxSize) {
@@ -129,6 +126,10 @@ export default function MyInfo() {
       setSelectedFile(file);
       setIsChange(false);
       setIsDiscard(false);
+      // Đặt lại giá trị của input file
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
@@ -222,12 +223,15 @@ export default function MyInfo() {
     setUpdateData({
       fullName: userInfo.fullName,
       phoneNumber: userInfo.phoneNumber,
-      image: userInfo.image ? userInfo.image : userAvatar,
+      image: userInfo.image ? userInfo.image : '',
     });
     setOpenSnackBar({ isOpen: true, msg: msgDetail[10], type: 'warning' });
     setIsDiscard(true);
     setIsChange(true);
+    setSelectedFile(null); // Đặt lại selectedFile về null
+    setIsUpdate((prev) => !prev);
   };
+
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
@@ -334,7 +338,7 @@ export default function MyInfo() {
           <Box
             sx={{
               position: 'relative',
-              height: { xs: 20, md: 50 },
+              height: 50,
               bgcolor: 'var(--Primary-500)',
               backgroundImage:
                 'linear-gradient(135deg, var(--Primary-600) 0%, var(--Primary-400) 100%)',
@@ -396,9 +400,14 @@ export default function MyInfo() {
                   justifyContent: 'space-between',
                 }}
               >
-                <Grid2 container spacing={4}>
+                <Grid2 container spacing={4} justifyContent={"center"}>
                   {/* Avatar Section */}
-                  <MuiGrid item xs={12} md={4}>
+                  <MuiGrid item xs={12} sm={4}
+                    sx={{
+                      height: { xs: "fit-content", lg: "100%" },
+                      width: { xs: "100%", lg: "auto" }
+                    }}
+                  >
                     <Paper
                       elevation={0}
                       sx={{
@@ -410,6 +419,7 @@ export default function MyInfo() {
                         flexDirection: 'column',
                         alignItems: 'center',
                         height: '100%', // đảm bảo cao bằng với form section nếu muốn
+                        // width: { xs: "100%" }
                       }}
                     >
                       <Box
@@ -420,17 +430,33 @@ export default function MyInfo() {
                           mb: 2,
                         }}
                       >
-                        <Image
-                          src={updateData.image || ''}
-                          alt={userInfo.fullName || 'User'}
-                          fill
-                          style={{
-                            objectFit: 'cover',
-                            borderRadius: '50%',
-                            border: '4px solid white',
-                            boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
-                          }}
-                        />
+                        {updateData.image ? (
+                          <Image
+                            src={updateData.image}
+                            alt={userInfo.fullName || 'User'}
+                            fill
+                            style={{
+                              objectFit: 'cover',
+                              borderRadius: '50%',
+                              border: '4px solid white',
+                              boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                            }}
+                          />
+                        ) :
+                          <Box
+                            sx={{
+                              borderRadius: '50%',
+                              border: '4px solid white',
+                              boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                              justifyItems: "center",
+                              alignContent: "center",
+                              height: "100%"
+                            }}
+                          >
+                            <Typography>
+                              Chưa có ảnh
+                            </Typography>
+                          </Box>}
                         <Box
                           sx={{
                             position: 'absolute',
@@ -448,6 +474,7 @@ export default function MyInfo() {
                             id="change-avatar"
                             type="file"
                             onChange={handleFileChange}
+                            ref={fileInputRef} // Thêm ref vào input
                           />
                           <Tooltip title="Thay đổi ảnh đại diện" placement="top">
                             <label htmlFor="change-avatar">
@@ -486,7 +513,12 @@ export default function MyInfo() {
                   </MuiGrid>
 
                   {/* Form Section */}
-                  <MuiGrid item xs={12} md={7}>
+                  <MuiGrid item xs={12} sm={8}
+                    sx={{
+                      height: { xs: "fit-content", lg: "100%" },
+                      width: { xs: "100%", lg: "auto" }
+                    }}
+                  >
                     <Paper
                       elevation={0}
                       sx={{
@@ -495,6 +527,7 @@ export default function MyInfo() {
                         border: '1px solid',
                         borderColor: 'divider',
                         height: '100%',
+                        // width: { xs: "100%" }
                       }}
                     >
                       <Typography
@@ -506,8 +539,10 @@ export default function MyInfo() {
                         Chỉnh sửa thông tin
                       </Typography>
 
-                      <Grid2 container spacing={3}>
-                        <MuiGrid item xs={12}>
+                      <Grid2 container spacing={{ xs: 3, md: 2 }} justifyContent={{ md: "space-between" }}>
+                        <MuiGrid item xs={12} sm={4}
+                          sx={{ width: { xs: "100%", md: "auto" } }}
+                        >
                           <TextField
                             fullWidth
                             label="Họ tên"
@@ -524,7 +559,9 @@ export default function MyInfo() {
                           />
                         </MuiGrid>
 
-                        <MuiGrid item xs={12} sm={6}>
+                        <MuiGrid item xs={12} sm={4}
+                          sx={{ width: { xs: "100%", md: "auto" } }}
+                        >
                           <TextField
                             fullWidth
                             disabled
@@ -541,7 +578,9 @@ export default function MyInfo() {
                           />
                         </MuiGrid>
 
-                        <MuiGrid item xs={12} sm={6}>
+                        <MuiGrid item xs={12} sm={4}
+                          sx={{ width: { xs: "100%", md: "auto" } }}
+                        >
                           <TextField
                             fullWidth
                             label="Số điện thoại"

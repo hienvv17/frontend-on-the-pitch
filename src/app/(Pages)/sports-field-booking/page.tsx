@@ -98,6 +98,7 @@ export default function SportsFieldBooking() {
   const handleCloseDialog2 = () => setOpenDialog2(false);
   const [isFirstChange, setIsFirstChange] = useState(true);
 
+  const [sportList, setSportList] = useState<never[]>([]);
   // const datePickerRef = useRef(null); // Create a ref for the CustomDatePicker
   // useEffect(() => {
   //   // Focus the date picker when the component mounts
@@ -144,6 +145,7 @@ export default function SportsFieldBooking() {
             label: data.name,
           };
         });
+        setSportList(reformattedData2);
         setResData({
           branchs: reformattedData,
           sportFields: reformattedData2,
@@ -157,7 +159,7 @@ export default function SportsFieldBooking() {
           const temp = reformattedData2.find((item: any) => {
             return item.label.trim().toLowerCase() === sportName.trim().toLowerCase();
           });
-          console.log('temp', temp);
+          // console.log('temp', temp);
           setSearchData((prev: any) => ({
             ...prev,
             sportOption: temp,
@@ -165,7 +167,7 @@ export default function SportsFieldBooking() {
           }));
         }
 
-        console.log('branchOption', branchOption);
+        // console.log('branchOption', branchOption);
         if (branchOption.value !== 0) {
           setSearchData((prev: any) => ({
             ...prev,
@@ -180,7 +182,7 @@ export default function SportsFieldBooking() {
           }));
         }
       } catch (err) {
-        console.log('Lỗi khi gọi API: ', err);
+        console.log('Error: ', err);
       } finally {
         setIsLoading(false);
       }
@@ -203,20 +205,6 @@ export default function SportsFieldBooking() {
         endTime: null,
       }));
       setSelectedDate(null);
-      //       const reformattedData2 = resData.raw.sportFields.map((data: any) => {
-      //   return {
-      //     value: data.id,
-      //     label: data.name,
-      //   };
-      // });
-      // setResData({
-      //   branchs: reformattedData,
-      //   sportFields: reformattedData2,
-      //   raw: {
-      //     branchs: branchRes.items,
-      //     sportFields: sportCatRes.items,
-      //   },
-      // });
       return;
     }
 
@@ -240,7 +228,7 @@ export default function SportsFieldBooking() {
         const temp = reformattedData2.find((item: any) => {
           return item.label.trim().toLowerCase() === sportName.trim().toLowerCase();
         });
-        console.log('temp22', temp);
+        // console.log('temp22', temp);
         setSearchData((prev: any) => ({
           ...prev,
           sportOption: temp,
@@ -263,6 +251,7 @@ export default function SportsFieldBooking() {
       startTime: e ? moment(e, 'HH:mm') : null,
       endTime: null,
     }));
+    setData([]);
   };
 
   const handleEndTimeChange = (e: moment.Moment) => {
@@ -273,6 +262,7 @@ export default function SportsFieldBooking() {
   };
 
   const handleSelectChange = (e: any, name: string) => {
+    // console.log("e", e);
     if (name === 'sportValue') {
       setSearchData((prev) => ({
         ...prev,
@@ -293,16 +283,24 @@ export default function SportsFieldBooking() {
   const [branchFilter, setBranchFilter] = useState({});
 
   useEffect(() => {
-    console.log('resData', resData.raw.branchs);
-    console.log('searchData.branchOption', searchData.branchOption);
-    console.log('typeof branchs =', typeof resData?.raw?.branchs);
+    // console.log('resData', resData.raw.branchs);
+    // console.log('searchData.branchOption', searchData.branchOption);
+    if (searchData.branchOption === null) {
+      setBranchFilter({});
+      setResData(prevState => ({
+        ...prevState,
+        sportFields: sportList
+      }));
+      return;
+    }
+    // console.log('typeof branchs =', typeof resData?.raw?.branchs);
     const branchsObject = resData?.raw?.branchs;
     const branchsArray = Object.values(branchsObject);
     // const branchs = resData?.raw?.branchs as any[];
     const filteredBranches = branchsArray.find(
       (branch: any) => branch.name === searchData.branchOption.label,
     );
-    console.log('filteredBranches', filteredBranches);
+    // console.log('filteredBranches', filteredBranches);
     setBranchFilter(filteredBranches as any);
   }, [searchData.branchOption]);
 
@@ -327,7 +325,7 @@ export default function SportsFieldBooking() {
       endTime: formatTime(searchData.endTime) as string,
     };
 
-    console.log('searchSubmit->requestBody', requestBody);
+    // console.log('searchSubmit->requestBody', requestBody);
     // Nếu không chọn cụm sân, báo lỗi yêu cầu chọn cụm sân
     if (requestBody.branchId === 0) {
       setOpenSnackBar({ isOpen: true, msg: msgDetail[1], type: 'error' });
@@ -339,8 +337,8 @@ export default function SportsFieldBooking() {
         if (requestBodyCopy.sportCategoryId === 0) {
           delete requestBodyCopy.sportCategoryId;
         }
-        console.log('requestBody', requestBody);
-        console.log('requestBodyCopy', requestBodyCopy);
+        // console.log('requestBody', requestBody);
+        // console.log('requestBodyCopy', requestBodyCopy);
 
         let response;
         try {
@@ -412,7 +410,7 @@ export default function SportsFieldBooking() {
           }));
 
           if (response.status === 201) {
-            console.log('response', response);
+            // console.log('response', response);
             setData(response.data.items);
             setOpenSnackBar({ isOpen: true, msg: msgDetail[2], type: 'info' });
             return;
@@ -428,7 +426,7 @@ export default function SportsFieldBooking() {
             type: 'error',
           });
         } catch (error) {
-          console.log('error', error);
+          // console.log('error', error);
           setData([]);
         } finally {
           setIsSearchDone(false);
@@ -503,7 +501,7 @@ export default function SportsFieldBooking() {
 
         setOrderInfo(response.data.bookingData);
         router.push(response.data.bookingData.order_url);
-        console.log('DONE');
+        // console.log('DONE');
       } catch (err) {
         console.log('err', err);
       }
@@ -678,7 +676,7 @@ export default function SportsFieldBooking() {
                     gap: 3,
                   }}
                 >
-                  <Grid container spacing={2} alignItems="center" gap={3} justifyContent={'center'}>
+                  <Grid container alignItems="center" gap={3} justifyContent={'center'} sx={{ width: "100%" }}>
                     <Grid xs={12} md={5}>
                       <Paper
                         elevation={0}

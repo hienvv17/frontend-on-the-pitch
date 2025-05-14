@@ -53,7 +53,7 @@ export default function GoogleLoginBtn() {
   // });
 
   //version 2: sử dụng api đã deploy
-  //! không hoạt động trên di động vì trình duyệt chặn pop-up
+
 
   const handleLogin = async () => {
     setIsLoading(true);

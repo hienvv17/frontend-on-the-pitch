@@ -25,17 +25,17 @@ const faqItems = [
   {
     question: 'Phương thức thanh toán nào được chấp nhận?',
     answer:
-      'Chúng tôi chấp nhận thanh toán bằng chuyển khoản ngân hàng và thanh toán qua ví điện tử.',
+      'Chúng tôi chấp nhận thanh toán online qua ZaloPay.',
   },
   {
     question: 'Tôi đã đặt sân, bây giờ tôi muốn hủy',
     answer:
-      'Bạn có thể hủy đặt sân trước ít nhất 48 giờ để được hoàn tiền. Hủy sau thời gian đó sẽ không được hoàn tiền.',
+      'Bạn có thể hủy đặt sân trước ngày sử dụng 48 giờ để được hoàn tiền 100%, từ 24 - 48 giờ trước ngày sử dụng sẽ được hoàn 70%, trước 24 giờ ngày sử dụng sẽ được hoàn 50%. Ít hơn 24 giờ sẽ không được hoàn tiền.',
   },
   {
     question: 'Sân có cung cấp dụng cụ thể thao không?',
     answer:
-      'Một số sân có cung cấp dụng cụ thể thao, bạn vui lòng kiểm tra thông tin chi tiết trên trang đặt sân của từng sân.',
+      'Một số sân có cung cấp dụng cụ thể thao, bạn vui lòng liên hệ số hỗ trợ khách hàng <strong>0989 789 789</strong>.',
   },
   {
     question: 'Tôi có thể đặt sân cho nhóm lớn không?',

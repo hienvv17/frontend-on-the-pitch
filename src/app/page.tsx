@@ -75,6 +75,7 @@ import { publicApi } from '@/api/base';
 import { AppContext } from './contexts/AppContext';
 import Image from './components/Image';
 import BranchDetailsModal from './components/BranchDetailModal';
+import '@fontsource/inter/900.css';
 
 const HeroVideo = styled('video')({
   position: 'absolute',
@@ -284,6 +285,7 @@ export default function HomePage() {
     autoplay: true,
     autoplaySpeed: 5000,
     pauseOnHover: true,
+    arrows: false,
     responsive: [
       {
         breakpoint: 1024,
@@ -302,13 +304,15 @@ export default function HomePage() {
     ],
   };
 
-  const reviewSliderSettings = {
-    infinite: false,
-    slidesToShow: Math.min(topReviews.length, 3),
-    slidesToScroll: 3,
-    dots: true,
-    arrows: false,
-  };
+  // const safeTopReviews = Array.isArray(topReviews) ? topReviews : [];
+  // const reviewSliderSettings = {
+  //   infinite: false,
+  //   // slidesToShow: Math.min(topReviews.length, 3),
+  //   slidesToShow: 1,
+  //   slidesToScroll: 1,
+  //   dots: true,
+  //   arrows: false,
+  // };
 
   const [chipSelected, setChipSelected] = React.useState({
     soccer: {
@@ -439,7 +443,7 @@ export default function HomePage() {
               justifyContent: 'center',
               color: 'white',
               textAlign: { xs: 'center', md: 'left' },
-              pt: { xs: 8, md: 0 },
+              mt: "-70px",
             }}
           >
             <motion.div
@@ -450,10 +454,11 @@ export default function HomePage() {
               <Typography
                 variant="h1"
                 sx={{
-                  fontSize: { xs: '2rem', sm: '2.8rem', md: '3.5rem' },
-                  fontWeight: 800,
+                  fontSize: { xs: '1.8rem', sm: '2.8rem', md: '3.5rem' },
+                  fontFamily: 'Inter, sans-serif',
+                  fontWeight: 900,
                   mb: 2,
-                  // textShadow: "2px 2px 4px rgba(255, 255, 255, 0.5)",
+                  textShadow: "2px 2px 4px rgba(255, 255, 255, 0.3)",
                   color: '#E9E9E9',
                 }}
               >
@@ -470,6 +475,7 @@ export default function HomePage() {
                 <Typography
                   color="var(--Primary-50)"
                   sx={{
+                    fontSize: { xs: '0.8rem', sm: '1.2rem', md: '1.2rem' },
                     fontStyle: 'italic',
                     mb: 4,
                     maxWidth: { md: '70%' },
@@ -585,8 +591,8 @@ export default function HomePage() {
               },
               {
                 icon: <CreditCard sx={{ fontSize: 50, color: theme.palette.primary.main }} />,
-                title: 'Thanh toán linh hoạt',
-                description: 'Hỗ trợ MoMo, VNPay, thẻ tín dụng hoặc tiền mặt khi đến sân.',
+                title: 'Thanh toán mọi lúc',
+                description: 'Hỗ trợ thanh toán online qua ZaloPay khi đặt sân.',
               },
               {
                 icon: <CalendarMonth sx={{ fontSize: 50, color: theme.palette.primary.main }} />,
@@ -1320,7 +1326,7 @@ export default function HomePage() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <CustomSlider {...reviewSliderSettings}>
+            <CustomSlider {...featuredSliderSettings}>
               {topReviews.map((reviews) => (
                 <Box key={reviews.id} sx={{ px: 1, mb: 2 }}>
                   <motion.div
@@ -1335,7 +1341,7 @@ export default function HomePage() {
                         borderRadius: 4,
                         display: 'flex',
                         flexDirection: 'column',
-                        marginRight: 5,
+                        mx: 5,
                       }}
                     >
                       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>

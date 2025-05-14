@@ -1,4 +1,4 @@
-import React, {  useContext, useState } from 'react';
+import React, { useContext, useState } from 'react';
 import {
   Dialog,
   DialogActions,
@@ -20,17 +20,17 @@ interface RefundPopupProps {
 
 const RefundPopup = ({ open, onClose, onSubmit, selectedItem }: any) => {
   const [reason, setReason] = useState('');
-const { setOpenSnackBar } = useContext(AppContext);
+  const { setOpenSnackBar } = useContext(AppContext);
   const handleSubmit = () => {
     if (reason.trim()) {
-      onSubmit(reason, selectedItem); 
+      onSubmit(reason, selectedItem);
     } else {
-     
-       setOpenSnackBar({
-              isOpen: true,
-              msg: msgDetail[22], 
-              type: 'error',
-            });
+
+      setOpenSnackBar({
+        isOpen: true,
+        msg: msgDetail[22],
+        type: 'error',
+      });
     }
   };
 
@@ -91,8 +91,8 @@ const { setOpenSnackBar } = useContext(AppContext);
             color: '#555',
             ':hover': {
               backgroundColor: '#D32F2F',
-              borderColor:"transparent",
-              color:"#fff"
+              borderColor: "transparent",
+              color: "#fff"
             }
           }}
         >

@@ -77,8 +77,8 @@ export default function TimeSlotSelector({
   };
 
   const handleContinue = () => {
-    console.log('rest.startTime', rest.startTime);
-    console.log('rest.endTime', rest.endTime);
+    // console.log('rest.startTime', rest.startTime);
+    // console.log('rest.endTime', rest.endTime);
 
     if (rest.startTime === '' || rest.endTime === '') {
       setTimeout(() => {
@@ -249,7 +249,7 @@ export default function TimeSlotSelector({
                 name="bookingDate"
                 value={rest.selectedDate}
                 // setSelectedDate={setSelectedDate}
-                onChange={() => {}}
+                onChange={() => { }}
                 isBusy={true}
               />
             </Grid>
