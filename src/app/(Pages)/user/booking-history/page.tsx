@@ -409,7 +409,6 @@ export default function BookingHistory() {
                                 sx={{ color: 'var(--Primary-700)' }}
                               >
                                 {formatCurrency(item.totalPrice || 0)}
-                                {formatCurrency(item.totalPrice || 0)}
                               </Typography>
                             </TableCell>
 
