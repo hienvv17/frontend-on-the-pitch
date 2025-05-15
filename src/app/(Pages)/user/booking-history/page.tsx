@@ -1,5 +1,6 @@
 'use client';
 import { type SetStateAction, useContext, useEffect, useState } from 'react';
+import { type SetStateAction, useContext, useEffect, useState } from 'react';
 import UserLayout from '@/app/components/UserLayout';
 import { useUserApiPrivate } from '@/api/user/user';
 import {
@@ -37,6 +38,11 @@ import { privateApi } from '@/api/base';
 import { AppContext } from '@/app/contexts/AppContext';
 import { msgDetail } from '@/utility/constant';
 import PaymentNowPopUp from '@/app/components/PaymentNowPopup';
+import RefundPopup from '@/app/components/RefundPopup';
+import { privateApi } from '@/api/base';
+import { AppContext } from '@/app/contexts/AppContext';
+import { msgDetail } from '@/utility/constant';
+import PaymentNowPopUp from '@/app/components/PaymentNowPopup';
 
 const allowedColors = [
   'default',
@@ -58,7 +64,7 @@ export default function BookingHistory() {
   const [history, setHistory] = useState<any>([]);
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(0);
-  const [rowsPerPage, setRowsPerPage] = useState(10);
+  const [rowsPerPage, setRowsPerPage] = useState(5);
   const [ratingModalOpen, setRatingModalOpen] = useState(false);
   const [viewRatingModalOpen, setViewRatingModalOpen] = useState(false);
   const [currentBooking, setCurrentBooking] = useState<any>(null);
@@ -67,10 +73,30 @@ export default function BookingHistory() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [openPaymentPopup, setOpenPaymentPopup] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [openRefundPopup, setOpenRefundPopup] = useState(false);
+  const [selectedItem, setSelectedItem] = useState<any>(null);
+  const [openPaymentPopup, setOpenPaymentPopup] = useState(false);
+  const [selectedOrder, setSelectedOrder] = useState(null);
 
+  const { setOpenSnackBar } = useContext(AppContext);
   const { setOpenSnackBar } = useContext(AppContext);
   const router = useRouter();
 
+  const fetchHistory = async () => {
+    try {
+      setLoading(true);
+      const data = await POST_P('/field-bookings/history');
+      setHistory(data.data.items);
+    } catch (error) {
+      console.error('Error fetching booking history:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchHistory();
   const fetchHistory = async () => {
     try {
       setLoading(true);
@@ -155,6 +181,7 @@ export default function BookingHistory() {
           msg: msgDetail[20],
           type: 'info',
         });
+
         setOpenRefundPopup(false);
       } else {
         throw new Error('Yêu cầu hoàn tiền không thành công');
@@ -171,14 +198,16 @@ export default function BookingHistory() {
     }
   };
 
-  const handleOpenModalPaymentNow = (id: any) => {
-    const booking = history.find((item: { id: any }) => item.id === id);
+  const handleOpenModalPaymentNow = (id) => {
+    const booking = history.find((item) => item.id === id);
+    console.log('booking', booking);
     if (booking) {
       setSelectedOrder(booking);
       setOpenPaymentPopup(true);
     }
   };
 
+  console.log('history', history);
   return (
     <UserLayout>
       <Box
@@ -407,6 +436,7 @@ export default function BookingHistory() {
                                 sx={{ color: 'var(--Primary-700)' }}
                               >
                                 {formatCurrency(item.totalPrice || 0)}
+                                {formatCurrency(item.totalPrice || 0)}
                               </Typography>
                             </TableCell>
 
@@ -424,22 +454,23 @@ export default function BookingHistory() {
                             <TableCell sx={{ py: 2 }}>
                               {(item.canRequestRefund === 'true' ||
                                 item.canRequestRefund === true) && (
-                                  <Button
-                                    variant="outlined"
-                                    size="small"
-                                    color="primary"
-                                    onClick={() => handleRefund(item)}
-                                    sx={{ textTransform: 'none', minWidth: 130 }}
-                                  >
-                                    Hoàn tiền
-                                  </Button>
-                                )}
+                                <Button
+                                  variant="outlined"
+                                  size="small"
+                                  color="primary"
+                                  onClick={() => handleRefund(item)}
+                                  sx={{ textTransform: 'none', minWidth: 130 }}
+                                >
+                                  Hoàn tiền
+                                </Button>
+                              )}
 
                               {item.status === 'PENDING' && (
                                 <Button
                                   variant="contained"
                                   size="small"
                                   color="primary"
+                                  onClick={() => handleOpenModalPaymentNow(item.id)}
                                   onClick={() => handleOpenModalPaymentNow(item.id)}
                                   sx={{ textTransform: 'none', minWidth: 130 }}
                                 >
@@ -451,6 +482,7 @@ export default function BookingHistory() {
                             <TableCell sx={{ py: 2 }}>
                               {item.status === 'PAID' && (
                                 <>
+                                  {item?.reviewId ? (
                                   {item?.reviewId ? (
                                     <Button
                                       variant="outlined"
@@ -512,8 +544,11 @@ export default function BookingHistory() {
               onPageChange={handleChangePage}
               rowsPerPage={rowsPerPage}
               onRowsPerPageChange={handleChangeRowsPerPage}
+              rowsPerPageOptions={[5, 10, 20, 50, 100]}
               labelRowsPerPage="Số hàng mỗi trang:"
-              labelDisplayedRows={({ from, to, count }) => `${from}-${to} của ${count}`}
+              labelDisplayedRows={({ from, to, count }) =>
+                `${from}-${to} của ${count !== -1 ? count : `nhiều hơn ${to}`}`
+              }
               sx={{
                 borderTop: '1px solid rgba(0, 0, 0, 0.08)',
                 mt: 2,
