@@ -1,6 +1,5 @@
 'use client';
 import { type SetStateAction, useContext, useEffect, useState } from 'react';
-import { type SetStateAction, useContext, useEffect, useState } from 'react';
 import UserLayout from '@/app/components/UserLayout';
 import { useUserApiPrivate } from '@/api/user/user';
 import {
@@ -38,11 +37,6 @@ import { privateApi } from '@/api/base';
 import { AppContext } from '@/app/contexts/AppContext';
 import { msgDetail } from '@/utility/constant';
 import PaymentNowPopUp from '@/app/components/PaymentNowPopup';
-import RefundPopup from '@/app/components/RefundPopup';
-import { privateApi } from '@/api/base';
-import { AppContext } from '@/app/contexts/AppContext';
-import { msgDetail } from '@/utility/constant';
-import PaymentNowPopUp from '@/app/components/PaymentNowPopup';
 
 const allowedColors = [
   'default',
@@ -73,30 +67,9 @@ export default function BookingHistory() {
   const [selectedItem, setSelectedItem] = useState<any>(null);
   const [openPaymentPopup, setOpenPaymentPopup] = useState(false);
   const [selectedOrder, setSelectedOrder] = useState(null);
-  const [isLoading, setIsLoading] = useState(false);
-  const [openRefundPopup, setOpenRefundPopup] = useState(false);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
-  const [openPaymentPopup, setOpenPaymentPopup] = useState(false);
-  const [selectedOrder, setSelectedOrder] = useState(null);
 
-  const { setOpenSnackBar } = useContext(AppContext);
   const { setOpenSnackBar } = useContext(AppContext);
   const router = useRouter();
-
-  const fetchHistory = async () => {
-    try {
-      setLoading(true);
-      const data = await POST_P('/field-bookings/history');
-      setHistory(data.data.items);
-    } catch (error) {
-      console.error('Error fetching booking history:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchHistory();
   const fetchHistory = async () => {
     try {
       setLoading(true);
@@ -198,8 +171,8 @@ export default function BookingHistory() {
     }
   };
 
-  const handleOpenModalPaymentNow = (id) => {
-    const booking = history.find((item) => item.id === id);
+  const handleOpenModalPaymentNow = (id: any) => {
+    const booking = history.find((item: any) => item.id === id);
     console.log('booking', booking);
     if (booking) {
       setSelectedOrder(booking);
@@ -471,7 +444,6 @@ export default function BookingHistory() {
                                   size="small"
                                   color="primary"
                                   onClick={() => handleOpenModalPaymentNow(item.id)}
-                                  onClick={() => handleOpenModalPaymentNow(item.id)}
                                   sx={{ textTransform: 'none', minWidth: 130 }}
                                 >
                                   Thanh toán ngay
@@ -482,7 +454,6 @@ export default function BookingHistory() {
                             <TableCell sx={{ py: 2 }}>
                               {item.status === 'PAID' && (
                                 <>
-                                  {item?.reviewId ? (
                                   {item?.reviewId ? (
                                     <Button
                                       variant="outlined"
@@ -553,9 +524,9 @@ export default function BookingHistory() {
                 borderTop: '1px solid rgba(0, 0, 0, 0.08)',
                 mt: 2,
                 '.MuiTablePagination-selectLabel, .MuiTablePagination-select, .MuiTablePagination-selectIcon, .MuiTablePagination-displayedRows':
-                {
-                  color: 'var(--Primary-700)',
-                },
+                  {
+                    color: 'var(--Primary-700)',
+                  },
               }}
             />
           </CardContent>
