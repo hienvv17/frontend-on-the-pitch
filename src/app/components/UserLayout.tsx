@@ -1,17 +1,17 @@
-"use client";
-import { Box, createTheme, ThemeProvider } from "@mui/material";
-import ResponsiveAppBar from "./ResponsiveAppBar";
-import Footer from "./Footer";
+'use client';
+import { Box, createTheme, ThemeProvider } from '@mui/material';
+import ResponsiveAppBar from './ResponsiveAppBar';
+import Footer from './Footer';
 
-import { Inter } from "next/font/google";
-import CustomSnackbar from "./CustomSnackbar";
-import { useContext } from "react";
-import { AppContext } from "../contexts/AppContext";
-import ScrollToTopBtn from "./ScrollToTopBtn";
+import { Inter } from 'next/font/google';
+import CustomSnackbar from './CustomSnackbar';
+import { useContext } from 'react';
+import { AppContext } from '../contexts/AppContext';
+import ScrollToTopBtn from './ScrollToTopBtn';
 
 const inter = Inter({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700'],
 });
 
 const theme = createTheme({
@@ -23,28 +23,28 @@ const theme = createTheme({
       // '"Segoe UI"',
       // 'Roboto',
       // '"Helvetica Neue"',
-      "Arial",
-      "sans-serif",
+      'Arial',
+      'sans-serif',
       // '"Apple Color Emoji"',
       // '"Segoe UI Emoji"',
       // '"Segoe UI Symbol"',
-    ].join(","),
+    ].join(','),
     button: {
-      textTransform: "none",
+      textTransform: 'none',
       fontWeight: 600,
-      radius: "4px",
-      padding: "6px 10px 6px 10px",
-      gap: "6px",
-      lineHeight: "24px",
-      align: "center",
+      radius: '4px',
+      padding: '6px 10px 6px 10px',
+      gap: '6px',
+      lineHeight: '24px',
+      align: 'center',
     },
   },
   palette: {
     white: {
-      main: "#fff",
-      light: "#fff",
-      dark: "#272727",
-      contrastText: "#041426",
+      main: '#fff',
+      light: '#fff',
+      dark: '#272727',
+      contrastText: '#041426',
     },
   },
   components: {
@@ -62,11 +62,11 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <Box
       sx={{
-        display: "flex",
-        flexDirection: "column",
-        bgcolor: "white",
-        minHeight: "100vh",
-        height: "fit-content",
+        display: 'flex',
+        flexDirection: 'column',
+        bgcolor: 'white',
+        minHeight: '100vh',
+        height: 'fit-content',
       }}
     >
       <ThemeProvider theme={theme}>
@@ -75,10 +75,7 @@ const UserLayout = ({ children }: { children: React.ReactNode }) => {
         <Footer />
         <ScrollToTopBtn />
       </ThemeProvider>
-      <CustomSnackbar
-        snackBar={openSnackbar}
-        setOpenSnackBar={setOpenSnackBar}
-      />
+      <CustomSnackbar snackBar={openSnackbar} setOpenSnackBar={setOpenSnackBar} />
     </Box>
   );
 };

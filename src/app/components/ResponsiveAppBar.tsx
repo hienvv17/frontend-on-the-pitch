@@ -1,44 +1,44 @@
 // "use client"
 
-import * as React from "react";
-import AppBar from "@mui/material/AppBar";
-import Box from "@mui/material/Box";
-import Toolbar from "@mui/material/Toolbar";
-import IconButton from "@mui/material/IconButton";
-import Typography from "@mui/material/Typography";
-import Menu from "@mui/material/Menu";
-import MenuIcon from "@mui/icons-material/Menu";
-import Container from "@mui/material/Container";
-import Button from "@mui/material/Button";
-import Tooltip from "@mui/material/Tooltip";
-import MenuItem from "@mui/material/MenuItem";
-import { Divider, Grid2, Stack } from "@mui/material";
-import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
-import { useContext, useEffect, useState } from "react";
-import { AppContext } from "@/app/contexts/AppContext";
-import GoogleLoginBtn from "./GoogleLoginBtn";
-import Image from "next/image";
-import AccountCircleIcon from "@mui/icons-material/AccountCircle";
-import PersonIcon from "@mui/icons-material/Person";
-import AssignmentIcon from "@mui/icons-material/Assignment";
-import LogoutIcon from "@mui/icons-material/Logout";
+import * as React from 'react';
+import AppBar from '@mui/material/AppBar';
+import Box from '@mui/material/Box';
+import Toolbar from '@mui/material/Toolbar';
+import IconButton from '@mui/material/IconButton';
+import Typography from '@mui/material/Typography';
+import Menu from '@mui/material/Menu';
+import MenuIcon from '@mui/icons-material/Menu';
+import Container from '@mui/material/Container';
+import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
+import MenuItem from '@mui/material/MenuItem';
+import { Divider, Grid2, Stack } from '@mui/material';
+import Link from 'next/link';
+import { usePathname, useRouter } from 'next/navigation';
+import { useContext, useEffect, useState } from 'react';
+import { AppContext } from '@/app/contexts/AppContext';
+import GoogleLoginBtn from './GoogleLoginBtn';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import PersonIcon from '@mui/icons-material/Person';
+import AssignmentIcon from '@mui/icons-material/Assignment';
+import LogoutIcon from '@mui/icons-material/Logout';
 import EditNoteIcon from '@mui/icons-material/EditNote';
+import Image from './Image';
 
 //định nghĩa white là loại color mới
 // Augment the palette to include an ochre color
-declare module "@mui/material/styles" {
+declare module '@mui/material/styles' {
   interface Palette {
-    white: Palette["primary"];
+    white: Palette['primary'];
   }
 
   interface PaletteOptions {
-    white?: PaletteOptions["primary"];
+    white?: PaletteOptions['primary'];
   }
 }
 
 // Update the Button's color options to include an ochre option
-declare module "@mui/material/AppBar" {
+declare module '@mui/material/AppBar' {
   interface AppBarPropsColorOverrides {
     white: true;
   }
@@ -46,38 +46,38 @@ declare module "@mui/material/AppBar" {
 
 const pages2 = [
   {
-    title: "Trang chủ",
-    url: "/",
+    title: 'Trang chủ',
+    url: '/',
   },
   {
-    title: "Đặt sân",
-    url: "/dat-san",
+    title: 'Đặt sân',
+    url: '/dat-san',
   },
   {
-    title: "Liên hệ",
-    url: "/lien-he",
+    title: 'Liên hệ',
+    url: '/lien-he',
   },
   {
-    title: "Chính sách hoàn tiền",
-    url: "/chinh-sach-hoan-tien",
+    title: 'Chính sách hoàn tiền',
+    url: '/chinh-sach-hoan-tien',
   },
 ];
 
 const settings = [
   {
-    title: "Thông tin tài khoản",
-    page: "/khach-hang/thong-tin-tai-khoan",
-    icon: <PersonIcon sx={{ color: "var(--Primary-500)" }} />,
+    title: 'Thông tin tài khoản',
+    page: '/khach-hang/thong-tin-tai-khoan',
+    icon: <PersonIcon sx={{ color: 'var(--Primary-500)' }} />,
   },
   {
-    title: "Lịch sử đặt sân",
-    page: "/khach-hang/lich-su-dat-san",
-    icon: <AssignmentIcon sx={{ color: "var(--Primary-500)" }} />,
+    title: 'Lịch sử đặt sân',
+    page: '/khach-hang/lich-su-dat-san',
+    icon: <AssignmentIcon sx={{ color: 'var(--Primary-500)' }} />,
   },
   {
-    title: "Đăng xuất",
-    page: "logout",
-    icon: <LogoutIcon sx={{ color: "red" }} />,
+    title: 'Đăng xuất',
+    page: 'logout',
+    icon: <LogoutIcon sx={{ color: 'red' }} />,
   },
 ];
 
@@ -91,18 +91,14 @@ function ResponsiveAppBar() {
   const [userAvatar, setUserAvatar] = useState<string | null>(null);
 
   useEffect(() => {
-    const storedAvatar = localStorage.getItem("userAvatar");
+    const storedAvatar = localStorage.getItem('userAvatar');
     if (storedAvatar) {
       setUserAvatar(JSON.parse(storedAvatar));
     }
   }, [isChange]);
   // console.log(userAvatar);
-  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(
-    null,
-  );
-  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(
-    null,
-  );
+  const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
+  const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
 
   const handleOpenNavMenu = (event: React.MouseEvent<HTMLElement>) => {
     setAnchorElNav(event.currentTarget);
@@ -122,7 +118,7 @@ function ResponsiveAppBar() {
   const handleMenuClick = (page: string) => {
     handleCloseUserMenu(); // Đóng menu khi chọn item
 
-    if (page === "logout") {
+    if (page === 'logout') {
       handleLogout(); // Gọi hàm logout
       // setUser(null);
     } else {
@@ -135,12 +131,12 @@ function ResponsiveAppBar() {
       position="sticky"
       sx={{
         mt: 0,
-        backgroundColor: "transparent",
-        backdropFilter: "blur(20px)",
-        boxShadow: "1px",
+        backgroundColor: 'transparent',
+        backdropFilter: 'blur(20px)',
+        boxShadow: '1px',
       }}
     >
-      <Container maxWidth="xl" sx={{ background: "rgba(255, 255, 255, 0.9)" }}>
+      <Container maxWidth="xl" sx={{ background: 'rgba(255, 255, 255, 0.9)' }}>
         <Toolbar disableGutters>
           {/* <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} /> */}
           <Box
@@ -150,7 +146,7 @@ function ResponsiveAppBar() {
               width: 32,
               // maxHeight: { xs: 233, md: 167 },
               // maxWidth: { xs: 350, md: 250 },
-              display: { xs: "none", md: "flex" },
+              display: { xs: 'none', md: 'flex' },
               mr: 1,
             }}
             alt="OTP"
@@ -164,17 +160,17 @@ function ResponsiveAppBar() {
             href="/"
             sx={{
               mr: 2,
-              display: { xs: "none", md: "flex" },
+              display: { xs: 'none', md: 'flex' },
               fontWeight: 700,
               // color: '#4F9CF9',
-              color: "var(--Primary-500)",
-              textDecoration: "none",
+              color: 'var(--Primary-500)',
+              textDecoration: 'none',
             }}
           >
             On The Pitch
           </Typography>
 
-          <Box sx={{ flexGrow: 1, display: { xs: "flex", md: "none" } }}>
+          <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
             <IconButton
               size="large"
               aria-label="account of current user"
@@ -189,26 +185,21 @@ function ResponsiveAppBar() {
               id="menu-appbar"
               anchorEl={anchorElNav}
               anchorOrigin={{
-                vertical: "bottom",
-                horizontal: "left",
+                vertical: 'bottom',
+                horizontal: 'left',
               }}
               keepMounted
               transformOrigin={{
-                vertical: "top",
-                horizontal: "left",
+                vertical: 'top',
+                horizontal: 'left',
               }}
               open={Boolean(anchorElNav)}
               onClose={handleCloseNavMenu}
-              sx={{ display: { xs: "block", md: "none" }, zIndex: 999999 }}
+              sx={{ display: { xs: 'block', md: 'none' }, zIndex: 999999 }}
             >
               {pages2.map((page) => (
-                <MenuItem
-                  key={page.title}
-                  onClick={() => router.push(`${page.url}`)}
-                >
-                  <Typography sx={{ textAlign: "center" }}>
-                    {page.title}
-                  </Typography>
+                <MenuItem key={page.title} onClick={() => router.push(`${page.url}`)}>
+                  <Typography sx={{ textAlign: 'center' }}>{page.title}</Typography>
                 </MenuItem>
               ))}
             </Menu>
@@ -221,7 +212,7 @@ function ResponsiveAppBar() {
               width: 22,
               // maxHeight: { xs: 233, md: 167 },
               // maxWidth: { xs: 350, md: 250 },
-              display: { xs: "flex", md: "none" },
+              display: { xs: 'flex', md: 'none' },
               mr: 1,
             }}
             alt="The house from the offer."
@@ -234,11 +225,11 @@ function ResponsiveAppBar() {
             href="/"
             sx={{
               mr: 2,
-              display: { xs: "flex", md: "none" },
+              display: { xs: 'flex', md: 'none' },
               flexGrow: 1,
               fontWeight: 700,
-              color: "var(--Primary-500)",
-              textDecoration: "none",
+              color: 'var(--Primary-500)',
+              textDecoration: 'none',
             }}
           >
             On The Pitch
@@ -246,9 +237,9 @@ function ResponsiveAppBar() {
           <Box
             sx={{
               flexGrow: 1,
-              display: { xs: "none", md: "flex" },
-              mx: "50px",
-              gap: "20px",
+              display: { xs: 'none', md: 'flex' },
+              mx: '50px',
+              gap: '20px',
             }}
           >
             {pages2.map((page) => (
@@ -257,19 +248,17 @@ function ResponsiveAppBar() {
                 onClick={() => router.push(`${page.url}`)}
                 sx={{
                   my: 2,
-                  color: "var(--Primary-500)",
-                  display: "block",
-                  textTransform: "none",
-                  position: "relative", // Để Divider có thể hiển thị đúng vị trí
-                  "&:hover .hover-divider": {
-                    borderBottomWidth: page.url == pathname ? "3px" : "1px", // Hiện Divider khi hover
-                    width: "100%", // Hiện từ từ
+                  color: 'var(--Primary-500)',
+                  display: 'block',
+                  textTransform: 'none',
+                  position: 'relative', // Để Divider có thể hiển thị đúng vị trí
+                  '&:hover .hover-divider': {
+                    borderBottomWidth: page.url == pathname ? '3px' : '1px', // Hiện Divider khi hover
+                    width: '100%', // Hiện từ từ
                   },
                 }}
               >
-                <Typography
-                  fontWeight={page.url == pathname ? "fontWeightBold" : "0"}
-                >
+                <Typography fontWeight={page.url == pathname ? 'fontWeightBold' : '0'}>
                   {page.title}
                 </Typography>
                 <Divider
@@ -277,11 +266,10 @@ function ResponsiveAppBar() {
                   flexItem
                   className="hover-divider"
                   sx={{
-                    bgcolor: "var(--Primary-500)",
-                    borderBottomWidth: page.url == pathname ? "3px" : "0px",
-                    width: page.url == pathname ? "100%" : "0%",
-                    transition:
-                      "width 0.3s ease-in-out, border-bottom-width 0.3s ease-in-out", // Hiệu ứng mượt mà
+                    bgcolor: 'var(--Primary-500)',
+                    borderBottomWidth: page.url == pathname ? '3px' : '0px',
+                    width: page.url == pathname ? '100%' : '0%',
+                    transition: 'width 0.3s ease-in-out, border-bottom-width 0.3s ease-in-out', // Hiệu ứng mượt mà
                   }}
                 ></Divider>
               </Button>
@@ -298,24 +286,24 @@ function ResponsiveAppBar() {
                     </>
                   }
                 >
-                  <Grid2 direction="column" sx={{ width: "fit-content" }}>
+                  <Grid2 direction="column" sx={{ width: 'fit-content' }}>
                     <Button
                       variant="contained"
                       onClick={handleOpenUserMenu}
                       sx={{
-                        textTransform: "none",
-                        background: "var(--Primary-50)",
-                        height: "46px",
-                        gap: "10px",
-                        borderRadius: "8px",
-                        minWidth: { xs: "100%", sm: "100%" }, //  Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
-                        display: "inline-flex",
-                        justifyContent: "center",
-                        p: "12px",
-                        ":hover": {
-                          boxShadow: "0 0 1px 2px var(--Primary-500)",
+                        textTransform: 'none',
+                        background: 'var(--Primary-50)',
+                        height: '46px',
+                        gap: '10px',
+                        borderRadius: '8px',
+                        minWidth: { xs: '100%', sm: '100%' }, //  Đảm bảo giữ nguyên kích thước ngay cả khi có spinner
+                        display: 'inline-flex',
+                        justifyContent: 'center',
+                        p: '12px',
+                        ':hover': {
+                          boxShadow: '0 0 1px 2px var(--Primary-500)',
                         },
-                        ":active": { background: "var(--Primary-50)" },
+                        ':active': { background: 'var(--Primary-50)' },
                       }}
                     >
                       {userAvatar ? (
@@ -325,7 +313,7 @@ function ResponsiveAppBar() {
                           height={32}
                           alt="User avatar"
                           style={{
-                            objectFit: "contain",
+                            objectFit: 'fill',
                             borderRadius: 50,
                             aspectRatio: 1 / 1,
                           }}
@@ -360,8 +348,8 @@ function ResponsiveAppBar() {
                         // height={60}
                         sx={{
                           fontWeight: 500,
-                          display: { xs: "none", sm: "block" },
-                          whiteSpace: "nowrap",
+                          display: { xs: 'none', sm: 'block' },
+                          whiteSpace: 'nowrap',
                           ml: 1,
                         }}
                       >
@@ -371,17 +359,17 @@ function ResponsiveAppBar() {
                   </Grid2>
                 </Tooltip>
                 <Menu
-                  sx={{ mt: "45px", zIndex: 999999 }}
+                  sx={{ mt: '45px', zIndex: 999999 }}
                   id="menu-appbar"
                   anchorEl={anchorElUser}
                   anchorOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
+                    vertical: 'top',
+                    horizontal: 'right',
                   }}
                   keepMounted
                   transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
+                    vertical: 'top',
+                    horizontal: 'right',
                   }}
                   open={Boolean(anchorElUser)}
                   onClose={handleCloseUserMenu}
@@ -393,9 +381,7 @@ function ResponsiveAppBar() {
                       sx={{ gap: 2 }}
                     >
                       {item.icon}
-                      <Typography sx={{ textAlign: "center" }}>
-                        {item.title}
-                      </Typography>
+                      <Typography sx={{ textAlign: 'center' }}>{item.title}</Typography>
                     </MenuItem>
                   ))}
                 </Menu>

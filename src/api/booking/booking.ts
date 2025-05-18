@@ -1,4 +1,4 @@
-import { publicApi } from "../base";
+import { publicApi } from '../base';
 
 interface SearchFieldData {
   sportCategoryId: number;
@@ -8,7 +8,7 @@ interface SearchFieldData {
   endTime: string | null;
 }
 
-const subPath = "";
+const subPath = '';
 
 const useBookingApi = () => {
   const configApi = publicApi(subPath);
@@ -19,7 +19,11 @@ const useBookingApi = () => {
   };
 
   const POST_SEARCH_FIELDS = async (url: string, data: SearchFieldData) => {
+<<<<<<< HEAD
     // console.log("-> POST_USER_PUBLIC", url, data);
+=======
+    // console.log('-> POST_USER_PUBLIC', url, data);
+>>>>>>> master
     const response = await configApi.post(url, data);
 
     return response;

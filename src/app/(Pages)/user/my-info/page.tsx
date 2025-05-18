@@ -1,7 +1,8 @@
-"use client";
+'use client';
 
-import { useContext, useEffect, useState } from "react";
-import Image from "next/image";
+import { useContext, useEffect, useRef, useState } from 'react';
+import ImageKit from 'imagekit-javascript';
+
 import {
   Box,
   Button,
@@ -13,7 +14,6 @@ import {
   Typography,
   CircularProgress,
   Paper,
-  Avatar,
   Card,
   CardContent,
   Tabs,
@@ -24,75 +24,46 @@ import {
   Chip,
   Grid as MuiGrid,
   alpha,
-} from "@mui/material";
-import Grid2 from "@mui/material/Grid2";
+} from '@mui/material';
+import Grid2 from '@mui/material/Grid2';
 import {
   Person,
-  BorderColorRounded,
-  AddAPhoto,
   Clear,
   Save,
   LocalOffer,
   ExpandMore,
   CalendarMonth,
   CheckCircle,
-  Info,
   Edit,
   PhotoCamera,
-} from "@mui/icons-material";
-import UserLayout from "@/app/components/UserLayout";
-import { AppContext } from "@/app/contexts/AppContext";
-import { useUserApiPrivate } from "@/api/user/user";
-import { UserInfo, UserUpdateData } from "@/types/UserType";
-import { msgDetail, ROUTES } from "@/utility/constant";
-
-// Sample voucher data
-const sampleVouchers = [
-  {
-    id: 1,
-    code: "SUMMER2023",
-    discount: "20%",
-    validUntil: "2023-08-31",
-    description: "Giảm 20% cho tất cả các đặt sân trong mùa hè",
-    status: "active",
-    minBooking: 200000,
-  },
-  {
-    id: 2,
-    code: "WELCOME10",
-    discount: "10%",
-    validUntil: "2023-12-31",
-    description: "Giảm 10% cho lần đặt sân đầu tiên",
-    status: "active",
-    minBooking: 100000,
-  },
-  {
-    id: 3,
-    code: "WEEKEND15",
-    discount: "15%",
-    validUntil: "2023-09-30",
-    description: "Giảm 15% cho đặt sân vào cuối tuần",
-    status: "expired",
-    minBooking: 150000,
-  },
-];
+} from '@mui/icons-material';
+import UserLayout from '@/app/components/UserLayout';
+import { AppContext } from '@/app/contexts/AppContext';
+import { useUserApiPrivate } from '@/api/user/user';
+import { UserInfo, UserUpdateData } from '@/types/UserType';
+import { msgDetail, ROUTES } from '@/utility/constant';
+import { useUploadAuthApi } from '@/api/auth/upload-auth';
+import Image from '@/app/components/Image';
+import { privateApi } from '@/api/base';
 
 export default function MyInfo() {
   const { user, setUser, setOpenSnackBar } = useContext(AppContext);
   const [activeTab, setActiveTab] = useState(0);
   const [expandedVoucher, setExpandedVoucher] = useState<number | false>(false);
-
+  const { GET_UPLOAD_AUTH } = useUploadAuthApi();
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
+  const [myVouchers, setMyVouchers] = useState<any[]>([]);
   const [userInfo, setUserInfo] = useState<UserInfo>({
-    fullName: "",
-    phoneNumber: "",
-    image: "",
-    email: "",
+    fullName: '',
+    phoneNumber: '',
+    image: '',
+    email: '',
   });
 
   const [updateData, setUpdateData] = useState<UserUpdateData>({
-    fullName: "",
-    phoneNumber: "",
-    image: "",
+    fullName: '',
+    phoneNumber: '',
+    image: '',
   });
 
   const [isChange, setIsChange] = useState(true);
@@ -100,32 +71,30 @@ export default function MyInfo() {
   const [isDiscard, setIsDiscard] = useState(true);
   const [isLoading, setIsLoading] = useState(true);
 
+  const fileInputRef = useRef<HTMLInputElement | null>(null);
+
   const { GET_P, POST_P } = useUserApiPrivate();
 
-  const userAvatar =
-    typeof window !== "undefined"
-      ? JSON.parse(localStorage.getItem("userAvatar") ?? "")
-      : "";
 
   useEffect(() => {
     const getData = async () => {
       try {
         setIsLoading(true);
-        const data = await GET_P(ROUTES.USERS + "/profile");
+        const data = await GET_P(ROUTES.USERS + '/profile');
         setUserInfo(data.user);
         setUpdateData({
           fullName: data.user.fullName,
           phoneNumber: data.user.phoneNumber,
-          image: data.user.image ? data.user.image : userAvatar,
+          image: data.user.image ? data.user.image : '',
         });
         setUser((prev: any) => ({
           ...prev,
           fullName: data.user.fullName,
           phoneNumber: data.user.phoneNumber,
-          image: data.user.image ? data.user.image : "",
+          image: data.user.image ? data.user.image : '',
         }));
       } catch (error) {
-        console.error("Error fetching user data:", error);
+        console.error('Error fetching user data:', error);
       } finally {
         setIsLoading(false);
       }
@@ -133,16 +102,18 @@ export default function MyInfo() {
     getData();
   }, [isUpdate]);
 
+
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
+    // console.log("file", file);
     if (file) {
       const maxSize = 2000 * 1024;
       if (file.size > maxSize) {
-        setOpenSnackBar({ isOpen: true, msg: msgDetail[7], type: "error" });
+        setOpenSnackBar({ isOpen: true, msg: msgDetail[7], type: 'error' });
         return;
       }
 
-      setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: "info" });
+      setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: 'info' });
 
       const reader = new FileReader();
       reader.onloadend = () => {
@@ -152,23 +123,27 @@ export default function MyInfo() {
         }));
       };
       reader.readAsDataURL(file);
-
+      setSelectedFile(file);
       setIsChange(false);
       setIsDiscard(false);
+      // Đặt lại giá trị của input file
+      if (fileInputRef.current) {
+        fileInputRef.current.value = '';
+      }
     }
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setIsDiscard(false);
     const { name, value } = e.target;
-    if (name === "email") {
+    if (name === 'email') {
       return;
     }
     setUpdateData((prev) => ({
       ...prev,
       [name]: value,
     }));
-    if (name === "phoneNumber") {
+    if (name === 'phoneNumber') {
       setIsChange(true);
       return;
     }
@@ -176,20 +151,20 @@ export default function MyInfo() {
   };
 
   const validatePhone = (value: string) => {
-    const trimValue = value.replaceAll(" ", "");
+    const trimValue = value.replaceAll(' ', '');
 
-    if (trimValue === "") {
-      setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: "info" });
+    if (trimValue === '') {
+      setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: 'info' });
       return;
     }
 
     const phoneRegex =
       /^([+]?84|0)((3[2-9]{1})|(5[2689]{1})|(7[06789]{1})|(8[123458]{1})|(9[01236789]{1}))[0-9]{7}$/;
     if (!phoneRegex.test(trimValue)) {
-      setOpenSnackBar({ isOpen: true, msg: msgDetail[8], type: "error" });
+      setOpenSnackBar({ isOpen: true, msg: msgDetail[8], type: 'error' });
       setIsChange(true);
     } else {
-      setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: "info" });
+      setOpenSnackBar({ isOpen: false, msg: msgDetail[16], type: 'info' });
       setIsChange(false);
     }
   };
@@ -204,23 +179,40 @@ export default function MyInfo() {
   const handleSave = async () => {
     try {
       setIsLoading(true);
-      const data = await POST_P(ROUTES.USERS + "/update-profile", {
+
+      let urlImage = '';
+      if (selectedFile) {
+        const data = await GET_UPLOAD_AUTH();
+        const { signature, expire, token, publicKey } = data;
+        const imagekit = new ImageKit({
+          urlEndpoint: process.env.NEXT_PUBLIC_IMAGEKIT_URL_ENDPOINT!,
+          publicKey,
+        });
+
+        const uploadResponse = await imagekit.upload({
+          file: selectedFile, // can be file object or base64 string
+          fileName: selectedFile.name,
+          token,
+          expire,
+          signature,
+        });
+        urlImage = uploadResponse.url;
+      }
+      await POST_P(ROUTES.USERS + '/update-profile', {
         fullName: updateData.fullName,
-        phoneNumber: !updateData.phoneNumber
-          ? ""
-          : "0" + updateData.phoneNumber.slice(-9),
-        image: "",
+        phoneNumber: !updateData.phoneNumber ? '' : '0' + updateData.phoneNumber.slice(-9),
+        image: urlImage || '',
       });
       setIsUpdate((prev) => !prev);
       setIsDiscard(true);
       setIsChange(true);
-      setOpenSnackBar({ isOpen: true, msg: msgDetail[11], type: "info" });
+      setOpenSnackBar({ isOpen: true, msg: msgDetail[11], type: 'info' });
     } catch (error) {
-      console.error("Error updating profile:", error);
+      console.error('Error updating profile:', error);
       setOpenSnackBar({
         isOpen: true,
-        msg: "Cập nhật thất bại",
-        type: "error",
+        msg: 'Cập nhật thất bại',
+        type: 'error',
       });
     } finally {
       setIsLoading(false);
@@ -231,15 +223,48 @@ export default function MyInfo() {
     setUpdateData({
       fullName: userInfo.fullName,
       phoneNumber: userInfo.phoneNumber,
-      image: userInfo.image ? userInfo.image : userAvatar,
+      image: userInfo.image ? userInfo.image : '',
     });
-    setOpenSnackBar({ isOpen: true, msg: msgDetail[10], type: "warning" });
+    setOpenSnackBar({ isOpen: true, msg: msgDetail[10], type: 'warning' });
     setIsDiscard(true);
     setIsChange(true);
+    setSelectedFile(null); // Đặt lại selectedFile về null
+    setIsUpdate((prev) => !prev);
   };
+
 
   const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
     setActiveTab(newValue);
+  };
+
+  useEffect(() => {
+    const getDataVouchers = async () => {
+      try {
+        setIsLoading(true);
+        const configApi = privateApi('');
+        const response = await configApi.get('/vouchers/my-voucher');
+        setMyVouchers(response.data.items);
+      } catch (error) {
+        console.error('Error fetching user data:', error);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    getDataVouchers();
+  }, []);
+  const handleCopyCode = (code: string) => {
+    navigator.clipboard
+      .writeText(code)
+      .then(() => {
+        setOpenSnackBar({
+          isOpen: true,
+          msg: msgDetail[18] + code,
+          type: 'info',
+        });
+      })
+      .catch(() => {
+        setOpenSnackBar({ isOpen: true, msg: msgDetail[19], type: 'error' });
+      });
   };
 
   const handleVoucherExpand =
@@ -249,10 +274,10 @@ export default function MyInfo() {
 
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString("vi-VN", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
+    return date.toLocaleDateString('vi-VN', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
     });
   };
 
@@ -261,31 +286,31 @@ export default function MyInfo() {
       <UserLayout>
         <Box
           sx={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            justifyContent: "center",
-            height: "80vh",
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'center',
+            justifyContent: 'center',
+            height: '80vh',
           }}
         >
           <CircularProgress
             size={60}
             thickness={4}
             sx={{
-              color: "var(--Primary-500)",
+              color: 'var(--Primary-500)',
               mb: 2,
             }}
           />
           <Typography
             variant="h6"
             sx={{
-              color: "var(--Primary-700)",
+              color: 'var(--Primary-700)',
               fontWeight: 500,
-              animation: "pulse 1.5s infinite",
-              "@keyframes pulse": {
-                "0%": { opacity: 0.6 },
-                "50%": { opacity: 1 },
-                "100%": { opacity: 0.6 },
+              animation: 'pulse 1.5s infinite',
+              '@keyframes pulse': {
+                '0%': { opacity: 0.6 },
+                '50%': { opacity: 1 },
+                '100%': { opacity: 0.6 },
               },
             }}
           >
@@ -302,23 +327,23 @@ export default function MyInfo() {
         <Card
           elevation={0}
           sx={{
-            borderRadius: "16px",
-            overflow: "hidden",
-            border: "1px solid",
-            borderColor: "divider",
+            borderRadius: '16px',
+            overflow: 'hidden',
+            border: '1px solid',
+            borderColor: 'divider',
             mb: 4,
           }}
         >
           {/* Header with background */}
           <Box
             sx={{
-              position: "relative",
-              height: { xs: 20, md: 50 },
-              bgcolor: "var(--Primary-500)",
+              position: 'relative',
+              height: 50,
+              bgcolor: 'var(--Primary-500)',
               backgroundImage:
-                "linear-gradient(135deg, var(--Primary-600) 0%, var(--Primary-400) 100%)",
-              display: "flex",
-              alignItems: "flex-end",
+                'linear-gradient(135deg, var(--Primary-600) 0%, var(--Primary-400) 100%)',
+              display: 'flex',
+              alignItems: 'flex-end',
               px: 3,
               pb: 2,
             }}
@@ -335,18 +360,18 @@ export default function MyInfo() {
             variant="fullWidth"
             sx={{
               borderBottom: 1,
-              borderColor: "divider",
-              "& .MuiTab-root": {
-                textTransform: "none",
+              borderColor: 'divider',
+              '& .MuiTab-root': {
+                textTransform: 'none',
                 fontWeight: 600,
-                fontSize: "1rem",
+                fontSize: '1rem',
                 py: 2,
               },
-              "& .Mui-selected": {
-                color: "var(--Primary-600)",
+              '& .Mui-selected': {
+                color: 'var(--Primary-600)',
               },
-              "& .MuiTabs-indicator": {
-                backgroundColor: "var(--Primary-500)",
+              '& .MuiTabs-indicator': {
+                backgroundColor: 'var(--Primary-500)',
                 height: 3,
               },
             }}
@@ -355,13 +380,13 @@ export default function MyInfo() {
               icon={<Person sx={{ mr: 1 }} />}
               iconPosition="start"
               label="Thông tin tài khoản"
-              sx={{ display: "flex" }}
+              sx={{ display: 'flex' }}
             />
             <Tab
               icon={<LocalOffer sx={{ mr: 1 }} />}
               iconPosition="start"
               label="Voucher của tôi"
-              sx={{ display: "flex" }}
+              sx={{ display: 'flex' }}
             />
           </Tabs>
 
@@ -371,74 +396,95 @@ export default function MyInfo() {
               <Box
                 sx={{
                   p: { xs: 2, md: 4 },
-                  display: "flex",
-                  justifyContent: "space-between",
+                  display: 'flex',
+                  justifyContent: 'space-between',
                 }}
               >
-                <Grid2 container spacing={4}>
+                <Grid2 container spacing={4} justifyContent={"center"}>
                   {/* Avatar Section */}
-                  <MuiGrid item xs={12} md={4}>
+                  <MuiGrid item xs={12} sm={4}
+                    sx={{
+                      height: { xs: "fit-content", lg: "100%" },
+                      width: { xs: "100%", lg: "auto" }
+                    }}
+                  >
                     <Paper
                       elevation={0}
                       sx={{
                         p: 2,
-                        borderRadius: "12px",
-                        border: "1px solid",
-                        borderColor: "divider",
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        height: "100%", // đảm bảo cao bằng với form section nếu muốn
+                        borderRadius: '12px',
+                        border: '1px solid',
+                        borderColor: 'divider',
+                        display: 'flex',
+                        flexDirection: 'column',
+                        alignItems: 'center',
+                        height: '100%', // đảm bảo cao bằng với form section nếu muốn
+                        // width: { xs: "100%" }
                       }}
                     >
                       <Box
                         sx={{
-                          position: "relative",
+                          position: 'relative',
                           width: 180,
                           height: 180,
                           mb: 2,
                         }}
                       >
-                        <Avatar
-                          src={updateData.image || ""}
-                          alt={userInfo.fullName || "User"}
-                          sx={{
-                            width: "100%",
-                            height: "100%",
-                            border: "4px solid white",
-                            boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-                          }}
-                        />
+                        {updateData.image ? (
+                          <Image
+                            src={updateData.image}
+                            alt={userInfo.fullName || 'User'}
+                            fill
+                            style={{
+                              objectFit: 'cover',
+                              borderRadius: '50%',
+                              border: '4px solid white',
+                              boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                            }}
+                          />
+                        ) :
+                          <Box
+                            sx={{
+                              borderRadius: '50%',
+                              border: '4px solid white',
+                              boxShadow: '0 4px 10px rgba(0,0,0,0.1)',
+                              justifyItems: "center",
+                              alignContent: "center",
+                              height: "100%"
+                            }}
+                          >
+                            <Typography>
+                              Chưa có ảnh
+                            </Typography>
+                          </Box>}
                         <Box
                           sx={{
-                            position: "absolute",
+                            position: 'absolute',
                             bottom: 0,
                             right: 0,
-                            bgcolor: "var(--Primary-500)",
-                            borderRadius: "50%",
+                            bgcolor: 'var(--Primary-500)',
+                            borderRadius: '50%',
                             p: 0.5,
-                            boxShadow: "0 2px 5px rgba(0,0,0,0.2)",
+                            boxShadow: '0 2px 5px rgba(0,0,0,0.2)',
                           }}
                         >
                           <input
                             accept="image/*"
-                            style={{ display: "none" }}
+                            style={{ display: 'none' }}
                             id="change-avatar"
                             type="file"
                             onChange={handleFileChange}
+                            ref={fileInputRef} // Thêm ref vào input
                           />
-                          <Tooltip
-                            title="Thay đổi ảnh đại diện"
-                            placement="top"
-                          >
+                          <Tooltip title="Thay đổi ảnh đại diện" placement="top">
                             <label htmlFor="change-avatar">
                               <IconButton
                                 component="span"
                                 size="small"
                                 sx={{
-                                  color: "white",
-                                  "&:hover": {
-                                    bgcolor: alpha("#fff", 0.1),
+                                  color: 'white',
+                                  '&:hover': {
+                                    bgcolor: alpha('#fff', 0.1),
                                   },
                                 }}
                               >
@@ -450,7 +496,7 @@ export default function MyInfo() {
                       </Box>
 
                       <Typography variant="h6" fontWeight={600} gutterBottom>
-                        {userInfo.fullName || "Chưa cập nhật"}
+                        {userInfo.fullName || 'Chưa cập nhật'}
                       </Typography>
 
                       <Typography
@@ -467,77 +513,86 @@ export default function MyInfo() {
                   </MuiGrid>
 
                   {/* Form Section */}
-                  <MuiGrid item xs={12} md={7}>
+                  <MuiGrid item xs={12} sm={8}
+                    sx={{
+                      height: { xs: "fit-content", lg: "100%" },
+                      width: { xs: "100%", lg: "auto" }
+                    }}
+                  >
                     <Paper
                       elevation={0}
                       sx={{
                         p: 2,
-                        borderRadius: "12px",
-                        border: "1px solid",
-                        borderColor: "divider",
-                        height: "100%",
+                        borderRadius: '12px',
+                        border: '1px solid',
+                        borderColor: 'divider',
+                        height: '100%',
+                        // width: { xs: "100%" }
                       }}
                     >
                       <Typography
                         variant="h6"
                         fontWeight={600}
-                        sx={{ mb: 3, display: "flex", alignItems: "center" }}
+                        sx={{ mb: 3, display: 'flex', alignItems: 'center' }}
                       >
-                        <Edit
-                          sx={{ mr: 1, color: "var(--Primary-500)" }}
-                          fontSize="small"
-                        />
+                        <Edit sx={{ mr: 1, color: 'var(--Primary-500)' }} fontSize="small" />
                         Chỉnh sửa thông tin
                       </Typography>
 
-                      <Grid2 container spacing={3}>
-                        <MuiGrid item xs={12}>
+                      <Grid2 container spacing={{ xs: 3, md: 2 }} justifyContent={{ md: "space-between" }}>
+                        <MuiGrid item xs={12} sm={4}
+                          sx={{ width: { xs: "100%", md: "auto" } }}
+                        >
                           <TextField
                             fullWidth
                             label="Họ tên"
                             name="fullName"
-                            value={updateData.fullName || ""}
+                            value={updateData.fullName || ''}
                             onChange={handleChange}
                             variant="outlined"
                             InputLabelProps={{ shrink: true }}
                             sx={{
-                              "& .MuiOutlinedInput-root": {
-                                borderRadius: "10px",
+                              '& .MuiOutlinedInput-root': {
+                                borderRadius: '10px',
                               },
                             }}
                           />
                         </MuiGrid>
 
-                        <MuiGrid item xs={12} sm={6}>
+                        <MuiGrid item xs={12} sm={4}
+                          sx={{ width: { xs: "100%", md: "auto" } }}
+                        >
                           <TextField
                             fullWidth
                             disabled
                             label="Email"
                             name="email"
-                            value={userInfo?.email || ""}
+                            value={userInfo?.email || ''}
                             variant="outlined"
                             InputLabelProps={{ shrink: true }}
                             sx={{
-                              "& .MuiOutlinedInput-root": {
-                                borderRadius: "10px",
+                              '& .MuiOutlinedInput-root': {
+                                borderRadius: '10px',
                               },
                             }}
                           />
                         </MuiGrid>
 
-                        <MuiGrid item xs={12} sm={6}>
+                        <MuiGrid item xs={12} sm={4}
+                          sx={{ width: { xs: "100%", md: "auto" } }}
+                        >
                           <TextField
                             fullWidth
                             label="Số điện thoại"
                             name="phoneNumber"
-                            value={updateData?.phoneNumber || ""}
+                            value={updateData?.phoneNumber || ''}
                             onChange={handleChange}
                             onBlur={handleBlur}
                             variant="outlined"
                             InputLabelProps={{ shrink: true }}
                             sx={{
-                              "& .MuiOutlinedInput-root": {
-                                borderRadius: "10px",
+                              '& .MuiOutlinedInput-root': {
+                                borderRadius: '10px',
                               },
                             }}
                           />
@@ -548,8 +603,8 @@ export default function MyInfo() {
 
                       <Box
                         sx={{
-                          display: "flex",
-                          justifyContent: "flex-end",
+                          display: 'flex',
+                          justifyContent: 'flex-end',
                           gap: 2,
                         }}
                       >
@@ -560,8 +615,8 @@ export default function MyInfo() {
                           onClick={handleDiscard}
                           disabled={isDiscard}
                           sx={{
-                            borderRadius: "10px",
-                            textTransform: "none",
+                            borderRadius: '10px',
+                            textTransform: 'none',
                             fontWeight: 600,
                             px: 3,
                           }}
@@ -575,22 +630,22 @@ export default function MyInfo() {
                           onClick={handleSave}
                           disabled={isChange || isLoading}
                           sx={{
-                            borderRadius: "10px",
-                            textTransform: "none",
+                            borderRadius: '10px',
+                            textTransform: 'none',
                             fontWeight: 600,
                             px: 3,
                             background:
-                              "linear-gradient(90deg, var(--Primary-600) 0%, var(--Primary-500) 100%)",
-                            "&:hover": {
+                              'linear-gradient(90deg, var(--Primary-600) 0%, var(--Primary-500) 100%)',
+                            '&:hover': {
                               background:
-                                "linear-gradient(90deg, var(--Primary-700) 0%, var(--Primary-600) 100%)",
+                                'linear-gradient(90deg, var(--Primary-700) 0%, var(--Primary-600) 100%)',
                             },
                           }}
                         >
                           {isLoading ? (
                             <CircularProgress size={24} color="inherit" />
                           ) : (
-                            "Lưu thay đổi"
+                            'Lưu thay đổi'
                           )}
                         </Button>
                       </Box>
@@ -606,34 +661,29 @@ export default function MyInfo() {
                 <Typography
                   variant="h6"
                   fontWeight={600}
-                  sx={{ mb: 3, display: "flex", alignItems: "center" }}
+                  sx={{ mb: 3, display: 'flex', alignItems: 'center' }}
                 >
-                  <LocalOffer
-                    sx={{ mr: 1, color: "var(--Primary-500)" }}
-                    fontSize="small"
-                  />
+                  <LocalOffer sx={{ mr: 1, color: 'var(--Primary-500)' }} fontSize="small" />
                   Voucher của tôi
                 </Typography>
 
-                {sampleVouchers.length > 0 ? (
+                {myVouchers.length > 0 ? (
                   <Box sx={{ mb: 4 }}>
-                    {sampleVouchers.map((voucher) => (
+                    {myVouchers.map((voucher) => (
                       <Accordion
                         key={voucher.id}
                         expanded={expandedVoucher === voucher.id}
                         onChange={handleVoucherExpand(voucher.id)}
                         sx={{
                           mb: 2,
-                          borderRadius: "12px !important",
-                          overflow: "hidden",
-                          border: "1px solid",
-                          borderColor: "divider",
-                          "&:before": {
-                            display: "none",
-                          },
-                          boxShadow: "none",
-                          "&.Mui-expanded": {
-                            boxShadow: "0 4px 12px rgba(0,0,0,0.05)",
+                          borderRadius: '12px !important',
+                          overflow: 'hidden',
+                          border: '1px solid',
+                          borderColor: 'divider',
+                          '&:before': { display: 'none' },
+                          boxShadow: 'none',
+                          '&.Mui-expanded': {
+                            boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
                           },
                         }}
                       >
@@ -641,46 +691,42 @@ export default function MyInfo() {
                           expandIcon={<ExpandMore />}
                           sx={{
                             backgroundColor:
-                              voucher.status === "active"
-                                ? alpha("#f5f5f5", 0.5)
-                                : alpha("#f5f5f5", 0.8),
-                            borderBottom: "1px solid",
-                            borderColor: "divider",
+                              voucher.status === 'ACTIVE'
+                                ? alpha('#f5f5f5', 0.5)
+                                : alpha('#f5f5f5', 0.8),
+                            borderBottom: '1px solid',
+                            borderColor: 'divider',
                           }}
                         >
                           <Box
                             sx={{
-                              display: "flex",
-                              alignItems: "center",
-                              width: "100%",
+                              display: 'flex',
+                              alignItems: 'center',
+                              width: '100%',
                             }}
                           >
                             <Box
                               sx={{
-                                display: "flex",
-                                alignItems: "center",
-                                justifyContent: "center",
+                                display: 'flex',
+                                alignItems: 'center',
+                                justifyContent: 'center',
                                 width: 50,
                                 height: 50,
-                                borderRadius: "50%",
+                                borderRadius: '50%',
                                 bgcolor:
-                                  voucher.status === "active"
-                                    ? "var(--Primary-50)"
-                                    : "#f5f5f5",
+                                  voucher.status === 'ACTIVE' ? 'var(--Primary-50)' : '#f5f5f5',
                                 mr: 2,
-                                border: "1px solid",
+                                border: '1px solid',
                                 borderColor:
-                                  voucher.status === "active"
-                                    ? "var(--Primary-200)"
-                                    : "divider",
+                                  voucher.status === 'ACTIVE' ? 'var(--Primary-200)' : 'divider',
                               }}
                             >
                               <LocalOffer
                                 sx={{
                                   color:
-                                    voucher.status === "active"
-                                      ? "var(--Primary-500)"
-                                      : "text.disabled",
+                                    voucher.status === 'ACTIVE'
+                                      ? 'var(--Primary-500)'
+                                      : 'text.disabled',
                                 }}
                               />
                             </Box>
@@ -691,9 +737,7 @@ export default function MyInfo() {
                                 fontWeight={600}
                                 sx={{
                                   color:
-                                    voucher.status === "active"
-                                      ? "text.primary"
-                                      : "text.disabled",
+                                    voucher.status === 'ACTIVE' ? 'text.primary' : 'text.disabled',
                                 }}
                               >
                                 {voucher.code}
@@ -702,30 +746,21 @@ export default function MyInfo() {
                                 variant="body2"
                                 sx={{
                                   color:
-                                    voucher.status === "active"
-                                      ? "text.secondary"
-                                      : "text.disabled",
+                                    voucher.status === 'ACTIVE'
+                                      ? 'text.secondary'
+                                      : 'text.disabled',
                                 }}
                               >
-                                Giảm {voucher.discount} cho đơn từ{" "}
-                                {new Intl.NumberFormat("vi-VN").format(
-                                  voucher.minBooking
-                                )}
-                                đ
+                                Giảm {voucher.percentDiscount}% tối đa{' '}
+                                {new Intl.NumberFormat('vi-VN').format(voucher.maxDiscountAmount)}đ
+                                cho đơn từ{' '}
+                                {new Intl.NumberFormat('vi-VN').format(voucher.minBookingAmount)}đ
                               </Typography>
                             </Box>
 
                             <Chip
-                              label={
-                                voucher.status === "active"
-                                  ? "Còn hiệu lực"
-                                  : "Hết hạn"
-                              }
-                              color={
-                                voucher.status === "active"
-                                  ? "success"
-                                  : "default"
-                              }
+                              label={voucher.status === 'ACTIVE' ? 'Còn hiệu lực' : 'Hết hạn'}
+                              color={voucher.status === 'ACTIVE' ? 'success' : 'default'}
                               size="small"
                               sx={{ fontWeight: 500 }}
                             />
@@ -735,38 +770,29 @@ export default function MyInfo() {
                         <AccordionDetails sx={{ p: 3 }}>
                           <MuiGrid container spacing={2}>
                             <MuiGrid item xs={12} sm={8}>
-                              <Typography
-                                variant="body1"
-                                fontWeight={500}
-                                gutterBottom
-                              >
+                              <Typography variant="body1" fontWeight={500} gutterBottom>
                                 {voucher.description}
                               </Typography>
-                              <Typography
-                                variant="body2"
-                                color="text.secondary"
-                                paragraph
-                              >
-                                Áp dụng cho tất cả các đơn đặt sân có giá trị từ{" "}
-                                {new Intl.NumberFormat("vi-VN").format(
-                                  voucher.minBooking
-                                )}
+                              <Typography variant="body2" color="text.secondary" paragraph>
+                                Áp dụng cho các đơn đặt sân có giá trị từ{' '}
+                                {new Intl.NumberFormat('vi-VN').format(voucher.minBookingAmount)}
                                 đ.
                               </Typography>
                               <Box
                                 sx={{
-                                  display: "flex",
-                                  alignItems: "center",
+                                  display: 'flex',
+                                  alignItems: 'center',
                                   mt: 2,
                                 }}
                               >
                                 <Button
                                   variant="outlined"
                                   size="small"
-                                  disabled={voucher.status !== "active"}
+                                  disabled={voucher.status == 'INACTIVE'}
+                                  onClick={() => handleCopyCode(voucher.code)}
                                   sx={{
-                                    borderRadius: "8px",
-                                    textTransform: "none",
+                                    borderRadius: '8px',
+                                    textTransform: 'none',
                                     fontWeight: 600,
                                   }}
                                 >
@@ -780,43 +806,37 @@ export default function MyInfo() {
                                 elevation={0}
                                 sx={{
                                   p: 2,
-                                  borderRadius: "10px",
-                                  bgcolor: "var(--Primary-50)",
-                                  border: "1px dashed var(--Primary-200)",
+                                  borderRadius: '10px',
+                                  bgcolor: 'var(--Primary-50)',
+                                  border: '1px dashed var(--Primary-200)',
                                 }}
                               >
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                  gutterBottom
-                                >
+                                <Typography variant="body2" color="text.secondary" gutterBottom>
                                   Thông tin
                                 </Typography>
                                 <Box
                                   sx={{
-                                    display: "flex",
-                                    alignItems: "center",
+                                    display: 'flex',
+                                    alignItems: 'center',
                                     mb: 1,
                                   }}
                                 >
                                   <CalendarMonth
                                     fontSize="small"
-                                    sx={{ color: "var(--Primary-500)", mr: 1 }}
+                                    sx={{ color: 'var(--Primary-500)', mr: 1 }}
                                   />
                                   <Typography variant="body2">
-                                    HSD: {formatDate(voucher.validUntil)}
+                                    HSD: {formatDate(voucher.validTo)}
                                   </Typography>
                                 </Box>
-                                <Box
-                                  sx={{ display: "flex", alignItems: "center" }}
-                                >
+                                <Box sx={{ display: 'flex', alignItems: 'center' }}>
                                   <CheckCircle
                                     fontSize="small"
                                     sx={{
                                       color:
-                                        voucher.status === "active"
-                                          ? "success.main"
-                                          : "text.disabled",
+                                        voucher.status === 'ACTIVE'
+                                          ? 'success.main'
+                                          : 'text.disabled',
                                       mr: 1,
                                     }}
                                   />
@@ -824,14 +844,12 @@ export default function MyInfo() {
                                     variant="body2"
                                     sx={{
                                       color:
-                                        voucher.status === "active"
-                                          ? "text.primary"
-                                          : "text.disabled",
+                                        voucher.status === 'ACTIVE'
+                                          ? 'text.primary'
+                                          : 'text.disabled',
                                     }}
                                   >
-                                    {voucher.status === "active"
-                                      ? "Có thể sử dụng"
-                                      : "Đã hết hạn"}
+                                    {voucher.status === 'ACTIVE' ? 'Có thể sử dụng' : 'Đã hết hạn'}
                                   </Typography>
                                 </Box>
                               </Paper>
@@ -844,18 +862,18 @@ export default function MyInfo() {
                 ) : (
                   <Box
                     sx={{
-                      textAlign: "center",
+                      textAlign: 'center',
                       py: 6,
                       px: 2,
-                      backgroundColor: "var(--Primary-50)",
-                      borderRadius: "16px",
-                      border: "1px dashed var(--Primary-200)",
+                      backgroundColor: 'var(--Primary-50)',
+                      borderRadius: '16px',
+                      border: '1px dashed var(--Primary-200)',
                     }}
                   >
                     <LocalOffer
                       sx={{
                         fontSize: 60,
-                        color: "var(--Primary-200)",
+                        color: 'var(--Primary-200)',
                         mb: 2,
                         opacity: 0.7,
                       }}
@@ -871,10 +889,10 @@ export default function MyInfo() {
                     <Typography
                       variant="body1"
                       color="text.secondary"
-                      sx={{ maxWidth: "600px", mx: "auto", mb: 3 }}
+                      sx={{ maxWidth: '600px', mx: 'auto', mb: 3 }}
                     >
-                      Hãy tham gia các chương trình khuyến mãi hoặc tích điểm để
-                      nhận voucher giảm giá.
+                      Hãy tham gia các chương trình khuyến mãi hoặc tích điểm để nhận voucher giảm
+                      giá.
                     </Typography>
                   </Box>
                 )}
@@ -886,4 +904,3 @@ export default function MyInfo() {
     </UserLayout>
   );
 }
-

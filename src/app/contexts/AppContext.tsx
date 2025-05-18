@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import { ACCESS_TOKEN } from "@/utility/constant";
-import { createContext, useState, ReactNode, useEffect, Dispatch, SetStateAction } from "react";
-import Cookies from "js-cookie";
+import { ACCESS_TOKEN } from '@/utility/constant';
+import { createContext, useState, ReactNode, useEffect, Dispatch, SetStateAction } from 'react';
+import Cookies from 'js-cookie';
 
-type SnackbarType = "success" | "error" | "info" | "warning";
+type SnackbarType = 'success' | 'error' | 'info' | 'warning';
 
 export interface SnackbarState {
   isOpen: boolean;
@@ -21,31 +21,33 @@ interface AppContextType {
   handleLogout: () => void;
   openSnackbar: SnackbarState;
   setOpenSnackBar: React.Dispatch<React.SetStateAction<SnackbarState>>;
-  sportName: string,
+  sportName: string;
   setSportName: React.Dispatch<React.SetStateAction<string>>;
-  branchOption: any,
-  setBranchOption: Dispatch<SetStateAction<{
-    value: number;
-    label: string;
-  }>>
-  orderInfo: any,
-  setOrderInfo: Dispatch<any>
+  branchOption: any;
+  setBranchOption: Dispatch<
+    SetStateAction<{
+      value: number;
+      label: string;
+    }>
+  >;
+  orderInfo: any;
+  setOrderInfo: Dispatch<any>;
 }
 
 export const AppContext = createContext<AppContextType>({
   isChange: false,
-  setIsChange: () => { },
+  setIsChange: () => {},
   user: null,
-  setUser: () => { },
-  handleLogout: () => { },
-  openSnackbar: { isOpen: false, msg: "", type: "info" },
-  setOpenSnackBar: () => { },
+  setUser: () => {},
+  handleLogout: () => {},
+  openSnackbar: { isOpen: false, msg: '', type: 'info' },
+  setOpenSnackBar: () => {},
   sportName: '',
-  setSportName: () => { },
+  setSportName: () => {},
   branchOption: { value: 0, label: '' },
-  setBranchOption: () => { },
+  setBranchOption: () => {},
   orderInfo: {},
-  setOrderInfo: () => { },
+  setOrderInfo: () => {},
 });
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
@@ -57,15 +59,15 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   // for snackbar
   const [openSnackbar, setOpenSnackBar] = useState<SnackbarState>({
     isOpen: false,
-    msg: "",
-    type: "info",
+    msg: '',
+    type: 'info',
   });
 
   const [orderInfo, setOrderInfo] = useState<any>();
 
   useEffect(() => {
     setIsClient(true);
-    const storedUser = localStorage.getItem("user");
+    const storedUser = localStorage.getItem('user');
     if (storedUser) {
       setUser(JSON.parse(storedUser));
     }
@@ -74,11 +76,11 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     if (isClient) {
       if (user) {
-        localStorage.setItem("user", JSON.stringify(user));
+        localStorage.setItem('user', JSON.stringify(user));
       } else {
-        console.log("No user logged");
-        localStorage.removeItem("user");
-        localStorage.removeItem("userAvatar");
+        console.log('No user logged');
+        localStorage.removeItem('user');
+        localStorage.removeItem('userAvatar');
       }
     }
   }, [user, isClient]);
@@ -111,7 +113,7 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
         branchOption,
         setBranchOption,
         orderInfo,
-        setOrderInfo
+        setOrderInfo,
       }}
     >
       {children}

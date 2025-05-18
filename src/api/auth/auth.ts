@@ -1,7 +1,7 @@
-import { ROUTES } from "@/utility/constant";
-import { publicApi } from "../base";
+import { ROUTES } from '@/utility/constant';
+import { publicApi } from '../base';
 
-const subPath = "auth";
+const subPath = 'auth';
 
 const useAuthApi = () => {
   const configApi = publicApi(subPath);

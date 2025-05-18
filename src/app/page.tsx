@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import {
   SportsSoccer,
   SportsTennis,
@@ -16,8 +16,8 @@ import {
   KeyboardArrowDown,
   CheckCircle,
   CatchingPokemon,
-  LocalFireDepartment
-} from "@mui/icons-material";
+  LocalFireDepartment,
+} from '@mui/icons-material';
 import {
   Typography,
   Box,
@@ -46,57 +46,63 @@ import {
   Grid2,
   Stack,
   CircularProgress,
-} from "@mui/material";
-import { motion } from "framer-motion";
-
-import { LocalizationProvider, DatePicker } from "@mui/x-date-pickers";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import dayjs from "dayjs";
-import ResponsiveAppBar from "./components/ResponsiveAppBar";
-import { grey } from "@mui/material/colors";
-import PhotoLibraryIcon from "@mui/icons-material/PhotoLibrary";
+  FormControlLabel,
+  Checkbox,
+  TextField,
+} from '@mui/material';
+import { motion } from 'framer-motion';
+import { useFormik } from 'formik';
+import * as Yup from 'yup';
+import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import dayjs from 'dayjs';
+import ResponsiveAppBar from './components/ResponsiveAppBar';
+import { grey } from '@mui/material/colors';
+import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 // import WhatshotIcon from '@mui/icons-material/Whatshot';
-import React, { useContext, useEffect, useRef, useState } from "react";
-import "react-responsive-carousel/lib/styles/carousel.min.css"; // requires a loader
-import { CardNews2 } from "./components/CardNews2";
-import * as demoData from "@/utility/demoData";
-import SportCard from "./components/SportCard";
-import Slider from "react-slick";
-import "slick-carousel/slick/slick.css";
-import "slick-carousel/slick/slick-theme.css";
-import ScrollToTopBtn from "./components/ScrollToTopBtn";
-import Footer from "./components/Footer";
+import React, { useContext, useEffect, useRef, useState } from 'react';
+import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
+import { CardNews2 } from './components/CardNews2';
+import * as demoData from '@/utility/demoData';
+import SportCard from './components/SportCard';
+import Slider from 'react-slick';
+import 'slick-carousel/slick/slick.css';
+import 'slick-carousel/slick/slick-theme.css';
+import ScrollToTopBtn from './components/ScrollToTopBtn';
+import Footer from './components/Footer';
 import { useRouter } from 'next/navigation';
-import { publicApi } from "@/api/base";
-import { AppContext } from "./contexts/AppContext";
-import Image from "./components/Image";
+import { publicApi } from '@/api/base';
+import { AppContext } from './contexts/AppContext';
+import Image from './components/Image';
+import BranchDetailsModal from './components/BranchDetailModal';
+import '@fontsource/inter/900.css';
 
-const HeroVideo = styled("video")({
-  position: "absolute",
-  width: "100%",
-  height: "100%",
-  objectFit: "cover",
+const HeroVideo = styled('video')({
+  position: 'absolute',
+  width: '100%',
+  height: '100%',
+  objectFit: 'cover',
   zIndex: -1,
 });
 
 const HeroOverlay = styled(Box)({
-  position: "absolute",
+  position: 'absolute',
   top: 0,
   left: 0,
-  width: "100%",
-  height: "100%",
-  backgroundColor: "rgba(0,0,0,0.5)",
+  width: '100%',
+  height: '100%',
+  backgroundColor: 'rgba(0,0,0,0.5)',
   zIndex: -1,
 });
 
 const PromoBadge = styled(Badge)(({ theme }) => ({
-  "& .MuiBadge-badge": {
+  '& .MuiBadge-badge': {
     backgroundColor: theme.palette.secondary.main,
     color: theme.palette.secondary.contrastText,
-    fontSize: "0.75rem",
-    fontWeight: "bold",
-    padding: "0 8px",
-    borderRadius: "12px",
+    fontSize: '0.75rem',
+    fontWeight: 'bold',
+    padding: '0 8px',
+    borderRadius: '12px',
   },
 }));
 
@@ -121,10 +127,10 @@ const PromoBadge = styled(Badge)(({ theme }) => ({
 const theme = createTheme({
   palette: {
     white: {
-      main: "#fff",
-      light: "#fff",
-      dark: "#272727",
-      contrastText: "#041426",
+      main: '#fff',
+      light: '#fff',
+      dark: '#272727',
+      contrastText: '#041426',
     },
   },
 });
@@ -141,27 +147,48 @@ const CustomSlider = styled(Slider)`
   }
 `;
 
-const tabIcon = [<SportsSoccer key={0} />, <SportsCricket key={1} />, <SportsTennis key={2} />, <CatchingPokemon key={3} />]
+const tabIcon = [
+  <SportsSoccer key={0} />,
+  <SportsCricket key={1} />,
+  <SportsTennis key={2} />,
+  <CatchingPokemon key={3} />,
+];
 
 export default function HomePage() {
   const router = useRouter();
   const { setSportName, setBranchOption } = useContext(AppContext);
   const [sportTab, setSportTab] = useState(0);
-  const [branch, setBranch] = useState("");
-  const [sport, setSport] = useState("");
+  const [branch, setBranch] = useState('');
+  const [sport, setSport] = useState('');
   const [date, setDate] = useState(dayjs());
-  const [courtType, setCourtType] = useState("");
+  const [courtType, setCourtType] = useState('');
   const bookingFormRef = useRef<HTMLDivElement>(null);
-  const isSmallScreen = useMediaQuery(theme.breakpoints.down("md"));
+  const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
   const [branchData, setBranchData] = useState([]);
   const [sportCategoriesData, setSportCategoriesData] = useState([]);
   const [tabData, setTabData] = useState<any[]>([]);
+  const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const [topReviews, setTopReviews] = useState<any[]>([]);
+  const handleOpenModal = (branchId: string) => {
+    setSelectedBranchId(branchId);
+    setModalOpen(true);
+  };
 
+<<<<<<< HEAD
   const handleSportTabChange = (
     event: any,
     newValue: React.SetStateAction<number>
   ) => {
     // console.log("event:" + event.target.textContent);
+=======
+  const handleCloseModal = () => {
+    setModalOpen(false);
+  };
+
+  const handleSportTabChange = (event: any, newValue: React.SetStateAction<number>) => {
+    console.log('event:' + event.target.textContent);
+>>>>>>> master
     setSportTab(newValue);
     setSportName(event.target.textContent);
   };
@@ -170,32 +197,40 @@ export default function HomePage() {
     if (sportTab === 0) {
       setSportName('Bóng đá');
     }
+<<<<<<< HEAD
     // console.log("item", item);
+=======
+    console.log('item', item);
+>>>>>>> master
     setBranchOption({
       value: item.id,
-      label: item.name
+      label: item.name,
     });
-    router.push("/dat-san");
+    router.push('/dat-san');
   };
 
   const gotoBookingPage = () => {
     setSportName('');
-    router.push("/dat-san");
+    router.push('/dat-san');
   };
 
   const gotoBookingPageWithBranch = (item: any) => {
     setSportName('');
+<<<<<<< HEAD
     // console.log("item", item);
+=======
+    console.log('item', item);
+>>>>>>> master
     setBranchOption({
       value: item.id,
-      label: item.name
+      label: item.name,
     });
-    router.push("/dat-san");
+    router.push('/dat-san');
   };
 
-  function filterBySportName(data: any, sportName = "Bóng đá") {
+  function filterBySportName(data: any, sportName = 'Bóng đá') {
     return data.filter((branch: any) =>
-      branch.sport_categories.some((category: any) => category.name === sportName)
+      branch.sport_categories.some((category: any) => category.name === sportName),
     );
   }
 
@@ -203,21 +238,21 @@ export default function HomePage() {
   const [tab1, setTab1] = useState<any[]>([]);
   const [tab2, setTab2] = useState<any[]>([]);
   const [tab3, setTab3] = useState<any[]>([]);
-  // const [tab4, setTab4] = useState<any[]>([]);
-  // const [tab5, setTab5] = useState<any[]>([]);
 
   useEffect(() => {
-
     setSportName('');
     setBranchOption({ value: 0, label: '' });
 
     const getData = async () => {
       try {
-        const configApi = publicApi("");
-        const result = await configApi.get("/branches");
-        const sportCatigories = await configApi.get("/sport-categories");
+        const configApi = publicApi('');
+        const result = await configApi.get('/branches');
+        const sportCatigories = await configApi.get('/sport-categories');
         setBranchData(result.data.items);
+<<<<<<< HEAD
         // console.log("result.data.items", result.data.items);
+=======
+>>>>>>> master
         setSportCategoriesData(sportCatigories.data.items);
 
         // sportCatigories.data.items.forEach((item: any) => {
@@ -235,14 +270,30 @@ export default function HomePage() {
         setTab1(filterBySportName(result.data.items, sportCatigories.data.items[1].name));
         setTab2(filterBySportName(result.data.items, sportCatigories.data.items[2].name));
         setTab3(filterBySportName(result.data.items, sportCatigories.data.items[3].name));
-
       } catch (error) {
         setBranchData([]);
       }
-    }
+    };
     getData();
     // setSportName('Bóng đá');
     // console.log("tabData", tabData);
+  }, []);
+
+  useEffect(() => {
+    setSportName('');
+    setBranchOption({ value: 0, label: '' });
+
+    const getData = async () => {
+      try {
+        const configApi = publicApi('');
+        const response = await configApi.get('/reviews/top-reviews');
+        setTopReviews(response.data.items);
+      } catch (error) {
+        setTopReviews([]);
+        console.error('call api error ^-^');
+      }
+    };
+    getData();
   }, []);
 
   const featuredSliderSettings = {
@@ -254,6 +305,7 @@ export default function HomePage() {
     autoplay: true,
     autoplaySpeed: 5000,
     pauseOnHover: true,
+    arrows: false,
     responsive: [
       {
         breakpoint: 1024,
@@ -272,25 +324,15 @@ export default function HomePage() {
     ],
   };
 
-  const promotionSliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: isSmallScreen ? 1 : 3,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 4000,
-  };
-
-  const reviewSliderSettings = {
-    dots: true,
-    infinite: true,
-    speed: 500,
-    slidesToShow: isSmallScreen ? 1 : 3,
-    slidesToScroll: 1,
-    autoplay: true,
-    autoplaySpeed: 6000,
-  };
+  // const safeTopReviews = Array.isArray(topReviews) ? topReviews : [];
+  // const reviewSliderSettings = {
+  //   infinite: false,
+  //   // slidesToShow: Math.min(topReviews.length, 3),
+  //   slidesToShow: 1,
+  //   slidesToScroll: 1,
+  //   dots: true,
+  //   arrows: false,
+  // };
 
   const [chipSelected, setChipSelected] = React.useState({
     soccer: {
@@ -314,9 +356,7 @@ export default function HomePage() {
   });
 
   const [selectedCarouselIndex, setSelectedCarouselIndex] = useState(0); // Xác định Carousel nào được chọn
-  const carouselRefs = useRef<(Slider | null)[]>(
-    Array.from({ length: 3 }, () => null)
-  ); // Mảng ref chứa 3 Carousel
+  const carouselRefs = useRef<(Slider | null)[]>(Array.from({ length: 3 }, () => null)); // Mảng ref chứa 3 Carousel
 
   // Khi num thay đổi, chỉ reset Carousel tương ứng
   useEffect(() => {
@@ -329,122 +369,82 @@ export default function HomePage() {
     selectedCarouselIndex,
   ]);
 
-  const handleChipClick = (
-    sport: string,
-    chipKey: string,
-    chipNum: number,
-    index: number
-  ) => {
-    setSelectedCarouselIndex(index);
-    setChipSelected((prevState) => ({
-      ...prevState,
-      [sport]: {
-        chip1: chipKey === "chip1",
-        chip2: chipKey === "chip2",
-        chip3: chipKey === "chip3",
-        chipNum: chipNum,
-      },
-    }));
-  };
-
   const scrollDown = useRef<HTMLDivElement | null>(null);
 
-  const settings = {
-    dots: true,
-    speed: 800,
-    initialSlide: 0,
-    infinite: true,
-    centerMode: !isSmallScreen,
-    slidesToShow: 5,
-    slidesToScroll: 1,
-    responsive: [
-      {
-        breakpoint: 9999,
-        settings: {
-          slidesToShow: 3,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 1024,
-        settings: {
-          slidesToShow: 2,
-          slidesToScroll: 1,
-        },
-      },
-      {
-        breakpoint: 600,
-        settings: {
-          slidesToShow: 1,
-          slidesToScroll: 1,
-        },
-      },
-    ],
-  };
+  const formik = useFormik({
+    initialValues: {
+      email: '',
+      phone: '',
+      fixedBooking: false,
+    },
+    validationSchema: Yup.object({
+      email: Yup.string().email('Email không hợp lệ').required('Vui lòng nhập email'),
+      phone: Yup.string()
+        .matches(/^[0-9]{10,11}$/, 'Số điện thoại không hợp lệ')
+        .required('Vui lòng nhập số điện thoại'),
+    }),
+    onSubmit: (values) => {
+      handleBookingRequest();
+    },
+  });
 
-  const promotions = [
-    {
-      id: 1,
-      title: "Book 5 times, get 1 free playing hour",
-      image:
-        "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
-      badge: "HOT",
-    },
-    {
-      id: 2,
-      title: "30% off when booking a court 3 days in advance",
-      image:
-        "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
-      badge: "FLASH DEAL",
-    },
-    {
-      id: 3,
-      title: "Free team shirt when booking for the first time",
-      image:
-        "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
-      badge: "NEW",
-    },
-  ];
+  const handleBookingRequest = async () => {
+    try {
+      const { email, phone } = formik.values;
+
+      const configApi = publicApi('');
+
+      const response = await configApi.post(`/fixed-booking-requests`, {
+        email,
+        phoneNumber: phone,
+      });
+
+      console.log('Yêu cầu đã gửi:', response.data);
+
+      formik.resetForm();
+    } catch (error) {
+      console.error('Lỗi khi gửi yêu cầu:', error);
+    }
+  };
 
   const reviews = [
     {
       id: 1,
-      name: "Lê Thanh Tùng",
+      name: 'Lê Thanh Tùng',
       avatar:
-        "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
+        'https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png',
       bookings: 1,
       rating: 5,
       comment:
-        "Ứng dụng đặt chỗ sân vận động nhanh chóng và dễ dàng, không cần gọi điện. Sân vận động tuyệt vời, chủ sở hữu nhiệt tình.",
+        'Ứng dụng đặt chỗ sân vận động nhanh chóng và dễ dàng, không cần gọi điện. Sân vận động tuyệt vời, chủ sở hữu nhiệt tình.',
     },
     {
       id: 2,
-      name: "Võ Văn Hiền",
+      name: 'Võ Văn Hiền',
       avatar:
-        "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
+        'https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png',
       bookings: 8,
       rating: 4.5,
       comment:
-        "Quá trình đặt chỗ rất thuận tiện. Sân luôn được bảo dưỡng tốt và nhân viên thân thiện.",
+        'Quá trình đặt chỗ rất thuận tiện. Sân luôn được bảo dưỡng tốt và nhân viên thân thiện.',
     },
     {
       id: 3,
-      name: "Nguyễn Văn Tẻm",
+      name: 'Nguyễn Văn Tẻm',
       avatar:
-        "https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png",
+        'https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png',
       bookings: 20,
       rating: 5,
       comment:
-        "Tôi thích cách dễ dàng để đặt sân với bạn bè của tôi. Hệ thống thông báo rất hữu ích!",
+        'Tôi thích cách dễ dàng để đặt sân với bạn bè của tôi. Hệ thống thông báo rất hữu ích!',
     },
   ];
-
 
   return (
     <ThemeProvider theme={theme}>
       <ResponsiveAppBar />
 
-      <Box sx={{ position: "relative", height: "100vh", overflow: "hidden" }}>
+      <Box sx={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
         <HeroVideo autoPlay muted loop>
           <source
             src="https://videos.pexels.com/video-files/5489581/5489581-hd_1920_1080_25fps.mp4"
@@ -454,19 +454,16 @@ export default function HomePage() {
         </HeroVideo>
         <HeroOverlay />
 
-        <Container
-          maxWidth="lg"
-          sx={{ height: "100%", position: "relative", zIndex: 2 }}
-        >
+        <Container maxWidth="lg" sx={{ height: '100%', position: 'relative', zIndex: 2 }}>
           <Box
             sx={{
-              height: "100%",
-              display: "flex",
-              flexDirection: "column",
-              justifyContent: "center",
-              color: "white",
-              textAlign: { xs: "center", md: "left" },
-              pt: { xs: 8, md: 0 },
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'center',
+              color: 'white',
+              textAlign: { xs: 'center', md: 'left' },
+              mt: "-70px",
             }}
           >
             <motion.div
@@ -477,15 +474,15 @@ export default function HomePage() {
               <Typography
                 variant="h1"
                 sx={{
-                  fontSize: { xs: "2rem", sm: "2.8rem", md: "3.5rem" },
-                  fontWeight: 800,
+                  fontSize: { xs: '1.8rem', sm: '2.8rem', md: '3.5rem' },
+                  fontFamily: 'Inter, sans-serif',
+                  fontWeight: 900,
                   mb: 2,
-                  // textShadow: "2px 2px 4px rgba(255, 255, 255, 0.5)",
-                  color: "#E9E9E9",
+                  textShadow: "2px 2px 4px rgba(255, 255, 255, 0.3)",
+                  color: '#E9E9E9',
                 }}
               >
-                Đặt sân nhanh chóng, thanh toán thuận tiện, sẵn sàng ra sân mọi
-                lúc.
+                Đặt sân nhanh chóng, thanh toán thuận tiện, sẵn sàng ra sân mọi lúc.
               </Typography>
             </motion.div>
 
@@ -498,10 +495,11 @@ export default function HomePage() {
                 <Typography
                   color="var(--Primary-50)"
                   sx={{
-                    fontStyle: "italic",
+                    fontSize: { xs: '0.8rem', sm: '1.2rem', md: '1.2rem' },
+                    fontStyle: 'italic',
                     mb: 4,
-                    maxWidth: { md: "70%" },
-                    textShadow: "1px 1px 2px rgba(0,0,0,0.5)",
+                    maxWidth: { md: '70%' },
+                    textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
                   }}
                 >
                   &quot;Không gì là không thể, chỉ cần bạn bắt đầu!&quot;
@@ -511,9 +509,9 @@ export default function HomePage() {
 
             <Box
               sx={{
-                display: "flex",
+                display: 'flex',
                 gap: 2,
-                justifyContent: { xs: "center", md: "flex-start" },
+                justifyContent: { xs: 'center', md: 'flex-start' },
               }}
             >
               <motion.div
@@ -530,7 +528,7 @@ export default function HomePage() {
                   // startIcon={<CalendarMonth />}
                   onClick={gotoBookingPage}
                   sx={{
-                    fontSize: { xs: "0.7rem", md: "0.8rem" },
+                    fontSize: { xs: '0.7rem', md: '0.8rem' },
                     py: { xs: 1.5, md: 2 },
                   }}
                 >
@@ -546,16 +544,16 @@ export default function HomePage() {
             >
               <Box
                 sx={{
-                  position: "absolute",
-                  bottom: "10%",
-                  left: "50%",
-                  transform: "translateX(-50%)",
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
+                  position: 'absolute',
+                  bottom: '10%',
+                  left: '50%',
+                  transform: 'translateX(-50%)',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
                 }}
               >
-                <Typography variant="body2" sx={{ mb: 0.6, color: "#fff" }}>
+                <Typography variant="body2" sx={{ mb: 0.6, color: '#fff' }}>
                   Trượt xuống
                 </Typography>
                 <motion.div
@@ -565,7 +563,7 @@ export default function HomePage() {
                     duration: 1.5,
                   }}
                 >
-                  <KeyboardArrowDown sx={{ fontSize: 40, color: "#fff" }} />
+                  <KeyboardArrowDown sx={{ fontSize: 40, color: '#fff' }} />
                 </motion.div>
               </Box>
             </motion.div>
@@ -587,19 +585,14 @@ export default function HomePage() {
               align="center"
               sx={{
                 mb: 1,
-                fontSize: { xs: "2rem", md: "2.5rem" },
+                fontSize: { xs: '2rem', md: '2.5rem' },
                 fontWeight: 700,
                 color: theme.palette.primary.dark,
               }}
             >
               Tại sao chọn chúng tôi
             </Typography>
-            <Typography
-              variant="h6"
-              align="center"
-              color="textSecondary"
-              sx={{ mb: 8 }}
-            >
+            <Typography variant="h6" align="center" color="textSecondary" sx={{ mb: 8 }}>
               Cách dễ nhất để đặt cơ sở thể thao
             </Typography>
           </motion.div>
@@ -607,44 +600,24 @@ export default function HomePage() {
           <Grid container spacing={4}>
             {[
               {
-                icon: (
-                  <CalendarMonth
-                    sx={{ fontSize: 50, color: theme.palette.primary.main }}
-                  />
-                ),
-                title: "Đặt sân nhanh chóng ",
-                description:
-                  "Chọn môn thể thao, địa điểm và xác nhận đặt sân chỉ vài bước.",
+                icon: <CalendarMonth sx={{ fontSize: 50, color: theme.palette.primary.main }} />,
+                title: 'Đặt sân nhanh chóng ',
+                description: 'Chọn môn thể thao, địa điểm và xác nhận đặt sân chỉ vài bước.',
               },
               {
-                icon: (
-                  <Place
-                    sx={{ fontSize: 50, color: theme.palette.primary.main }}
-                  />
-                ),
-                title: "Hơn 50 chi nhánh toàn quốc",
-                description:
-                  "Tìm sân gần bạn với hệ thống cơ sở thể thao rộng khắp.",
+                icon: <Place sx={{ fontSize: 50, color: theme.palette.primary.main }} />,
+                title: 'Hơn 50 chi nhánh toàn quốc',
+                description: 'Tìm sân gần bạn với hệ thống cơ sở thể thao rộng khắp.',
               },
               {
-                icon: (
-                  <CreditCard
-                    sx={{ fontSize: 50, color: theme.palette.primary.main }}
-                  />
-                ),
-                title: "Thanh toán linh hoạt",
-                description:
-                  "Hỗ trợ MoMo, VNPay, thẻ tín dụng hoặc tiền mặt khi đến sân.",
+                icon: <CreditCard sx={{ fontSize: 50, color: theme.palette.primary.main }} />,
+                title: 'Thanh toán mọi lúc',
+                description: 'Hỗ trợ thanh toán online qua ZaloPay khi đặt sân.',
               },
               {
-                icon: (
-                  <CalendarMonth
-                    sx={{ fontSize: 50, color: theme.palette.primary.main }}
-                  />
-                ),
-                title: "Quản lý đặt sân dễ dàng",
-                description:
-                  "Xem, chỉnh sửa hoặc huỷ đặt sân thông qua tài khoản cá nhân.",
+                icon: <CalendarMonth sx={{ fontSize: 50, color: theme.palette.primary.main }} />,
+                title: 'Quản lý đặt sân dễ dàng',
+                description: 'Xem, chỉnh sửa hoặc huỷ đặt sân thông qua tài khoản cá nhân.',
               },
             ].map((item, index) => (
               <Grid item xs={12} sm={6} md={3} key={index}>
@@ -658,25 +631,25 @@ export default function HomePage() {
                     elevation={0}
                     sx={{
                       p: 3,
-                      height: "100%",
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "center",
-                      textAlign: "center",
+                      height: '100%',
+                      display: 'flex',
+                      flexDirection: 'column',
+                      alignItems: 'center',
+                      textAlign: 'center',
                       borderRadius: 4,
-                      backgroundColor: "rgba(0, 0, 0, 0.02)",
-                      transition: "all 0.3s ease",
-                      "&:hover": {
-                        backgroundColor: "white",
-                        boxShadow: "0 10px 30px rgba(0,0,0,0.1)",
-                        transform: "translateY(-10px)",
+                      backgroundColor: 'rgba(0, 0, 0, 0.02)',
+                      transition: 'all 0.3s ease',
+                      '&:hover': {
+                        backgroundColor: 'white',
+                        boxShadow: '0 10px 30px rgba(0,0,0,0.1)',
+                        transform: 'translateY(-10px)',
                       },
                     }}
                   >
                     <motion.div
                       whileHover={{ scale: 1.1, rotate: 5 }}
                       transition={{
-                        type: "spring",
+                        type: 'spring',
                         stiffness: 400,
                         damping: 10,
                       }}
@@ -698,7 +671,7 @@ export default function HomePage() {
       </Box>
 
       {/* List of Sports (Tabs) */}
-      <Box sx={{ py: { xs: 6, md: 10 }, backgroundColor: "#f8f9fa" }}>
+      <Box sx={{ py: { xs: 6, md: 10 }, backgroundColor: '#f8f9fa' }}>
         <Container maxWidth="lg">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -711,19 +684,14 @@ export default function HomePage() {
               align="center"
               sx={{
                 mb: 1,
-                fontSize: { xs: "2rem", md: "2.5rem" },
+                fontSize: { xs: '2rem', md: '2.5rem' },
                 fontWeight: 700,
                 color: theme.palette.primary.dark,
               }}
             >
               Cơ sở thể thao của chúng tôi
             </Typography>
-            <Typography
-              variant="h6"
-              align="center"
-              color="textSecondary"
-              sx={{ mb: 4 }}
-            >
+            <Typography variant="h6" align="center" color="textSecondary" sx={{ mb: 4 }}>
               Lựa chọn từ nhiều môn thể thao và địa điểm khác nhau
             </Typography>
           </motion.div>
@@ -740,13 +708,13 @@ export default function HomePage() {
               centered
               sx={{
                 mb: 4,
-                "& .MuiTab-root": {
-                  fontSize: { xs: "0.9rem", md: "1rem" },
+                '& .MuiTab-root': {
+                  fontSize: { xs: '0.9rem', md: '1rem' },
                   fontWeight: 600,
                   px: { xs: 2, md: 4 },
                   py: 2,
                 },
-                "& .Mui-selected": {
+                '& .Mui-selected': {
                   color: theme.palette.primary.main,
                 },
               }}
@@ -757,16 +725,9 @@ export default function HomePage() {
                 },
               }}
             >
-              {
-                sportCategoriesData.map((item: any, index) => (
-                  <Tab key={index}
-                    label={item.name}
-                    icon={tabIcon[item.id]}
-                    iconPosition="start"
-                  />
-                ))
-              }
-
+              {sportCategoriesData.map((item: any, index) => (
+                <Tab key={index} label={item.name} icon={tabIcon[item.id]} iconPosition="start" />
+              ))}
             </Tabs>
           </motion.div>
 
@@ -774,318 +735,362 @@ export default function HomePage() {
             {/* Soccer Fields */}
             {sportTab === 0 && (
               <Grid container spacing={3} justifyContent="center">
-                {
-                  (tab0.length > 0) ?
-                    tab0.map((item, index) => (
-                      <Grid item xs={12} sm={6} md={4} key={index}>
-                        <motion.div
-                          style={{ height: '100%' }}
-                          initial={{ opacity: 0, y: 20 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.5, delay: index * 0.1 }}
-                        >
-                          <Box sx={{ position: "relative", height: "100%" }}>
-                            <Card
-                              sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                height: "100%",
-                              }}
-                            >
-                              {/* <CardMedia
+                {tab0.length > 0 ? (
+                  tab0.map((item, index) => (
+                    <Grid item xs={12} sm={6} md={4} key={index}>
+                      <motion.div
+                        style={{ height: '100%' }}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                      >
+                        <Box sx={{ position: 'relative', height: '100%' }}>
+                          <Card
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              height: '100%',
+                            }}
+                          >
+                            {/* <CardMedia
                                 component="img"
                                 height="160"
                                 image={item.images ? item.images[Math.floor(Math.random() * item.images.length)] : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`}
                                 alt={`Branch ${index + 1}`}
                               /> */}
-                              <Image
-                                alt="QR-code"
-                                src={item.images ? item.images[Math.floor(Math.random() * item.images.length)] : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`}
-                                width={400}
-                                height={240}
-                                style={{
-                                  objectFit: "fill",
-                                }}
-                              />
-                              <CardContent sx={{ flexGrow: 1 }}>
-                                <Typography
-                                  gutterBottom
-                                  variant="h6"
-                                  component="div"
-                                  sx={{ fontWeight: 600 }}
-                                >
-                                  {item.name}
-                                </Typography>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                  sx={{ mb: 1, height: "50px" }}
-                                >
-                                  {item.street + ", " + item.ward + ", " + item.district + ", " + item.city}
-                                </Typography>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                  sx={{ mb: 2 }}
-                                >
-                                  {`Mở cửa: ${item.openTime} - ${item.closeTime}`}
-                                </Typography>
-                              </CardContent>
+                            <Image
+                              alt="QR-code"
+                              src={
+                                item.images
+                                  ? item.images[Math.floor(Math.random() * item.images.length)]
+                                  : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`
+                              }
+                              width={400}
+                              height={240}
+                              style={{
+                                objectFit: 'fill',
+                              }}
+                            />
+                            <CardContent sx={{ flexGrow: 1 }}>
+                              <Typography
+                                gutterBottom
+                                variant="h6"
+                                component="div"
+                                sx={{ fontWeight: 600 }}
+                              >
+                                {item.name}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ mb: 1, height: '50px' }}
+                              >
+                                {item.street +
+                                  ', ' +
+                                  item.ward +
+                                  ', ' +
+                                  item.district +
+                                  ', ' +
+                                  item.city}
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                {`Mở cửa: ${item.openTime} - ${item.closeTime}`}
+                              </Typography>
+                            </CardContent>
 
-                              <Box sx={{ p: 2, pt: 0 }}>
-                                {/* <Button variant="outlined" color="primary" fullWidth>
+                            <Box sx={{ p: 2, pt: 0 }}>
+                              {/* <Button variant="outlined" color="primary" fullWidth>
                           Xem chi tiết
                         </Button> */}
-                                <Button variant="contained" color="primary" fullWidth onClick={() => toBooking(item)}>
-                                  Đặt sân ngay
-                                </Button>
-                              </Box>
-                            </Card>
-                          </Box>
-                        </motion.div>
-                      </Grid>
-                    ))
-                    : (
-                      <Grid container direction="row" justifyContent={"center"}>
-                        <Typography sx={{ fontStyle: 'italic' }}>Chúng tôi đang cập nhật, bạn hãy chọn môn khác</Typography>
-                      </Grid>
-                    )
-                }
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                fullWidth
+                                onClick={() => toBooking(item)}
+                              >
+                                Đặt sân ngay
+                              </Button>
+                            </Box>
+                          </Card>
+                        </Box>
+                      </motion.div>
+                    </Grid>
+                  ))
+                ) : (
+                  <Grid container direction="row" justifyContent={'center'}>
+                    <Typography sx={{ fontStyle: 'italic' }}>
+                      Chúng tôi đang cập nhật, bạn hãy chọn môn khác
+                    </Typography>
+                  </Grid>
+                )}
               </Grid>
             )}
 
             {/* Tennis Courts */}
             {sportTab === 1 && (
               <Grid container spacing={3} justifyContent="center">
-                {
-                  (tab1.length > 0) ?
-                    tab1.map((item, index) => (
-                      <Grid item xs={12} sm={6} md={4} key={index}>
-                        <motion.div
-                          style={{ height: '100%' }}
-                          initial={{ opacity: 0, y: 20 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.5, delay: index * 0.1 }}
-                        >
-                          <Box sx={{ position: "relative", height: "100%" }}>
-                            <Card
-                              sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                height: "100%",
+                {tab1.length > 0 ? (
+                  tab1.map((item, index) => (
+                    <Grid item xs={12} sm={6} md={4} key={index}>
+                      <motion.div
+                        style={{ height: '100%' }}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                      >
+                        <Box sx={{ position: 'relative', height: '100%' }}>
+                          <Card
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              height: '100%',
+                            }}
+                          >
+                            <Image
+                              alt="QR-code"
+                              src={
+                                item.images
+                                  ? item.images[Math.floor(Math.random() * item.images.length)]
+                                  : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`
+                              }
+                              width={400}
+                              height={240}
+                              style={{
+                                objectFit: 'fill',
                               }}
-                            >
-                              <Image
-                                alt="QR-code"
-                                src={item.images ? item.images[Math.floor(Math.random() * item.images.length)] : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`}
-                                width={400}
-                                height={240}
-                                style={{
-                                  objectFit: "fill",
-                                }}
-                              />
-                              <CardContent sx={{ flexGrow: 1 }}>
-                                <Typography
-                                  gutterBottom
-                                  variant="h6"
-                                  component="div"
-                                  sx={{ fontWeight: 600 }}
-                                >
-                                  {item.name}
-                                </Typography>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                  sx={{ mb: 1, height: "50px" }}
-                                >
-                                  {item.street + ", " + item.ward + ", " + item.district + ", " + item.city}
-                                </Typography>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                  sx={{ mb: 2 }}
-                                >
-                                  {`Mở cửa: ${item.openTime} - ${item.closeTime}`}
-                                </Typography>
-                              </CardContent>
+                            />
+                            <CardContent sx={{ flexGrow: 1 }}>
+                              <Typography
+                                gutterBottom
+                                variant="h6"
+                                component="div"
+                                sx={{ fontWeight: 600 }}
+                              >
+                                {item.name}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ mb: 1, height: '50px' }}
+                              >
+                                {item.street +
+                                  ', ' +
+                                  item.ward +
+                                  ', ' +
+                                  item.district +
+                                  ', ' +
+                                  item.city}
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                {`Mở cửa: ${item.openTime} - ${item.closeTime}`}
+                              </Typography>
+                            </CardContent>
 
-                              <Box sx={{ p: 2, pt: 0 }}>
-                                {/* <Button variant="outlined" color="primary" fullWidth>
+                            <Box sx={{ p: 2, pt: 0 }}>
+                              {/* <Button variant="outlined" color="primary" fullWidth>
                           Xem chi tiết
                         </Button> */}
-                                <Button variant="contained" color="primary" fullWidth onClick={() => toBooking(item)}>
-                                  Đặt sân ngay
-                                </Button>
-                              </Box>
-                            </Card>
-                          </Box>
-                        </motion.div>
-                      </Grid>
-                    ))
-                    : (
-                      <Grid container direction="row" justifyContent={"center"}>
-                        <Typography sx={{ fontStyle: 'italic' }}>Chúng tôi đang cập nhật, bạn hãy chọn môn khác</Typography>
-                      </Grid>
-                    )
-                }
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                fullWidth
+                                onClick={() => toBooking(item)}
+                              >
+                                Đặt sân ngay
+                              </Button>
+                            </Box>
+                          </Card>
+                        </Box>
+                      </motion.div>
+                    </Grid>
+                  ))
+                ) : (
+                  <Grid container direction="row" justifyContent={'center'}>
+                    <Typography sx={{ fontStyle: 'italic' }}>
+                      Chúng tôi đang cập nhật, bạn hãy chọn môn khác
+                    </Typography>
+                  </Grid>
+                )}
               </Grid>
             )}
 
             {/* Pickelball */}
             {sportTab === 2 && (
               <Grid container spacing={3} justifyContent="center">
-                {
-                  (tab2.length > 0) ?
-                    tab2.map((item, index) => (
-                      <Grid item xs={12} sm={6} md={4} key={index}>
-                        <motion.div
-                          style={{ height: '100%' }}
-                          initial={{ opacity: 0, y: 20 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.5, delay: index * 0.1 }}
-                        >
-                          <Box sx={{ position: "relative", height: "100%" }}>
-                            <Card
-                              sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                height: "100%",
+                {tab2.length > 0 ? (
+                  tab2.map((item, index) => (
+                    <Grid item xs={12} sm={6} md={4} key={index}>
+                      <motion.div
+                        style={{ height: '100%' }}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                      >
+                        <Box sx={{ position: 'relative', height: '100%' }}>
+                          <Card
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              height: '100%',
+                            }}
+                          >
+                            <Image
+                              alt="QR-code"
+                              src={
+                                item.images
+                                  ? item.images[Math.floor(Math.random() * item.images.length)]
+                                  : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`
+                              }
+                              width={400}
+                              height={240}
+                              style={{
+                                objectFit: 'fill',
                               }}
-                            >
-                              <Image
-                                alt="QR-code"
-                                src={item.images ? item.images[Math.floor(Math.random() * item.images.length)] : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`}
-                                width={400}
-                                height={240}
-                                style={{
-                                  objectFit: "fill",
-                                }}
-                              />
-                              <CardContent sx={{ flexGrow: 1 }}>
-                                <Typography
-                                  gutterBottom
-                                  variant="h6"
-                                  component="div"
-                                  sx={{ fontWeight: 600 }}
-                                >
-                                  {item.name}
-                                </Typography>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                  sx={{ mb: 1, height: "50px" }}
-                                >
-                                  {item.street + ", " + item.ward + ", " + item.district + ", " + item.city}
-                                </Typography>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                  sx={{ mb: 2 }}
-                                >
-                                  {`Mở cửa: ${item.openTime} - ${item.closeTime}`}
-                                </Typography>
-                              </CardContent>
+                            />
+                            <CardContent sx={{ flexGrow: 1 }}>
+                              <Typography
+                                gutterBottom
+                                variant="h6"
+                                component="div"
+                                sx={{ fontWeight: 600 }}
+                              >
+                                {item.name}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ mb: 1, height: '50px' }}
+                              >
+                                {item.street +
+                                  ', ' +
+                                  item.ward +
+                                  ', ' +
+                                  item.district +
+                                  ', ' +
+                                  item.city}
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                {`Mở cửa: ${item.openTime} - ${item.closeTime}`}
+                              </Typography>
+                            </CardContent>
 
-                              <Box sx={{ p: 2, pt: 0 }}>
-                                {/* <Button variant="outlined" color="primary" fullWidth>
+                            <Box sx={{ p: 2, pt: 0 }}>
+                              {/* <Button variant="outlined" color="primary" fullWidth>
                           Xem chi tiết
                         </Button> */}
-                                <Button variant="contained" color="primary" fullWidth onClick={() => toBooking(item)}>
-                                  Đặt sân ngay
-                                </Button>
-                              </Box>
-                            </Card>
-                          </Box>
-                        </motion.div>
-                      </Grid>
-                    ))
-                    : (
-                      <Grid container direction="row" justifyContent={"center"}>
-                        <Typography sx={{ fontStyle: 'italic' }}>Chúng tôi đang cập nhật, bạn hãy chọn môn khác</Typography>
-                      </Grid>
-                    )
-                }
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                fullWidth
+                                onClick={() => toBooking(item)}
+                              >
+                                Đặt sân ngay
+                              </Button>
+                            </Box>
+                          </Card>
+                        </Box>
+                      </motion.div>
+                    </Grid>
+                  ))
+                ) : (
+                  <Grid container direction="row" justifyContent={'center'}>
+                    <Typography sx={{ fontStyle: 'italic' }}>
+                      Chúng tôi đang cập nhật, bạn hãy chọn môn khác
+                    </Typography>
+                  </Grid>
+                )}
               </Grid>
             )}
 
             {/* Badminton Courts */}
             {sportTab === 3 && (
               <Grid container spacing={3} justifyContent="center">
-                {
-                  (tab3.length > 0) ?
-                    tab3.map((item, index) => (
-                      <Grid item xs={12} sm={6} md={4} key={index}>
-                        <motion.div
-                          style={{ height: '100%' }}
-                          initial={{ opacity: 0, y: 20 }}
-                          whileInView={{ opacity: 1, y: 0 }}
-                          viewport={{ once: true }}
-                          transition={{ duration: 0.5, delay: index * 0.1 }}
-                        >
-                          <Box sx={{ position: "relative", height: "100%" }}>
-                            <Card
-                              sx={{
-                                display: "flex",
-                                flexDirection: "column",
-                                height: "100%",
+                {tab3.length > 0 ? (
+                  tab3.map((item, index) => (
+                    <Grid item xs={12} sm={6} md={4} key={index}>
+                      <motion.div
+                        style={{ height: '100%' }}
+                        initial={{ opacity: 0, y: 20 }}
+                        whileInView={{ opacity: 1, y: 0 }}
+                        viewport={{ once: true }}
+                        transition={{ duration: 0.5, delay: index * 0.1 }}
+                      >
+                        <Box sx={{ position: 'relative', height: '100%' }}>
+                          <Card
+                            sx={{
+                              display: 'flex',
+                              flexDirection: 'column',
+                              height: '100%',
+                            }}
+                          >
+                            <Image
+                              alt="QR-code"
+                              src={
+                                item.images
+                                  ? item.images[Math.floor(Math.random() * item.images.length)]
+                                  : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`
+                              }
+                              width={400}
+                              height={240}
+                              style={{
+                                objectFit: 'fill',
                               }}
-                            >
-                              <Image
-                                alt="QR-code"
-                                src={item.images ? item.images[Math.floor(Math.random() * item.images.length)] : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`}
-                                width={400}
-                                height={240}
-                                style={{
-                                  objectFit: "fill",
-                                }}
-                              />
-                              <CardContent sx={{ flexGrow: 1 }}>
-                                <Typography
-                                  gutterBottom
-                                  variant="h6"
-                                  component="div"
-                                  sx={{ fontWeight: 600 }}
-                                >
-                                  {item.name}
-                                </Typography>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                  sx={{ mb: 1, height: "50px" }}
-                                >
-                                  {item.street + ", " + item.ward + ", " + item.district + ", " + item.city}
-                                </Typography>
-                                <Typography
-                                  variant="body2"
-                                  color="text.secondary"
-                                  sx={{ mb: 2 }}
-                                >
-                                  {`Mở cửa: ${item.openTime} - ${item.closeTime}`}
-                                </Typography>
-                              </CardContent>
+                            />
+                            <CardContent sx={{ flexGrow: 1 }}>
+                              <Typography
+                                gutterBottom
+                                variant="h6"
+                                component="div"
+                                sx={{ fontWeight: 600 }}
+                              >
+                                {item.name}
+                              </Typography>
+                              <Typography
+                                variant="body2"
+                                color="text.secondary"
+                                sx={{ mb: 1, height: '50px' }}
+                              >
+                                {item.street +
+                                  ', ' +
+                                  item.ward +
+                                  ', ' +
+                                  item.district +
+                                  ', ' +
+                                  item.city}
+                              </Typography>
+                              <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
+                                {`Mở cửa: ${item.openTime} - ${item.closeTime}`}
+                              </Typography>
+                            </CardContent>
 
-                              <Box sx={{ p: 2, pt: 0 }}>
-                                {/* <Button variant="outlined" color="primary" fullWidth>
+                            <Box sx={{ p: 2, pt: 0 }}>
+                              {/* <Button variant="outlined" color="primary" fullWidth>
                           Xem chi tiết
                         </Button> */}
-                                <Button variant="contained" color="primary" fullWidth onClick={() => toBooking(item)}>
-                                  Đặt sân ngay
-                                </Button>
-                              </Box>
-                            </Card>
-                          </Box>
-                        </motion.div>
-                      </Grid>
-                    ))
-                    : (
-                      <Grid container direction="row" justifyContent={"center"}>
-                        <Typography sx={{ fontStyle: 'italic' }}>Chúng tôi đang cập nhật, bạn hãy chọn môn khác</Typography>
-                      </Grid>
-                    )
-                }
+                              <Button
+                                variant="contained"
+                                color="primary"
+                                fullWidth
+                                onClick={() => toBooking(item)}
+                              >
+                                Đặt sân ngay
+                              </Button>
+                            </Box>
+                          </Card>
+                        </Box>
+                      </motion.div>
+                    </Grid>
+                  ))
+                ) : (
+                  <Grid container direction="row" justifyContent={'center'}>
+                    <Typography sx={{ fontStyle: 'italic' }}>
+                      Chúng tôi đang cập nhật, bạn hãy chọn môn khác
+                    </Typography>
+                  </Grid>
+                )}
               </Grid>
             )}
           </Box>
@@ -1093,8 +1098,7 @@ export default function HomePage() {
       </Box>
 
       {/* System Branch */}
-      {
-        branchData.length > 0 && branchData.filter((item: any) => item.isHot).length > 0 &&
+      {branchData.length > 0 && branchData.filter((item: any) => item.isHot).length > 0 && (
         <Box sx={{ py: { xs: 6, md: 10 } }}>
           <Container maxWidth="lg">
             <motion.div
@@ -1108,26 +1112,22 @@ export default function HomePage() {
                 align="center"
                 sx={{
                   mb: 1,
-                  fontSize: { xs: "2rem", md: "2.5rem" },
+                  fontSize: { xs: '2rem', md: '2.5rem' },
                   fontWeight: 700,
                   color: theme.palette.primary.dark,
                 }}
               >
                 Chi nhánh nổi bật của chúng tôi
               </Typography>
-              <Typography
-                variant="h6"
-                align="center"
-                color="textSecondary"
-                sx={{ mb: 6 }}
-              >
+              <Typography variant="h6" align="center" color="textSecondary" sx={{ mb: 6 }}>
                 Đặt sân và trải nghiệm ngay
               </Typography>
             </motion.div>
 
             <Grid container spacing={3} justifyContent="center">
-              {
-                branchData.filter((item: any) => item.isHot).map((item: any, index) => (
+              {branchData
+                .filter((item: any) => item.isHot)
+                .map((item: any, index) => (
                   <Grid item xs={12} sm={6} md={4} key={index}>
                     <motion.div
                       style={{ height: '100%' }}
@@ -1136,37 +1136,43 @@ export default function HomePage() {
                       viewport={{ once: true }}
                       transition={{ duration: 0.5, delay: index * 0.1 }}
                     >
-                      <Box sx={{ position: "relative", height: "100%" }}>
+                      <Box sx={{ position: 'relative', height: '100%' }}>
                         <Box
                           display="flex"
                           alignItems="center"
                           gap={0.5}
                           sx={{
-                            position: "absolute",
+                            position: 'absolute',
                             top: 16, // Cách mép trên 8px
                             right: 8, // Cách mép phải 8px
 
-                            backgroundColor: "var(--Primary-50)", // Nền mờ giúp dễ đọc hơn
-                            borderRadius: "4px", // Bo góc nhẹ
-                            padding: "2px 6px", // Thêm padding để dễ nhìn
+                            backgroundColor: 'var(--Primary-50)', // Nền mờ giúp dễ đọc hơn
+                            borderRadius: '4px', // Bo góc nhẹ
+                            padding: '2px 6px', // Thêm padding để dễ nhìn
                           }}
                         >
-                          <LocalFireDepartment sx={{ color: "red", }} fontSize="small" />
-                          <Typography sx={{ color: "red", fontWeight: "bold" }} fontSize="1rem">
+                          <LocalFireDepartment sx={{ color: 'red' }} fontSize="small" />
+                          <Typography sx={{ color: 'red', fontWeight: 'bold' }} fontSize="1rem">
                             HOT
                           </Typography>
                         </Box>
                         <Card
                           sx={{
-                            display: "flex",
-                            flexDirection: "column",
-                            height: "100%",
+                            display: 'flex',
+                            flexDirection: 'column',
+                            height: '100%',
+                            cursor: 'pointer',
                           }}
+                          onClick={() => handleOpenModal(item.id)}
                         >
                           <CardMedia
                             component="img"
                             height="160"
-                            image={item.images ? item.images[Math.floor(Math.random() * item.images.length)] : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`}
+                            image={
+                              item.images
+                                ? item.images[Math.floor(Math.random() * item.images.length)]
+                                : `https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png`
+                            }
                             alt={`Branch ${index + 1}`}
                           />
                           <CardContent sx={{ flexGrow: 1 }}>
@@ -1181,56 +1187,135 @@ export default function HomePage() {
                             <Typography
                               variant="body2"
                               color="text.secondary"
-                              sx={{ mb: 1, height: "50px" }}
+                              sx={{ mb: 1, height: '50px' }}
                             >
-                              {item.street + ", " + item.ward + ", " + item.district + ", " + item.city}
+                              {item.street +
+                                ', ' +
+                                item.ward +
+                                ', ' +
+                                item.district +
+                                ', ' +
+                                item.city}
                             </Typography>
-                            <Typography
-                              variant="body2"
-                              color="text.secondary"
-                              sx={{ mb: 2 }}
-                            >
+                            <Typography variant="body2" color="text.secondary" sx={{ mb: 2 }}>
                               {`Mở cửa: ${item.openTime} - ${item.closeTime}`}
                             </Typography>
-                            {
-                              item.sport_categories.map((e: any) => (
-                                <Box key={e.id}
-                                  sx={{ display: "flex", alignItems: "center", mb: 1 }}
-                                >
-                                  <CheckCircle
-                                    sx={{ color: "green", mr: 1, fontSize: 16 }}
-                                  />
-                                  <Typography variant="body2">
-                                    {e.name}
-                                  </Typography>
-                                </Box>
-                              ))
-                            }
-
+                            {item.sport_categories.map((e: any) => (
+                              <Box
+                                key={e.id}
+                                sx={{
+                                  display: 'flex',
+                                  alignItems: 'center',
+                                  mb: 1,
+                                }}
+                              >
+                                <CheckCircle sx={{ color: 'green', mr: 1, fontSize: 16 }} />
+                                <Typography variant="body2">{e.name}</Typography>
+                              </Box>
+                            ))}
                           </CardContent>
 
                           <Box sx={{ p: 2, pt: 0 }}>
                             {/* <Button variant="outlined" color="primary" fullWidth>
                             Xem chi tiết
                           </Button> */}
-                            <Button variant="contained" color="primary" fullWidth onClick={() => gotoBookingPageWithBranch(item)}>
+                            <Button
+                              variant="contained"
+                              color="primary"
+                              fullWidth
+                              onClick={() => gotoBookingPageWithBranch(item)}
+                            >
                               Đặt sân ngay
                             </Button>
-
                           </Box>
                         </Card>
                       </Box>
                     </motion.div>
                   </Grid>
-                ))
-              }
+                ))}
             </Grid>
           </Container>
         </Box>
-      }
+      )}
+
+      <Box sx={{ py: 6, backgroundColor: '#f9f9f9' }}>
+        <Typography
+          variant="h4"
+          align="center"
+          gutterBottom
+          fontWeight={700}
+          sx={{
+            mb: 1,
+            fontSize: { xs: '2rem', md: '2.5rem' },
+            fontWeight: 700,
+            color: theme.palette.primary.dark,
+          }}
+        >
+          Liên hệ đặt sân cố định
+        </Typography>
+        <Typography align="center" color="text.secondary" sx={{ mb: 1 }}>
+          Để lại thông tin, chúng tôi sẽ liên hệ bạn trong thời gian sớm nhất
+        </Typography>
+
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            px: 2,
+            mt: 2,
+          }}
+        >
+          <Box
+            component="form"
+            onSubmit={formik.handleSubmit}
+            sx={{
+              width: '100%',
+              maxWidth: 500,
+              backgroundColor: '#fff',
+              p: 4,
+              borderRadius: 2,
+              boxShadow: 3,
+            }}
+          >
+            <Grid container spacing={3}>
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Email"
+                  name="email"
+                  type="email"
+                  value={formik.values.email}
+                  onChange={formik.handleChange}
+                  error={formik.touched.email && Boolean(formik.errors.email)}
+                  helperText={formik.touched.email && formik.errors.email}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <TextField
+                  fullWidth
+                  label="Số điện thoại"
+                  name="phone"
+                  value={formik.values.phone}
+                  onChange={formik.handleChange}
+                  error={formik.touched.phone && Boolean(formik.errors.phone)}
+                  helperText={formik.touched.phone && formik.errors.phone}
+                />
+              </Grid>
+
+              <Grid item xs={12}>
+                <Button type="submit" variant="contained" color="primary" fullWidth>
+                  Gửi thông tin
+                </Button>
+              </Grid>
+            </Grid>
+          </Box>
+        </Box>
+      </Box>
 
       {/* Customer Reviews */}
-      <Box sx={{ py: { xs: 6, md: 10 }, backgroundColor: "#f8f9fa" }}>
+      <Box sx={{ py: { xs: 6, md: 10 }, backgroundColor: '#f8f9fa' }}>
         <Container maxWidth="lg">
           <motion.div
             initial={{ opacity: 0, y: 20 }}
@@ -1243,19 +1328,14 @@ export default function HomePage() {
               align="center"
               sx={{
                 mb: 1,
-                fontSize: { xs: "2rem", md: "2.5rem" },
+                fontSize: { xs: '2rem', md: '2.5rem' },
                 fontWeight: 700,
                 color: theme.palette.primary.dark,
               }}
             >
               Đánh giá của khách hàng
             </Typography>
-            <Typography
-              variant="h6"
-              align="center"
-              color="textSecondary"
-              sx={{ mb: 6 }}
-            >
+            <Typography variant="h6" align="center" color="textSecondary" sx={{ mb: 6 }}>
               Khách hàng nói gì về chúng tôi
             </Typography>
           </motion.div>
@@ -1266,60 +1346,55 @@ export default function HomePage() {
             viewport={{ once: true }}
             transition={{ duration: 0.8, delay: 0.2 }}
           >
-            <CustomSlider {...reviewSliderSettings}>
-              {reviews.map((review) => (
-                <Box key={review.id} sx={{ px: 1 }}>
+            <CustomSlider {...featuredSliderSettings}>
+              {topReviews.map((reviews) => (
+                <Box key={reviews.id} sx={{ px: 1, mb: 2 }}>
                   <motion.div
                     whileHover={{ scale: 1.03 }}
-                    transition={{ type: "spring", stiffness: 400, damping: 10 }}
+                    transition={{ type: 'spring', stiffness: 400, damping: 10 }}
                   >
                     <Paper
                       elevation={2}
                       sx={{
                         p: 3,
-                        height: 280,
+                        height: 200,
                         borderRadius: 4,
-                        display: "flex",
-                        flexDirection: "column",
-                        marginRight: 5,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        mx: 5,
                       }}
                     >
-                      <Box
-                        sx={{ display: "flex", alignItems: "center", mb: 2 }}
-                      >
+                      <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                         <Avatar
-                          src={review.avatar}
-                          alt={review.name}
+                          src={reviews.userImage}
+                          alt={reviews.userName}
                           sx={{ width: 60, height: 60, mr: 2 }}
                         />
                         <Box>
                           <Typography variant="h6" sx={{ fontWeight: 600 }}>
-                            {review.name}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            {review.bookings} bookings
+                            {reviews.userName}
                           </Typography>
                         </Box>
                       </Box>
                       <Box sx={{ mb: 2 }}>
                         <Rating
-                          value={review.rating}
+                          value={reviews.rating}
                           precision={0.5}
                           readOnly
-                          icon={<Star sx={{ color: "#FFD700" }} />}
+                          icon={<Star sx={{ color: '#FFD700' }} />}
                         />
                       </Box>
                       <Typography
                         variant="body1"
                         sx={{
                           flex: 1,
-                          fontStyle: "italic",
-                          color: "text.secondary",
-                          overflow: "hidden",
-                          textOverflow: "ellipsis",
+                          fontStyle: 'italic',
+                          color: 'text.secondary',
+                          overflow: 'hidden',
+                          textOverflow: 'ellipsis',
                         }}
                       >
-                        {review.comment}
+                        {reviews.comment}
                       </Typography>
                     </Paper>
                   </motion.div>
@@ -1329,7 +1404,7 @@ export default function HomePage() {
           </motion.div>
         </Container>
       </Box>
-
+      <BranchDetailsModal open={modalOpen} onClose={handleCloseModal} branchId={selectedBranchId} />
       {/* Footer */}
       <Footer />
 
@@ -1337,4 +1412,3 @@ export default function HomePage() {
     </ThemeProvider>
   );
 }
-
