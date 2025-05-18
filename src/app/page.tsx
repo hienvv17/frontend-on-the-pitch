@@ -4,15 +4,9 @@ import {
   SportsTennis,
   SportsCricket,
   CalendarMonth,
-  Search,
   Place,
   CreditCard,
-  Notifications,
-  Share,
-  WhatsApp,
-  AccessTime,
   Star,
-  ArrowForward,
   KeyboardArrowDown,
   CheckCircle,
   CatchingPokemon,
@@ -31,40 +25,23 @@ import {
   CardContent,
   CardMedia,
   Rating,
-  Chip,
   Grid,
   Paper,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  Select,
   useMediaQuery,
   styled,
-  IconButton,
   Avatar,
-  Badge,
   Grid2,
-  Stack,
-  CircularProgress,
-  FormControlLabel,
-  Checkbox,
   TextField,
+  Divider,
 } from '@mui/material';
 import { motion } from 'framer-motion';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
-import { LocalizationProvider, DatePicker } from '@mui/x-date-pickers';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import dayjs from 'dayjs';
+// import dayjs from 'dayjs';
 import ResponsiveAppBar from './components/ResponsiveAppBar';
-import { grey } from '@mui/material/colors';
-import PhotoLibraryIcon from '@mui/icons-material/PhotoLibrary';
 // import WhatshotIcon from '@mui/icons-material/Whatshot';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import 'react-responsive-carousel/lib/styles/carousel.min.css'; // requires a loader
-import { CardNews2 } from './components/CardNews2';
-import * as demoData from '@/utility/demoData';
-import SportCard from './components/SportCard';
 import Slider from 'react-slick';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
@@ -95,16 +72,6 @@ const HeroOverlay = styled(Box)({
   zIndex: -1,
 });
 
-const PromoBadge = styled(Badge)(({ theme }) => ({
-  '& .MuiBadge-badge': {
-    backgroundColor: theme.palette.secondary.main,
-    color: theme.palette.secondary.contrastText,
-    fontSize: '0.75rem',
-    fontWeight: 'bold',
-    padding: '0 8px',
-    borderRadius: '12px',
-  },
-}));
 
 // // Augment the palette to include an ochre color
 // declare module '@mui/material/styles' {
@@ -136,7 +103,6 @@ const theme = createTheme({
 });
 
 //demo data
-const stadiumList = demoData.stadiumList;
 
 const CustomSlider = styled(Slider)`
   .slick-dots li button:before {
@@ -158,15 +124,15 @@ export default function HomePage() {
   const router = useRouter();
   const { setSportName, setBranchOption } = useContext(AppContext);
   const [sportTab, setSportTab] = useState(0);
-  const [branch, setBranch] = useState('');
-  const [sport, setSport] = useState('');
-  const [date, setDate] = useState(dayjs());
-  const [courtType, setCourtType] = useState('');
-  const bookingFormRef = useRef<HTMLDivElement>(null);
+
+
+
+
+
   const isSmallScreen = useMediaQuery(theme.breakpoints.down('md'));
   const [branchData, setBranchData] = useState([]);
   const [sportCategoriesData, setSportCategoriesData] = useState([]);
-  const [tabData, setTabData] = useState<any[]>([]);
+
   const [selectedBranchId, setSelectedBranchId] = useState<string | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [topReviews, setTopReviews] = useState<any[]>([]);
@@ -175,20 +141,12 @@ export default function HomePage() {
     setModalOpen(true);
   };
 
-<<<<<<< HEAD
-  const handleSportTabChange = (
-    event: any,
-    newValue: React.SetStateAction<number>
-  ) => {
-    // console.log("event:" + event.target.textContent);
-=======
   const handleCloseModal = () => {
     setModalOpen(false);
   };
 
   const handleSportTabChange = (event: any, newValue: React.SetStateAction<number>) => {
     console.log('event:' + event.target.textContent);
->>>>>>> master
     setSportTab(newValue);
     setSportName(event.target.textContent);
   };
@@ -197,11 +155,7 @@ export default function HomePage() {
     if (sportTab === 0) {
       setSportName('Bóng đá');
     }
-<<<<<<< HEAD
-    // console.log("item", item);
-=======
     console.log('item', item);
->>>>>>> master
     setBranchOption({
       value: item.id,
       label: item.name,
@@ -216,11 +170,7 @@ export default function HomePage() {
 
   const gotoBookingPageWithBranch = (item: any) => {
     setSportName('');
-<<<<<<< HEAD
-    // console.log("item", item);
-=======
     console.log('item', item);
->>>>>>> master
     setBranchOption({
       value: item.id,
       label: item.name,
@@ -249,10 +199,6 @@ export default function HomePage() {
         const result = await configApi.get('/branches');
         const sportCatigories = await configApi.get('/sport-categories');
         setBranchData(result.data.items);
-<<<<<<< HEAD
-        // console.log("result.data.items", result.data.items);
-=======
->>>>>>> master
         setSportCategoriesData(sportCatigories.data.items);
 
         // sportCatigories.data.items.forEach((item: any) => {
@@ -287,6 +233,7 @@ export default function HomePage() {
       try {
         const configApi = publicApi('');
         const response = await configApi.get('/reviews/top-reviews');
+        console.log("response.data.items", response.data.items);
         setTopReviews(response.data.items);
       } catch (error) {
         setTopReviews([]);
@@ -302,7 +249,7 @@ export default function HomePage() {
     speed: 500,
     slidesToShow: isSmallScreen ? 1 : 3,
     slidesToScroll: 1,
-    autoplay: true,
+    autoplay: false,
     autoplaySpeed: 5000,
     pauseOnHover: true,
     arrows: false,
@@ -383,7 +330,7 @@ export default function HomePage() {
         .matches(/^[0-9]{10,11}$/, 'Số điện thoại không hợp lệ')
         .required('Vui lòng nhập số điện thoại'),
     }),
-    onSubmit: (values) => {
+    onSubmit: () => {
       handleBookingRequest();
     },
   });
@@ -407,45 +354,15 @@ export default function HomePage() {
     }
   };
 
-  const reviews = [
-    {
-      id: 1,
-      name: 'Lê Thanh Tùng',
-      avatar:
-        'https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png',
-      bookings: 1,
-      rating: 5,
-      comment:
-        'Ứng dụng đặt chỗ sân vận động nhanh chóng và dễ dàng, không cần gọi điện. Sân vận động tuyệt vời, chủ sở hữu nhiệt tình.',
-    },
-    {
-      id: 2,
-      name: 'Võ Văn Hiền',
-      avatar:
-        'https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png',
-      bookings: 8,
-      rating: 4.5,
-      comment:
-        'Quá trình đặt chỗ rất thuận tiện. Sân luôn được bảo dưỡng tốt và nhân viên thân thiện.',
-    },
-    {
-      id: 3,
-      name: 'Nguyễn Văn Tẻm',
-      avatar:
-        'https://res.cloudinary.com/dv8qmimg8/image/upload/v1743153667/green-soccer-field_slh37e.png',
-      bookings: 20,
-      rating: 5,
-      comment:
-        'Tôi thích cách dễ dàng để đặt sân với bạn bè của tôi. Hệ thống thông báo rất hữu ích!',
-    },
-  ];
 
   return (
     <ThemeProvider theme={theme}>
       <ResponsiveAppBar />
 
       <Box sx={{ position: 'relative', height: '100vh', overflow: 'hidden' }}>
-        <HeroVideo autoPlay muted loop>
+        <HeroVideo autoPlay muted loop
+          poster="/image/static-img.webp"
+        >
           <source
             src="https://videos.pexels.com/video-files/5489581/5489581-hd_1920_1080_25fps.mp4"
             type="video/mp4"
@@ -474,12 +391,14 @@ export default function HomePage() {
               <Typography
                 variant="h1"
                 sx={{
-                  fontSize: { xs: '1.8rem', sm: '2.8rem', md: '3.5rem' },
+                  fontSize: { xs: '1.8rem', sm: '2.4rem', md: '3rem' },
                   fontFamily: 'Inter, sans-serif',
                   fontWeight: 900,
                   mb: 2,
-                  textShadow: "2px 2px 4px rgba(255, 255, 255, 0.3)",
-                  color: '#E9E9E9',
+                  // textShadow: "2px 2px 4px rgba(255, 255, 255, 0.3)",
+                  textShadow: '1px 1px 2px rgba(0,0,0,0.1)',
+                  // color: '#E9E9E9',
+                  color: '#ccc'
                 }}
               >
                 Đặt sân nhanh chóng, thanh toán thuận tiện, sẵn sàng ra sân mọi lúc.
@@ -499,7 +418,7 @@ export default function HomePage() {
                     fontStyle: 'italic',
                     mb: 4,
                     maxWidth: { md: '70%' },
-                    textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
+                    // textShadow: '1px 1px 2px rgba(0,0,0,0.5)',
                   }}
                 >
                   &quot;Không gì là không thể, chỉ cần bạn bắt đầu!&quot;
@@ -1347,7 +1266,7 @@ export default function HomePage() {
             transition={{ duration: 0.8, delay: 0.2 }}
           >
             <CustomSlider {...featuredSliderSettings}>
-              {topReviews.map((reviews) => (
+              {topReviews.map((reviews, index) => (
                 <Box key={reviews.id} sx={{ px: 1, mb: 2 }}>
                   <motion.div
                     whileHover={{ scale: 1.03 }}
@@ -1357,7 +1276,7 @@ export default function HomePage() {
                       elevation={2}
                       sx={{
                         p: 3,
-                        height: 200,
+                        height: 280,
                         borderRadius: 4,
                         display: 'flex',
                         flexDirection: 'column',
@@ -1367,7 +1286,7 @@ export default function HomePage() {
                       <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
                         <Avatar
                           src={reviews.userImage}
-                          alt={reviews.userName}
+                          alt={reviews.userName || `avatar${index}`}
                           sx={{ width: 60, height: 60, mr: 2 }}
                         />
                         <Box>
@@ -1395,6 +1314,10 @@ export default function HomePage() {
                         }}
                       >
                         {reviews.comment}
+                      </Typography>
+                      <Divider />
+                      <Typography sx={{ display: 'flex', fontSize: '0.75rem', alignItems: 'center', mt: '5px', }}>
+                        <Place color='info' sx={{ fontSize: '28px' }} /> {reviews.fieldName} <br /> {reviews.branchName}
                       </Typography>
                     </Paper>
                   </motion.div>

@@ -306,9 +306,9 @@ function ResponsiveAppBar() {
                         ':active': { background: 'var(--Primary-50)' },
                       }}
                     >
-                      {userAvatar ? (
+                      {user.image ? (
                         <Image
-                          src={userAvatar}
+                          src={user.image}
                           width={32}
                           height={32}
                           alt="User avatar"

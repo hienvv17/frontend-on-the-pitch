@@ -62,22 +62,6 @@ export default function BookingInfoTable({
   }, [calculationResult]);
   const hasUpdatedRef = React.useRef<boolean>(false);
 
-<<<<<<< HEAD
-  // const unitPrice = props.unitPrice * 1000;
-  // console.log("!props.data.field.timsSlots = ", !props.data.field.timsSlots);
-
-  const result = calculateUnitPrice(
-    props.data.field.timsSlots,
-    props.orderInfo.startTime,
-    props.orderInfo.endTime,
-    Number(props.data.field.defaultPrice),
-  );
-  // console.log("result", result);
-
-  // số giờ thuê
-  // const rentalHour = (hourCount.slice(-1)[0].getTime() - hourCount[0].getTime()) / (1000 * 60 * 60);
-=======
->>>>>>> master
   React.useEffect(() => {
     if (!hasUpdatedRef.current) {
       hasUpdatedRef.current = true;

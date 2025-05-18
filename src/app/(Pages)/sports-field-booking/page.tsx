@@ -155,20 +155,11 @@ export default function SportsFieldBooking() {
           },
         });
 
-<<<<<<< HEAD
-        // console.log("sportName", sportName);
-
-=======
->>>>>>> master
         if (sportName !== '') {
           const temp = reformattedData2.find((item: any) => {
             return item.label.trim().toLowerCase() === sportName.trim().toLowerCase();
           });
-<<<<<<< HEAD
-          // console.log("temp", temp);
-=======
           // console.log('temp', temp);
->>>>>>> master
           setSearchData((prev: any) => ({
             ...prev,
             sportOption: temp,
@@ -176,11 +167,7 @@ export default function SportsFieldBooking() {
           }));
         }
 
-<<<<<<< HEAD
-        // console.log("branchOption", branchOption);
-=======
         // console.log('branchOption', branchOption);
->>>>>>> master
         if (branchOption.value !== 0) {
           setSearchData((prev: any) => ({
             ...prev,
@@ -238,19 +225,10 @@ export default function SportsFieldBooking() {
     } else if (reformattedData2.length > 1) {
       // console.log("sportName", sportName);
       if (sportName !== '') {
-<<<<<<< HEAD
-        // console.log("sportName", sportName);
-        // console.log("reformattedData2", reformattedData2);
-        const temp = reformattedData2.find((item: any) => {
-          return item.label.trim().toLowerCase() === sportName.trim().toLowerCase();
-        });
-        // console.log("temp22", temp);
-=======
         const temp = reformattedData2.find((item: any) => {
           return item.label.trim().toLowerCase() === sportName.trim().toLowerCase();
         });
         // console.log('temp22', temp);
->>>>>>> master
         setSearchData((prev: any) => ({
           ...prev,
           sportOption: temp,
@@ -305,20 +283,6 @@ export default function SportsFieldBooking() {
   const [branchFilter, setBranchFilter] = useState({});
 
   useEffect(() => {
-<<<<<<< HEAD
-    // console.log("resData", resData.raw.branchs);
-    // console.log("searchData", searchData);
-    // console.log("typeof branchs =", typeof resData?.raw?.branchs);
-    if (searchData.branchOption === null) {
-      setBranchFilter({});
-      return
-    }
-    const branchsObject = resData?.raw?.branchs;
-    const branchsArray = Object.values(branchsObject);
-    // const branchs = resData?.raw?.branchs as any[];
-    const filteredBranches = branchsArray.find((branch: any) => branch.name === searchData.branchOption.label);
-    // console.log("filteredBranches", filteredBranches);
-=======
     // console.log('resData', resData.raw.branchs);
     // console.log('searchData.branchOption', searchData.branchOption);
     if (searchData.branchOption === null) {
@@ -337,7 +301,6 @@ export default function SportsFieldBooking() {
       (branch: any) => branch.name === searchData.branchOption.label,
     );
     // console.log('filteredBranches', filteredBranches);
->>>>>>> master
     setBranchFilter(filteredBranches as any);
   }, [searchData.branchOption]);
 
@@ -362,11 +325,7 @@ export default function SportsFieldBooking() {
       endTime: formatTime(searchData.endTime) as string,
     };
 
-<<<<<<< HEAD
-    // console.log("searchSubmit->requestBody", requestBody);
-=======
     // console.log('searchSubmit->requestBody', requestBody);
->>>>>>> master
     // Nếu không chọn cụm sân, báo lỗi yêu cầu chọn cụm sân
     if (requestBody.branchId === 0) {
       setOpenSnackBar({ isOpen: true, msg: msgDetail[1], type: 'error' });
@@ -378,13 +337,8 @@ export default function SportsFieldBooking() {
         if (requestBodyCopy.sportCategoryId === 0) {
           delete requestBodyCopy.sportCategoryId;
         }
-<<<<<<< HEAD
-        // console.log("requestBody", requestBody);
-        // console.log("requestBodyCopy", requestBodyCopy);
-=======
         // console.log('requestBody', requestBody);
         // console.log('requestBodyCopy', requestBodyCopy);
->>>>>>> master
 
         let response;
         try {
@@ -456,11 +410,7 @@ export default function SportsFieldBooking() {
           }));
 
           if (response.status === 201) {
-<<<<<<< HEAD
-            // console.log("response", response);
-=======
             // console.log('response', response);
->>>>>>> master
             setData(response.data.items);
             setOpenSnackBar({ isOpen: true, msg: msgDetail[2], type: 'info' });
             return;
@@ -476,11 +426,7 @@ export default function SportsFieldBooking() {
             type: 'error',
           });
         } catch (error) {
-<<<<<<< HEAD
-          // console.log("error", error);
-=======
           // console.log('error', error);
->>>>>>> master
           setData([]);
         } finally {
           setIsSearchDone(false);
@@ -552,30 +498,17 @@ export default function SportsFieldBooking() {
       try {
         const configApi = publicApi('');
         const response = await configApi.post(ROUTES.FILED_BOOKINGS + '/new', bookingData);
-<<<<<<< HEAD
-        // console.log("response", response);
-        setOrderInfo(response.data.bookingData);
-        setOpenSnackBar({ isOpen: true, msg: msgDetail[17], type: "info" });
-        console.log("DONE");
-      } catch (err) {
-        // console.log("err", err);
-=======
 
         setOrderInfo(response.data.bookingData);
         router.push(response.data.bookingData.order_url);
         // console.log('DONE');
       } catch (err) {
         console.log('err', err);
->>>>>>> master
       }
     };
 
     senBooking();
-<<<<<<< HEAD
-
-=======
     setOpenSnackBar({ isOpen: true, msg: msgDetail[17], type: 'info' });
->>>>>>> master
     setOpenDialog2(false);
     setOpenDialog(false);
   };
@@ -892,17 +825,8 @@ export default function SportsFieldBooking() {
                           </Typography>
                         </Box>
                         <Grid container spacing={2} justifyContent="center">
-<<<<<<< HEAD
-                          <Grid
-                            item
-                            xs={6}
-                            sx={{ display: "flex", justifyContent: "center" }}
-                          >
-                            <Box sx={{ width: "100%" }}>
-=======
                           <Grid item xs={6} sx={{ display: 'flex', justifyContent: 'center' }}>
                             <Box sx={{ width: '100%', maxWidth: 200 }}>
->>>>>>> master
                               <TimePickerValue
                                 label="Giờ vào sân"
                                 name="startTime"

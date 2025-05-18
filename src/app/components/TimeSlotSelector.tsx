@@ -41,12 +41,6 @@ export default function TimeSlotSelector({
   dialogData,
   ...rest
 }: TimeSlotSelectorProps) {
-<<<<<<< HEAD
-
-  // console.log("TimeSlotSelector ->rest", rest);
-
-=======
->>>>>>> master
   const { setOpenSnackBar } = useContext(AppContext);
 
   const [timeSlotsStart, setTimeSlotsStart] = useState<any[]>([]);
@@ -83,13 +77,8 @@ export default function TimeSlotSelector({
   };
 
   const handleContinue = () => {
-<<<<<<< HEAD
-    // console.log("rest.startTime", rest.startTime);
-    // console.log("rest.endTime", rest.endTime);
-=======
     // console.log('rest.startTime', rest.startTime);
     // console.log('rest.endTime', rest.endTime);
->>>>>>> master
 
     if (rest.startTime === '' || rest.endTime === '') {
       setTimeout(() => {
@@ -153,12 +142,6 @@ export default function TimeSlotSelector({
         start = next;
       }
     }
-<<<<<<< HEAD
-    const [hours, minutes] = rest.startTime.split(":").map(Number);
-    // console.log("hours", hours, minutes);
-    const temp = generateTimeSlots2((hours + 1 + ":" + minutes).toString(), "23:00", []);
-=======
->>>>>>> master
 
     return result;
   };
@@ -218,11 +201,6 @@ export default function TimeSlotSelector({
   };
 
   const handleChangeStartTime = (event: SelectChangeEvent<typeof rest.startTime>) => {
-<<<<<<< HEAD
-    // console.log("event.target.value", event.target);
-    // console.log("rest.startTime", rest.startTime);
-    rest.setStartTime(event.target.value as string);
-=======
     const selectedStartTime = event.target.value as string;
     rest.setStartTime(selectedStartTime);
 
@@ -234,7 +212,6 @@ export default function TimeSlotSelector({
 
     setTimeSlotsEnd(newEndSlots);
     rest.setEndTime(''); // reset nếu thay đổi start time
->>>>>>> master
   };
 
   const handleChangeEndTime = (event: SelectChangeEvent<typeof rest.endTime>) => {

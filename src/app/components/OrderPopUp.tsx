@@ -27,17 +27,6 @@ import { formatPrice } from '@/utility/formatPrice';
 
 export default function OrderPopUp(props: any) {
   const [isDisableBtn, setIsDisableBtn] = useState(true);
-<<<<<<< HEAD
-
-  // console.log("OrderPopUp -> props", props);
-
-  // const unitPrice = props.startSlot && getPricePerHour(props.startSlot.getHours());
-  // console.log("OrderPopUp -> unitPrice", unitPrice);
-
-  // const data = props.data;
-
-=======
->>>>>>> master
   const selectedSlots = props.selectedSlots;
   const { setOpenSnackBar } = useContext(AppContext);
   const [result, setResult] = useState<any>(null);
@@ -78,12 +67,6 @@ export default function OrderPopUp(props: any) {
         ...prev,
         email: value.trim(),
       }));
-<<<<<<< HEAD
-
-
-      // console.log("email", trimValue);
-=======
->>>>>>> master
     }
   };
 

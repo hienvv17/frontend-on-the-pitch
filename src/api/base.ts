@@ -18,11 +18,6 @@ export const publicApi = (subPath = '') => {
 
   api.interceptors.request.use(
     (config) => {
-<<<<<<< HEAD
-      // console.log("Sending request to: " + config.baseURL + config.url);
-      // console.log("config: ", config);
-=======
->>>>>>> master
       return config;
     },
     (error) => {
@@ -53,10 +48,6 @@ export const privateApi = (subPath = ''): AxiosInstance => {
     async (config) => {
       const accessToken = Cookies.get(ACCESS_TOKEN);
       if (config.headers) config.headers.authorization = `${accessToken}`;
-<<<<<<< HEAD
-      // console.log("Sending request to: " + config.baseURL + config.url);
-=======
->>>>>>> master
       return config;
     },
     (error) => {
