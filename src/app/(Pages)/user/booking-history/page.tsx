@@ -104,7 +104,7 @@ export default function BookingHistory() {
       case 'PENDING':
         return { color: 'warning', label: 'Đang xử lý' };
       case 'REFUND':
-        return { color: 'error', label: 'Đã hủy' };
+        return { color: 'error', label: 'Đã hoàn tiền' };
       default:
         return { color: 'default', label: status };
     }
