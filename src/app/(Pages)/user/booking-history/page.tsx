@@ -97,8 +97,10 @@ export default function BookingHistory() {
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case 'PAID':
+      case 'CHECK_IN':
         return { color: 'success', label: 'Hoàn thành' };
+      case 'PAID':
+        return { color: 'primary', label: 'Đã thanh toán' };
       case 'PENDING':
         return { color: 'warning', label: 'Đang xử lý' };
       case 'REFUND':
