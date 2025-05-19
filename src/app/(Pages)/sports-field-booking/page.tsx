@@ -927,6 +927,10 @@ export default function SportsFieldBooking() {
                             borderRadius: '20px',
                             fontWeight: 600,
                             border: '1px solid var(--Primary-200)',
+                            width: "50px",
+                            display: 'flex',
+                            justifyContent: 'center',
+                            alignItems: 'center',
                           }}
                         >
                           {data.length} sân

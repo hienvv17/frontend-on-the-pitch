@@ -25,6 +25,7 @@ import { blueBlurDialogSlotProps } from '@/utility/dialogSlotProps';
 import CustomDatePicker from './DatePicker';
 import { generateTimeSlots2 } from '@/utility/generateTimeSlots2';
 import dayjs from 'dayjs';
+import moment from 'moment';
 
 interface TimeSlotSelectorProps {
   disabledSlots?: Date[];
@@ -147,10 +148,26 @@ export default function TimeSlotSelector({
   };
 
   useEffect(() => {
+
     const result = generateTimeSlotsFromRanges(
       dialogData?.field?.availableTimeSlots ?? [],
       dialogData?.field?.bookedTimeSlots ?? [],
     );
+
+    const isToday = moment().format("YYYY-MM-DD") === rest.bookingData.bookingDate;
+
+
+    // nếu chọn ngày hôm nay thì lọc thời gian < hiện tại
+    if (isToday) {
+      const currentTime = moment().format('HH:mm');
+
+      const filtered = result.filter(time => time >= currentTime);
+
+      setFilteredStartSlots(filtered);
+
+      return;
+    }
+
     setFilteredStartSlots(result);
   }, [dialogData?.field?.availableTimeSlots, dialogData?.field?.bookedTimeSlots]);
 
@@ -286,6 +303,7 @@ export default function TimeSlotSelector({
                       id="select-end-time"
                       value={rest.endTime}
                       label="endTime"
+                      disabled={rest.startTime === ""}
                       onChange={handleChangeEndTime}
                     >
                       <MenuItem value="">

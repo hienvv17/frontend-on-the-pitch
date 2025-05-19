@@ -10,35 +10,29 @@ import { Box, Grid2 } from '@mui/material';
 import Image from './Image';
 // import StarIcon from "@mui/icons-material/Star";
 import RoomIcon from '@mui/icons-material/Room';
-import { ALTER_IMG, DEFAULT_IMG } from '@/utility/constant';
+import { ALTER_IMG } from '@/utility/constant';
 
 interface SportCardProps {
   [key: string]: any; // Cho phép các props khác
 }
 export default function SportCard(props: SportCardProps) {
+
   let defaultImg = '';
   const sportType = props.data.sportCategoryName || props.searchData.sportOption.label;
-  // console.log("sportType", sportType);
-  switch (sportType) {
-    case 'Bóng đá':
-      defaultImg = ALTER_IMG[0];
-      break;
-    case 'Tenis':
-      defaultImg = ALTER_IMG[1];
-      break;
-    case 'Cầu lông':
-      defaultImg = ALTER_IMG[2];
-      break;
-    case 'Pickle ball':
-      defaultImg = ALTER_IMG[3];
-      break;
-    default:
-      defaultImg = ALTER_IMG[0];
-      break;
-  }
+
+  const sportImgMap: Record<string, string> = {
+    'bóng đá': ALTER_IMG[0],
+    'tenis': ALTER_IMG[1],
+    'pickle ball': ALTER_IMG[2],
+    'cầu lông': ALTER_IMG[3],
+  };
+
+  const normalizedSportType = sportType.trim().toLowerCase();
+  defaultImg = sportImgMap[normalizedSportType];
+
 
   const branchData = props.branchInfo.find((item: any) => item.id === props.searchData.branchValue);
-  // console.log("branchData", branchData);
+
 
   const sportName = props.resData.sportFields.find(
     (item: any) => item.value === props.searchData.sportValue,
@@ -65,7 +59,7 @@ export default function SportCard(props: SportCardProps) {
               <AspectRatio variant="outlined" ratio="16/9" objectFit="cover">
                 <Image
                   alt="imgSportCard"
-                  src={props.data.images !== null ? props.data.images[0] : defaultImg}
+                  src={props.data.images?.[0] || defaultImg}
                   width={400}
                   height={240}
                   style={{

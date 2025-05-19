@@ -14,8 +14,8 @@ export interface SnackbarState {
 }
 
 interface AppContextType {
-  isChange: boolean;
-  setIsChange: (value: boolean) => void;
+  isChangeCtx: boolean;
+  setIsChangeCtx: React.Dispatch<React.SetStateAction<boolean>>;
   user: any;
   setUser: (value: any) => void;
   handleLogout: () => void;
@@ -35,23 +35,23 @@ interface AppContextType {
 }
 
 export const AppContext = createContext<AppContextType>({
-  isChange: false,
-  setIsChange: () => {},
+  isChangeCtx: false,
+  setIsChangeCtx: () => { },
   user: null,
-  setUser: () => {},
-  handleLogout: () => {},
+  setUser: () => { },
+  handleLogout: () => { },
   openSnackbar: { isOpen: false, msg: '', type: 'info' },
-  setOpenSnackBar: () => {},
+  setOpenSnackBar: () => { },
   sportName: '',
-  setSportName: () => {},
+  setSportName: () => { },
   branchOption: { value: 0, label: '' },
-  setBranchOption: () => {},
+  setBranchOption: () => { },
   orderInfo: {},
-  setOrderInfo: () => {},
+  setOrderInfo: () => { },
 });
 
 export const AppProvider = ({ children }: { children: ReactNode }) => {
-  const [isChange, setIsChange] = useState(false);
+  const [isChangeCtx, setIsChangeCtx] = useState<boolean>(false);
   const [user, setUser] = useState(null);
   const [isClient, setIsClient] = useState(false);
   const [sportName, setSportName] = useState('');
@@ -101,8 +101,8 @@ export const AppProvider = ({ children }: { children: ReactNode }) => {
   return (
     <AppContext.Provider
       value={{
-        isChange,
-        setIsChange,
+        isChangeCtx,
+        setIsChangeCtx,
         user,
         setUser,
         handleLogout,

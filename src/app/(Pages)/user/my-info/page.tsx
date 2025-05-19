@@ -47,7 +47,7 @@ import Image from '@/app/components/Image';
 import { privateApi } from '@/api/base';
 
 export default function MyInfo() {
-  const { user, setUser, setOpenSnackBar } = useContext(AppContext);
+  const { setIsChangeCtx, user, setUser, setOpenSnackBar } = useContext(AppContext);
   const [activeTab, setActiveTab] = useState(0);
   const [expandedVoucher, setExpandedVoucher] = useState<number | false>(false);
   const { GET_UPLOAD_AUTH } = useUploadAuthApi();
@@ -197,6 +197,8 @@ export default function MyInfo() {
           signature,
         });
         urlImage = uploadResponse.url;
+        localStorage.setItem('userAvatar', JSON.stringify(urlImage));
+        setIsChangeCtx((prev: boolean) => !prev);
       }
       await POST_P(ROUTES.USERS + '/update-profile', {
         fullName: updateData.fullName,
