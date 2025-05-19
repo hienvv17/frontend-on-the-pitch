@@ -45,7 +45,7 @@ export const msgDetail = [
   'Vui lòng nhập lý do',
   'Gửi đánh giá thành công',
   'Gửi đánh giá thất bại',
-
+  'Email không được trống',
 ];
 
 export const openTime = '05:00';

@@ -16,7 +16,7 @@ import { Grid } from '@mui/system';
 import ClearIcon from '@mui/icons-material/Clear';
 import CheckIcon from '@mui/icons-material/Check';
 import { emailRegex, msgDetail } from '@/utility/constant';
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { AppContext } from '../contexts/AppContext';
 import moment from 'moment';
 import BookingInfoTable from './BookingInfoTable';
@@ -28,7 +28,7 @@ import { formatPrice } from '@/utility/formatPrice';
 export default function OrderPopUp(props: any) {
   const [isDisableBtn, setIsDisableBtn] = useState(true);
   const selectedSlots = props.selectedSlots;
-  const { setOpenSnackBar } = useContext(AppContext);
+  const { setOpenSnackBar, user } = useContext(AppContext);
   const [result, setResult] = useState<any>(null);
   const [email, setEmail] = useState('');
   const [voucherCode, setVoucherCode] = useState('');
@@ -36,6 +36,10 @@ export default function OrderPopUp(props: any) {
   const [voucherError, setVoucherError] = useState('');
   const [isValidatingVoucher, setIsValidatingVoucher] = useState(false);
   const [filteredBranches, setFilteredBranches] = useState<any[]>([]);
+
+  useEffect(() => {
+    setEmail(user?.email || '');
+  }, [user, props.open]);
 
   const handleResultChange = (newResult: any) => {
     setResult(newResult);
@@ -48,7 +52,7 @@ export default function OrderPopUp(props: any) {
 
     if (trimValue === '') {
       setTimeout(() => {
-        setOpenSnackBar({ isOpen: true, msg: msgDetail[12], type: 'error' });
+        setOpenSnackBar({ isOpen: true, msg: msgDetail[25], type: 'error' });
       }, 100);
       setIsDisableBtn(true);
       return;

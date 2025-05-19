@@ -83,7 +83,7 @@ const settings = [
 
 function ResponsiveAppBar() {
   const router = useRouter();
-  const { isChange, user, handleLogout } = useContext(AppContext);
+  const { isChangeCtx, user, handleLogout, setSportName } = useContext(AppContext);
 
   const pathname = usePathname();
   // console.log('pathname', pathname);
@@ -94,8 +94,11 @@ function ResponsiveAppBar() {
     const storedAvatar = localStorage.getItem('userAvatar');
     if (storedAvatar) {
       setUserAvatar(JSON.parse(storedAvatar));
+      return;
     }
-  }, [isChange]);
+
+    setUserAvatar(null);
+  }, [isChangeCtx]);
   // console.log(userAvatar);
   const [anchorElNav, setAnchorElNav] = React.useState<null | HTMLElement>(null);
   const [anchorElUser, setAnchorElUser] = React.useState<null | HTMLElement>(null);
@@ -151,7 +154,7 @@ function ResponsiveAppBar() {
             }}
             alt="OTP"
             src="/icon/iconOTP.png"
-            onClick={() => console.log(isChange)}
+
           />
           <Typography
             variant="h6"
@@ -198,7 +201,10 @@ function ResponsiveAppBar() {
               sx={{ display: { xs: 'block', md: 'none' }, zIndex: 999999 }}
             >
               {pages2.map((page) => (
-                <MenuItem key={page.title} onClick={() => router.push(`${page.url}`)}>
+                <MenuItem key={page.title} onClick={() => {
+                  setSportName('');
+                  router.push(`${page.url}`);
+                }}>
                   <Typography sx={{ textAlign: 'center' }}>{page.title}</Typography>
                 </MenuItem>
               ))}
@@ -245,7 +251,10 @@ function ResponsiveAppBar() {
             {pages2.map((page) => (
               <Button
                 key={page.title}
-                onClick={() => router.push(`${page.url}`)}
+                onClick={() => {
+                  setSportName('');
+                  router.push(`${page.url}`);
+                }}
                 sx={{
                   my: 2,
                   color: 'var(--Primary-500)',

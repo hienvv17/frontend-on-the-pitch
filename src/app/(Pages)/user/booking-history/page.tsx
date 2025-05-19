@@ -176,14 +176,14 @@ export default function BookingHistory() {
 
   const handleOpenModalPaymentNow = (id: any) => {
     const booking = history.find((item: any) => item.id === id);
-    console.log('booking', booking);
+
     if (booking) {
       setSelectedOrder(booking);
       setOpenPaymentPopup(true);
     }
   };
 
-  console.log('history', history);
+
   return (
     <UserLayout>
       <Box
@@ -505,7 +505,7 @@ export default function BookingHistory() {
                       })
                   ) : (
                     <TableRow>
-                      <TableCell colSpan={7} align="center" sx={{ py: 4 }}>
+                      <TableCell colSpan={9} align="center" sx={{ py: 4 }}>
                         <Box sx={{ textAlign: 'center', py: 3 }}>
                           <History
                             sx={{
