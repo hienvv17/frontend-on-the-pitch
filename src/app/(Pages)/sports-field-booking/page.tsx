@@ -508,7 +508,7 @@ export default function SportsFieldBooking() {
     };
 
     senBooking();
-    setOpenSnackBar({ isOpen: true, msg: msgDetail[17], type: 'info' });
+    setOpenSnackBar({ isOpen: true, msg: msgDetail[16], type: 'info' });
     setOpenDialog2(false);
     setOpenDialog(false);
   };

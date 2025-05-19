@@ -83,17 +83,18 @@ const RefundPopup = ({ open, onClose, onSubmit, selectedItem }: any) => {
         <Button
           onClick={onClose}
           variant="outlined"
+          color="error"
           sx={{
             borderRadius: 2,
             textTransform: 'none',
             padding: "8px 30px",
             fontWeight: 500,
-            color: '#555',
-            ':hover': {
-              backgroundColor: '#D32F2F',
-              borderColor: "transparent",
-              color: "#fff"
-            }
+            // color: '#555',
+            // ':hover': {
+            //   backgroundColor: '#D32F2F',
+            //   borderColor: "transparent",
+            // color: "#fff"
+            // }
           }}
         >
           Hủy
@@ -102,14 +103,14 @@ const RefundPopup = ({ open, onClose, onSubmit, selectedItem }: any) => {
           onClick={handleSubmit}
           variant="contained"
           sx={{
-            backgroundColor: '#1976d2',
+            // backgroundColor: '#1976d2',
             borderRadius: 2,
             padding: "8px 30px",
             textTransform: 'none',
             fontWeight: 500,
-            ':hover': {
-              backgroundColor: '#63A7F9'
-            }
+            // ':hover': {
+            //   backgroundColor: '#63A7F9'
+            // }
           }}
         >
           Gửi
