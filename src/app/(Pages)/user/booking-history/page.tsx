@@ -158,6 +158,7 @@ export default function BookingHistory() {
         });
 
         setOpenRefundPopup(false);
+        await fetchHistory();
       } else {
         throw new Error('Yêu cầu hoàn tiền không thành công');
       }
@@ -244,6 +245,19 @@ export default function BookingHistory() {
                       <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
                         <Receipt fontSize="small" />
                         Mã đơn
+                      </Box>
+                    </TableCell>
+                    <TableCell
+                      sx={{
+                        fontWeight: 600,
+                        backgroundColor: 'var(--Primary-50)',
+                        color: 'var(--Primary-700)',
+                        borderBottom: '2px solid var(--Primary-200)',
+                      }}
+                    >
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        <Receipt fontSize="small" />
+                        Mã đặt sân
                       </Box>
                     </TableCell>
                     <TableCell
@@ -391,6 +405,11 @@ export default function BookingHistory() {
                             </TableCell>
                             <TableCell sx={{ py: 2 }}>
                               <Typography variant="body2">
+                                {item.code}
+                              </Typography>
+                            </TableCell>
+                            <TableCell sx={{ py: 2 }}>
+                              <Typography variant="body2">
                                 {item.branchName} - {item.sportFieldName}
                               </Typography>
                             </TableCell>
@@ -428,16 +447,16 @@ export default function BookingHistory() {
                             <TableCell sx={{ py: 2 }}>
                               {(item.canRequestRefund === 'true' ||
                                 item.canRequestRefund === true) && (
-                                <Button
-                                  variant="outlined"
-                                  size="small"
-                                  color="primary"
-                                  onClick={() => handleRefund(item)}
-                                  sx={{ textTransform: 'none', minWidth: 130 }}
-                                >
-                                  Hoàn tiền
-                                </Button>
-                              )}
+                                  <Button
+                                    variant="outlined"
+                                    size="small"
+                                    color="primary"
+                                    onClick={() => handleRefund(item)}
+                                    sx={{ textTransform: 'none', minWidth: 130 }}
+                                  >
+                                    Hoàn tiền
+                                  </Button>
+                                )}
 
                               {item.status === 'PENDING' && (
                                 <Button
@@ -453,7 +472,7 @@ export default function BookingHistory() {
                             </TableCell>
 
                             <TableCell sx={{ py: 2 }}>
-                              {item.status === 'PAID' && (
+                              {item.status === 'CHECK_IN' && (
                                 <>
                                   {item?.reviewId ? (
                                     <Button
@@ -462,7 +481,7 @@ export default function BookingHistory() {
                                       color="primary"
                                       onClick={() => handleOpenViewRatingModal(item)}
                                       startIcon={<Star />}
-                                      sx={{ textTransform: 'none' }}
+                                      sx={{ textTransform: 'none', width: "145px" }}
                                     >
                                       Xem đánh giá
                                     </Button>
@@ -473,7 +492,7 @@ export default function BookingHistory() {
                                       color="primary"
                                       onClick={() => handleOpenRatingModal(item)}
                                       startIcon={<StarBorder />}
-                                      sx={{ textTransform: 'none' }}
+                                      sx={{ textTransform: 'none', width: "145px" }}
                                     >
                                       Đánh giá
                                     </Button>
@@ -525,9 +544,9 @@ export default function BookingHistory() {
                 borderTop: '1px solid rgba(0, 0, 0, 0.08)',
                 mt: 2,
                 '.MuiTablePagination-selectLabel, .MuiTablePagination-select, .MuiTablePagination-selectIcon, .MuiTablePagination-displayedRows':
-                  {
-                    color: 'var(--Primary-700)',
-                  },
+                {
+                  color: 'var(--Primary-700)',
+                },
               }}
             />
           </CardContent>
