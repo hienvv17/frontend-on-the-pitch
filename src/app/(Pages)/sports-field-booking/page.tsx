@@ -501,16 +501,25 @@ export default function SportsFieldBooking() {
 
         setOrderInfo(response.data.bookingData);
         router.push(response.data.bookingData.order_url);
-        // console.log('DONE');
+
+        // Show success info snackbar
+        setOpenSnackBar({ isOpen: true, msg: msgDetail[17], type: 'info' });
       } catch (err) {
-        console.log('err', err);
+        console.error('Booking error:', err);
+        // Show error snackbar
+        setOpenSnackBar({
+          isOpen: true,
+          msg: 'Có lỗi xảy ra khi đặt sân. Vui lòng thử lại.',
+          type: 'error',
+        });
+      } finally {
+        // Close both dialogs regardless of success or failure
+        setOpenDialog2(false);
+        setOpenDialog(false);
       }
     };
 
     senBooking();
-    setOpenSnackBar({ isOpen: true, msg: msgDetail[16], type: 'info' });
-    setOpenDialog2(false);
-    setOpenDialog(false);
   };
 
   const handleClosePayment = () => {

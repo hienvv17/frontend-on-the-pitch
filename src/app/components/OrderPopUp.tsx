@@ -284,7 +284,7 @@ export default function OrderPopUp(props: any) {
                     name={props.name}
                     placeholder="Vui lòng nhập email"
                     variant="outlined"
-                    value={email}
+                    value={user?.email || email}
                     size="small"
                     margin="normal"
                     onChange={(e) => setEmail(e.target.value)}
@@ -295,9 +295,34 @@ export default function OrderPopUp(props: any) {
                       },
                       htmlInput: { sx: { fontSize: '0.85rem' } },
                     }}
+                    disabled={!!props?.user}
                   />
                 </Grid>
               </Grid>
+              {email && !user && (
+                <Grid
+                  container
+                  direction="column"
+                  sx={{
+                    height: '100%',
+                    width: '100%',
+                    alignItems: 'center',
+                  }}
+                >
+                  <Grid
+                    size={12}
+                    sx={{ justifyContent: 'center', alignItems: 'center', display: 'flex' }}
+                  >
+                    <Typography
+                      variant="caption"
+                      color="error"
+                      sx={{ ml: 1, mt: 0.5, display: 'block' }}
+                    >
+                      Hãy kiểm tra email của bạn trước khi đặt sân
+                    </Typography>
+                  </Grid>
+                </Grid>
+              )}
               <Grid
                 container
                 direction="row"
@@ -325,6 +350,7 @@ export default function OrderPopUp(props: any) {
                       },
                       htmlInput: { sx: { fontSize: '0.85rem', width: '130%' } },
                     }}
+                    disabled={!user}
                   />
                   {!!voucherError && (
                     <Typography
