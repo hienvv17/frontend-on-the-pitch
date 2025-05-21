@@ -1387,7 +1387,7 @@ export default function HomePage() {
         </Box>
       )}
 
-      <Box sx={{ py: 6, backgroundColor: '#f9f9f9' }}>
+      {/* <Box sx={{ py: 6, backgroundColor: '#f9f9f9' }}>
         <Typography
           variant="h4"
           align="center"
@@ -1461,7 +1461,7 @@ export default function HomePage() {
             </Grid>
           </Box>
         </Box>
-      </Box>
+      </Box> */}
 
       {/* Customer Reviews */}
       <Box sx={{ py: { xs: 6, md: 10 }, backgroundColor: '#f8f9fa' }}>
@@ -1525,7 +1525,13 @@ export default function HomePage() {
                           </Typography>
                         </Box>
                       </Box>
-                      <Box sx={{ mb: 2 }}>
+                      <Box>
+                        
+                        <Typography variant="body1" sx={{mb:1.5,fontSize:"18px"}}>
+                          {reviews.branchName} - {reviews.fieldName}
+                        </Typography>
+                      </Box>
+                      <Box sx={{ mb: 1.5 }}>
                         <Rating
                           value={reviews.rating}
                           precision={0.5}
